@@ -856,9 +856,9 @@ var server;
 
 var SQLServerConnectionParameters = {
     user: 'sa',
-    password: 'lufiri01011',
-    server: 'localhost',
-    database: 'LAUNCH'
+    password: 'Lufiri01011',
+    server: '10.15.17.158',
+    database: 'SOA_db'
 };
 ////var connectionParameters1 = {
 ////    host: 'localhost',
@@ -900,8 +900,8 @@ var SQLServerConnectionParameters = {
 
 
 
-//<editor-fold defaultstate="collapsed" desc="updateUser">
-app.post('/aleWebService', function (req, res) {
+//<editor-fold defaultstate="collapsed" desc="defaultSelect">
+app.post('/defaultSelect', function (req, res) {
     var requestID = new Date().getTime();
     var response = {};
     var dataPacket = {
@@ -911,19 +911,14 @@ app.post('/aleWebService', function (req, res) {
     };
     mn.init(dataPacket)
             .then(function (dp) {
-                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/aleWebService]');
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/defaultSelect]');
                 return dp;
             })
             .then(function (dp) {
                 inputValidation(response, req.body, [
-                    new FieldValidation('entrada', ENC.STRING())
+                    new FieldValidation('query', ENC.STRING())
                 ]);
-                dp.entrada = req.body.entrada;
-                return dp;
-            })
-
-            .then(function (dp) {
-                dataPacket.query = "select * from USUARIO";
+                dp.query = req.body.query;
                 return dp;
             })
             .then(msql.selectPromise)
@@ -932,12 +927,12 @@ app.post('/aleWebService', function (req, res) {
                 return dp;
             })
             .then(function (dp) {
-                mc.info('RID:[' + requestID + ']-[REQUEST]-[END]:[/aleWebService]');
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[END]:[/defaultSelect]');
 
                 res.json(response);
             })
             .catch(function (err) {
-                mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/aleWebService]');
+                mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/defaultSelect]');
                 response.error = err.message;
                 res.json(response);
             });
