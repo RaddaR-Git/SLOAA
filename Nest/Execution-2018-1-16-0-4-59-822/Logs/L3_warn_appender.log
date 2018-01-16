@@ -1,0 +1,1 @@
+[2018-01-16T00:07:42.347] [ERROR] ECC - RID:[1516082862299]-[REQUEST]-[ERROR]:[Global connection already exists. Call sql.close() first.]:[/aleWebService]
