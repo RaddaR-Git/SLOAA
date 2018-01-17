@@ -25,12 +25,10 @@ var launchWindow = function () {
             items:[
                 {
                     xtype: 'datefield',
-                    dock: 'top',
                     fieldLabel: 'Fecha'
                 },
                 {
                     xtype: 'timefield',
-                    dock: 'top',
                     fieldLabel: 'Hora'
                 }
             ]
@@ -333,6 +331,9 @@ var initComponent = function () {
                             xtype: 'gridpanel',
                             region: 'center',
                             title: 'Ordenes de Servicio',
+                            height: 500,
+                            collapsed: false,
+                            collapsible: true,
                             columns: [
                                 {
                                     xtype: 'gridcolumn',
