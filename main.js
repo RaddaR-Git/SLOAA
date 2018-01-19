@@ -663,10 +663,18 @@ class ENCManagerSQLServer extends ENCPrimal {
             mc.info('RID:[' + input.requestID + ']-[SELECT]-[START]');
             mc.debug('RID:[' + input.requestID + ']-[SELECT]-[QUERY]:[' + input.query + ']');
 
+            try {
+                sql.close();
+            } catch (e) {
+            }
             sql.connect(input.connectionParameters, function (err) {
                 if (err) {
                     reject(err);
                     mc.error('RID:[' + input.requestID + ']-[SELECT]-[END]:[FAIL]:[' + err.message + ']');
+                    try {
+                        sql.close();
+                    } catch (e) {
+                    }
                     return;
                 }
 
@@ -675,6 +683,10 @@ class ENCManagerSQLServer extends ENCPrimal {
                     if (err) {
                         reject(err);
                         mc.error('RID:[' + input.requestID + ']-[SELECT]-[END]:[FAIL]:[' + err.message + ']');
+                        try {
+                            sql.close();
+                        } catch (e) {
+                        }
                         return;
                     }
                     input.queryResult = new ENCTable();
@@ -682,7 +694,10 @@ class ENCManagerSQLServer extends ENCPrimal {
                     input.queryResult.rows = recordset.recordset;
                     resolve(input);
                     //con.end();
-                    sql.close();
+                    try {
+                        sql.close();
+                    } catch (e) {
+                    }
                     mc.info('RID:[' + input.requestID + ']-[SELECT]-[END]:[OK]');
                 });
             });
@@ -723,7 +738,7 @@ class ENCManagerSQLServer extends ENCPrimal {
                             mc.error('RID:[' + input.requestID + ']-[FREE-DML]-[END]:[FAIL]:[' + err.message + ']');
                             return;
                         }
-                        input.resultDML =result ;
+                        input.resultDML = result;
                         resolve(input);
                         sql.close();
                         mc.info('RID:[' + input.requestID + ']-[FREE-DML]-[END]:[OK]');
@@ -800,8 +815,8 @@ class ENCManagerMail extends ENCPrimal {
 //<editor-fold defaultstate="collapsed" desc="COMMON FUNCTIONS">
 var inputValidation = function (response, request, fieldValidation) {
     ENC.validateType('response', response, ENC.OBJECT());
-    ENC.validateObjectFields('request', request, ENC.OBJECT());
-    ENC.validateObjectFields('fieldValidation', request, ENC.ARRAY());
+    ENC.validateType('request', request, ENC.OBJECT());
+    ENC.validateType('fieldValidation', request, ENC.OBJECT());
     var inputValidation = ENC.validateObjectFields(request, fieldValidation);
     if (inputValidation !== null) {
         response.inputValidation = inputValidation;
@@ -841,7 +856,7 @@ var multer = require('multer'); // v1.0.5
 var upload = multer(); // for parsing multipart/form-data
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({extended: true})); // for parsing application/x-www-form-urlencoded
-//app.use(express.static(__dirname + '/public'))//for file satatic service express;
+app.use(express.static(__dirname + '/front'));//for file satatic service express;
 app.use(express.static('Images'));//for file satatic service express;
 app.use(express.static('Nest'));//for file satatic service express;
 
@@ -941,7 +956,62 @@ app.post('/defaultSelect', function (req, res) {
 
 
 
+//<editor-fold defaultstate="collapsed" desc="defaultSelect">
+app.get('/login', function (req, res) {
+    var requestID = new Date().getTime();
+    var response = {};
+    var dataPacket = {
+        requestID: requestID,
+        connectionParameters: SQLServerConnectionParameters,
+        looked: 0
+    };
+    mn.init(dataPacket)
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/defaultSelect]');
+                return dp;
+            })
+            .then(function (dp) {
 
+                inputValidation(response, req.query, [
+                    new FieldValidation('user', ENC.STRING()),
+                    new FieldValidation('password', ENC.STRING())
+                ]);
+
+                dp.user = req.query.user;
+                dp.password = req.query.password;
+                return dp;
+            })
+            .then(function (dp) {
+                dp.query = "SELECT * FROM [dbo].[SLOAA_TR_CREDENCIAL] WHERE  [USUARIO_NOMBRE]='" + dp.user + "' AND [USUARIO_PASSWORD]='" + dp.password + "'"
+                return dp;
+            })
+            .then(msql.selectPromise)
+            .then(function (dp) {
+                //response = dp.queryResult;
+                if (dp.queryResult.rows !== null) {
+                    if (dp.queryResult.rows.length > 0) {
+                        response.success = true;
+                    } else {
+                        response.success = false;
+                    }
+                } else {
+                    response.success = false;
+
+                }
+                return dp;
+            })
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[END]:[/defaultSelect]');
+
+                res.jsonp(response);
+            })
+            .catch(function (err) {
+                mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/defaultSelect]');
+                response.error = err.message;
+                res.jsonp(response);
+            });
+});
+//</editor-fold>
 
 app.set('port', (process.env.PORT || 3000));
 var server = app.listen(app.get('port'), function () {
