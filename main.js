@@ -724,10 +724,18 @@ class ENCManagerSQLServer extends ENCPrimal {
                 mc.info('RID:[' + input.requestID + ']-[FREE-DML]-[START]');
                 mc.debug('RID:[' + input.requestID + ']-[FREE-DML]-[DML]:[' + input.dml + ']');
 
+                try {
+                    sql.close();
+                } catch (e) {
+                }
                 sql.connect(input.connectionParameters, function (err) {
                     if (err) {
                         reject(err);
                         mc.error('RID:[' + input.requestID + ']-[FREE-DML]-[END]:[FAIL]:[' + err.message + ']');
+                        try {
+                            sql.close();
+                        } catch (e) {
+                        }
                         return;
                     }
 
@@ -736,11 +744,18 @@ class ENCManagerSQLServer extends ENCPrimal {
                         if (err) {
                             reject(err);
                             mc.error('RID:[' + input.requestID + ']-[FREE-DML]-[END]:[FAIL]:[' + err.message + ']');
+                            try {
+                                sql.close();
+                            } catch (e) {
+                            }
                             return;
                         }
                         input.resultDML = result;
                         resolve(input);
-                        sql.close();
+                        try {
+                            sql.close();
+                        } catch (e) {
+                        }
                         mc.info('RID:[' + input.requestID + ']-[FREE-DML]-[END]:[OK]');
                     });
                 });
@@ -958,10 +973,6 @@ app.post('/defaultSelect', function (req, res) {
 
 
 
-
-
-
-
 //<editor-fold defaultstate="collapsed" desc="login">
 app.get('/login', function (req, res) {
     var requestID = new Date().getTime();
@@ -1002,8 +1013,8 @@ app.get('/login', function (req, res) {
                         "  LEFT JOIN  [dbo].[SLOAA_TS_ROL] [ROL] ON [CRED].[ID_ROL]=[ROL].[ID_ROL]\n" +
                         "  \n" +
                         "  WHERE \n" +
-                        "	            [CRED].[USUARIO_NOMBRE]='"+dp.user+"'\n" +
-                        "		AND [CRED].[USUARIO_PASSWORD]='"+dp.password+"'";
+                        "	            [CRED].[USUARIO_NOMBRE]='" + dp.user + "'\n" +
+                        "		AND [CRED].[USUARIO_PASSWORD]='" + dp.password + "'";
                 return dp;
             })
             .then(msql.selectPromise)
@@ -1011,7 +1022,7 @@ app.get('/login', function (req, res) {
                 //response = dp.queryResult;
                 if (dp.queryResult.rows !== null) {
                     if (dp.queryResult.rows.length > 0) {
-                        response.credential=dp.queryResult.rows[0];
+                        response.credential = dp.queryResult.rows[0];
                         response.success = true;
                     } else {
                         response.success = false;
@@ -1033,8 +1044,242 @@ app.get('/login', function (req, res) {
                 res.jsonp(response);
             });
 });
-//</editor-fold
+//</editor-fold>
 
+
+//<editor-fold defaultstate="collapsed" desc="getAllOrdenServicio">
+app.get('/getAllOrdenServicio', function (req, res) {
+    var requestID = new Date().getTime();
+    var response = {};
+    var dataPacket = {
+        requestID: requestID,
+        connectionParameters: SQLServerConnectionParameters,
+        looked: 0
+    };
+    mn.init(dataPacket)
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/getAllOrdenServicio]');
+                return dp;
+            })
+            .then(function (dp) {
+
+                inputValidation(response, req.query, [
+                    new FieldValidation('idCredencial', ENC.STRING())
+                ]);
+
+                dp.idCredencial = req.query.idCredencial;
+
+                return dp;
+            })
+            .then(function (dp) {
+                dp.query = "SELECT  [ORD].[ID_ORDEN_SERVICIO]\n" +
+                        "      ,[ORD].[NUM_ORDEN]\n" +
+                        "      ,[ORD].[FECHA_SOLICITUD]\n" +
+                        "      ,[ORD].[ID_CREDENCIAL]\n" +
+                        "      ,[ORD].[DOMICILIO]\n" +
+                        "      ,[ORD].[FIRMA1_USER1]\n" +
+                        "      ,[ORD].[FIRMA1_USER2]\n" +
+                        "      ,[ORD].[FIRMA2_USER1]\n" +
+                        "      ,[ORD].[FIRMA2_USER2]\n" +
+                        "      ,[ORD].[ID_STATUS]\n" +
+                        "      ,[ORD].[METAINFO_FECHA_CREACION]\n" +
+                        "      ,[ORD].[METAINFO_IP]\n" +
+                        "      ,[ORD].[METAINFO_MAC_ADRR]\n" +
+                        "      ,[ORD].[LLAVE_SISTEMA]\n" +
+                        "  FROM [dbo].[SLOAA_TR_ORDEN_SERVICIO] [ORD]\n" +
+                        "  WHERE\n" +
+                        "  1=1\n ";
+
+                if (dp.idCredencial !== "") {
+                    dp.query = dp.query + "   AND  [ORD].[ID_CREDENCIAL]=" + dp.idCredencial + "\n ";
+                }
+                return dp;
+            })
+            .then(msql.selectPromise)
+            .then(function (dp) {
+                //response = dp.queryResult;
+                if (dp.queryResult.rows !== null) {
+                    response.ordenesServicio = dp.queryResult.rows;
+                    response.success = true;
+                } else {
+                    response.success = false;
+                }
+                return dp;
+            })
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[END]:[/getAllOrdenServicio]');
+
+                res.jsonp(response);
+            })
+            .catch(function (err) {
+                mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/getAllOrdenServicio]');
+                response.error = err.message;
+                res.jsonp(response);
+            });
+});
+//</editor-fold>
+
+
+
+//<editor-fold defaultstate="collapsed" desc="getAllOrdenServicio">
+app.get('/createOrdenServicio', function (req, res) {
+    var requestID = new Date().getTime();
+    var response = {};
+    var dataPacket = {
+        requestID: requestID,
+        connectionParameters: SQLServerConnectionParameters,
+        looked: 0
+    };
+    mn.init(dataPacket)
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/createOrdenServicio]');
+                return dp;
+            })
+            .then(function (dp) {
+
+                inputValidation(response, req.query, [
+                    new FieldValidation('idAutoridad', ENC.STRING()),
+                    new FieldValidation('fechaSolicitud', ENC.STRING()),
+                    new FieldValidation('idCredencial', ENC.STRING()),
+                    new FieldValidation('domicilio', ENC.STRING())
+                ]);
+
+                dp.idAutoridad = req.query.idAutoridad;
+                dp.fechaSolicitud = req.query.fechaSolicitud;
+                dp.idCredencial = req.query.idCredencial;
+                dp.domicilio = req.query.domicilio;
+                dp.headers = req.headers;
+                dp.ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+                dp.metaFechaGeneracion = new Date().toISOString();
+                return dp;
+            })
+            .then(function (dp) {
+                dp.query = "SELECT\n" +
+                        "	CASE\n" +
+                        "	WHEN  MAX([ORD].[NUM_ORDEN]) IS NULL THEN 1\n" +
+                        "	ELSE MAX([ORD].[NUM_ORDEN])+1\n" +
+                        "	END  NEW_ORDEN\n" +
+                        "      \n" +
+                        "  FROM [dbo].[SLOAA_TR_ORDEN_SERVICIO] [ORD]\n" +
+                        "  LEFT JOIN [dbo].[SLOAA_TR_CREDENCIAL] [CRED] ON [ORD].[ID_CREDENCIAL]=[CRED].[ID_CREDENCIAL]\n" +
+                        "  WHERE\n" +
+                        "  1=1\n" +
+                        "	AND MONTH([ORD].[METAINFO_FECHA_CREACION])= MONTH(GetDate()) \n" +
+                        "	AND YEAR([ORD].[METAINFO_FECHA_CREACION])= YEAR(GetDate()) \n" +
+                        "	AND [CRED].[ID_AUTORIDAD]=" + dp.idAutoridad + "";
+
+
+                return dp;
+            })
+            .then(msql.selectPromise)
+            .then(function (dp) {
+                //response = dp.queryResult;
+                if (dp.queryResult.rows !== null) {
+                    currentRow = dp.queryResult.rows[0];
+                    if (currentRow !== null) {
+                        dp.newOrden = currentRow.NEW_ORDEN;
+                        dp.looked = 1;
+                    } else {
+                        response.success = false;
+                        throw "Problemas con la consulta para Obtener Orden";
+                    }
+                } else {
+                    response.success = false;
+                    throw "No se pudo obtener nueva numero de Orden";
+                }
+                return dp;
+            })
+
+            .then(function (dp) {
+
+
+                dp.dml = "INSERT INTO [dbo].[SLOAA_TR_ORDEN_SERVICIO]\n" +
+                        "  (\n" +
+                        "		\n" +
+                        "       [ORD].[NUM_ORDEN]\n" +
+                        "      ,[ORD].[FECHA_SOLICITUD]\n" +
+                        "      ,[ORD].[ID_CREDENCIAL]\n" +
+                        "      ,[ORD].[DOMICILIO]\n" +
+                        "      ,[ORD].[ID_STATUS]\n" +
+                        "      ,[ORD].[METAINFO_FECHA_CREACION]\n" +
+                        "      ,[ORD].[METAINFO_IP]\n" +
+                        "      ,[ORD].[METAINFO_MAC_ADRR]\n" +
+                        "      ,[ORD].[LLAVE_SISTEMA]\n" +
+                        "	  )\n" +
+                        "	  VALUES\n" +
+                        "	  (\n" +
+                        "	    " + dp.newOrden + ",\n" +
+                        "		'" + dp.fechaSolicitud + "',\n" +
+                        "		" + dp.idCredencial + ",\n" +
+                        "		'" + dp.domicilio + "',\n" +
+                        "		1,\n" +
+                        "		'" + dp.metaFechaGeneracion + "',\n" +
+                        "		'" + dp.ip + "',\n" +
+                        "		' ????????',\n" +
+                        "		'332132132131ds'\n" +
+                        "	  )";
+                return dp;
+            })
+            .then(msql.freeDMLPromise)
+
+            .then(function (dp) {
+                if (dp.resultDML !== null) {
+                    if (dp.resultDML.rowsAffected.length > 0) {
+
+                        response.metaFechaGeneracion = dp.metaFechaGeneracion;
+                        response.success = true;
+                    } else {
+                        response.success = false;
+                        throw "No se pudo crear laOrden de Servicio";
+                    }
+                } else {
+                    response.success = false;
+                    throw "No se pudo crear laOrden de Servicio";
+                }
+                return dp;
+            })
+            .then(function (dp) {
+                dp.query = "SELECT \n" +
+                        "       [NUM_ORDEN]\n" +
+                        "      ,[FECHA_SOLICITUD]\n" +
+                        "      ,[ID_CREDENCIAL]\n" +
+                        "      ,[DOMICILIO]\n" +
+                        "      ,[FIRMA1_USER1]\n" +
+                        "      ,[FIRMA1_USER2]\n" +
+                        "      ,[FIRMA2_USER1]\n" +
+                        "      ,[FIRMA2_USER2]\n" +
+                        "      ,[ID_STATUS]\n" +
+                        "      ,[METAINFO_FECHA_CREACION]\n" +
+                        "      ,[METAINFO_IP]\n" +
+                        "      ,[METAINFO_MAC_ADRR]\n" +
+                        "      ,[LLAVE_SISTEMA]\n" +
+                        "  FROM [SOA_db].[dbo].[SLOAA_TR_ORDEN_SERVICIO]\n" +
+                        "  WHERE [METAINFO_FECHA_CREACION]='" + response.metaFechaGeneracion + "'";
+
+
+                return dp;
+            })
+            .then(msql.selectPromise)
+            .then(function (dp) {
+                //response = dp.queryResult;
+                if (dp.queryResult!==null&&dp.queryResult.rows !== null) {
+                    response.ordenServicio = dp.queryResult.rows[0];
+                }else{
+                     throw "Problema para recuperar la orden de Servicio";
+                }
+                return dp;
+            })
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[END]:[/createOrdenServicio]');
+                res.jsonp(response);
+            })
+            .catch(function (err) {
+                mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/createOrdenServicio]');
+                response.error = err.message;
+                res.jsonp(response);
+            });
+});
+//</editor-fold>
 
 
 
