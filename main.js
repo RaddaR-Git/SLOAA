@@ -956,7 +956,13 @@ app.post('/defaultSelect', function (req, res) {
 
 
 
-//<editor-fold defaultstate="collapsed" desc="defaultSelect">
+
+
+
+
+
+
+//<editor-fold defaultstate="collapsed" desc="login">
 app.get('/login', function (req, res) {
     var requestID = new Date().getTime();
     var response = {};
@@ -982,7 +988,22 @@ app.get('/login', function (req, res) {
                 return dp;
             })
             .then(function (dp) {
-                dp.query = "SELECT * FROM [dbo].[SLOAA_TR_CREDENCIAL] WHERE  [USUARIO_NOMBRE]='" + dp.user + "' AND [USUARIO_PASSWORD]='" + dp.password + "'"
+                dp.query = "SELECT [CRED].[ID_CREDENCIAL]\n" +
+                        "      ,[CRED].[NOMBRE]\n" +
+                        "      ,[CRED].[USUARIO_NOMBRE]\n" +
+                        "      ,[CRED].[ID_AUTORIDAD]\n" +
+                        "	  ,[AUTH].[NOMBRE_AUTORIDAD]\n" +
+                        "      ,[CRED].[ID_ROL]\n" +
+                        "	  ,[ROL].[NOMBRE_ROL]\n" +
+                        "	  ,[ROL].[PRIVILEGIOS]\n" +
+                        "      ,[CRED].[ID_CREDENCIAL_SUPERIOR]\n" +
+                        "  FROM [dbo].[SLOAA_TR_CREDENCIAL] [CRED]\n" +
+                        "  LEFT JOIN  [dbo].[SLOAA_TC_AUTORIDAD] [AUTH] ON [CRED].[ID_AUTORIDAD]=[AUTH].[ID_AUTORIDAD]\n" +
+                        "  LEFT JOIN  [dbo].[SLOAA_TS_ROL] [ROL] ON [CRED].[ID_ROL]=[ROL].[ID_ROL]\n" +
+                        "  \n" +
+                        "  WHERE \n" +
+                        "	            [CRED].[USUARIO_NOMBRE]='"+dp.user+"'\n" +
+                        "		AND [CRED].[USUARIO_PASSWORD]='"+dp.password+"'";
                 return dp;
             })
             .then(msql.selectPromise)
@@ -990,6 +1011,7 @@ app.get('/login', function (req, res) {
                 //response = dp.queryResult;
                 if (dp.queryResult.rows !== null) {
                     if (dp.queryResult.rows.length > 0) {
+                        response.credential=dp.queryResult.rows[0];
                         response.success = true;
                     } else {
                         response.success = false;
@@ -1011,7 +1033,10 @@ app.get('/login', function (req, res) {
                 res.jsonp(response);
             });
 });
-//</editor-fold>
+//</editor-fold
+
+
+
 
 app.set('port', (process.env.PORT || 3000));
 var server = app.listen(app.get('port'), function () {
