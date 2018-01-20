@@ -1,0 +1,124 @@
+
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓login
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+http://localhost:3000/login
+<-------------------------------------------
+{
+"user":"",
+"password":""
+}
+------------------------------------------->
+{
+    "credential": {
+        "ID_CREDENCIAL": 2,
+        "NOMBRE": "Oscar Avila",
+        "USUARIO_NOMBRE": "oscar.avilaper",
+        "ID_AUTORIDAD": 1,
+        "NOMBRE_AUTORIDAD": "Aduana Acapulco\r\n                                 ",
+        "ID_ROL": 3,
+        "NOMBRE_ROL": "AUTORIDAD SUPERVISOR",
+        "PRIVILEGIOS": "{}",
+        "ID_CREDENCIAL_SUPERIOR": null
+    },
+    "success": true
+}
+
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓getAllOrdenServicio
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+http://localhost:3000/getAllOrdenServicio
+<-------------------------------------------
+{
+"idCredencial":""
+}
+------------------------------------------->
+{
+    "ordenesServicio": [
+        {
+            "ID_ORDEN_SERVICIO": 1,
+            "NUM_ORDEN": 1,
+            "FECHA_SOLICITUD": "2018-01-19T00:00:00.000Z",
+            "ID_CREDENCIAL": 1,
+            "DOMICILIO": "Ecatepec donde ocurren cosas extrañas",
+            "FIRMA1_USER1": null,
+            "FIRMA1_USER2": null,
+            "FIRMA2_USER1": null,
+            "FIRMA2_USER2": null,
+            "ID_STATUS": 1,
+            "METAINFO_FECHA_CREACION": "2018-01-19T00:00:00.000Z",
+            "METAINFO_IP": "10.15.17.158",
+            "METAINFO_MAC_ADRR": " 00:00:00:a1:2b:cc",
+            "LLAVE_SISTEMA": "wdasdasdasdasd"
+        },
+        {
+            "ID_ORDEN_SERVICIO": 2,
+            "NUM_ORDEN": 2,
+            "FECHA_SOLICITUD": "2018-01-19T00:00:00.000Z",
+            "ID_CREDENCIAL": 2,
+            "DOMICILIO": "Neza donde matan",
+            "FIRMA1_USER1": null,
+            "FIRMA1_USER2": null,
+            "FIRMA2_USER1": null,
+            "FIRMA2_USER2": null,
+            "ID_STATUS": 1,
+            "METAINFO_FECHA_CREACION": "2018-01-19T00:00:00.000Z",
+            "METAINFO_IP": "10.15.17.158",
+            "METAINFO_MAC_ADRR": " 00:00:00:a1:2b:cc",
+            "LLAVE_SISTEMA": "dasdsadasdsadsa"
+        }
+    ],
+    "success": true
+}
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓createOrdenServicio
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+
+http://localhost:3000/createOrdenServicio
+<-------------------------------------------
+{
+"idAutoridad":"1",
+"fechaSolicitud":"2012-06-18T10:34:09"
+"idCredencial"¨:"1"
+"domicilio":"otro lugar"
+}
+------------------------------------------->
+{
+    "metaFechaGeneracion": "2018-01-20T07:32:36.024Z",
+    "success": true,
+    "ordenServicio": {
+        "NUM_ORDEN": 37,
+        "FECHA_SOLICITUD": "2012-06-18T10:34:09.000Z",
+        "ID_CREDENCIAL": 1,
+        "DOMICILIO": "otro lugar",
+        "FIRMA1_USER1": null,
+        "FIRMA1_USER2": null,
+        "FIRMA2_USER1": null,
+        "FIRMA2_USER2": null,
+        "ID_STATUS": 1,
+        "METAINFO_FECHA_CREACION": "2018-01-20T07:32:36.023Z",
+        "METAINFO_IP": "::1",
+        "METAINFO_MAC_ADRR": " ????????",
+        "LLAVE_SISTEMA": "332132132131ds"
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
