@@ -135,6 +135,49 @@ http://localhost:3000/addCotizacion
 }
 
 
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓addServicio
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+http://localhost:3000/getAllCotizacionXOrden
+<-------------------------------------------
+{
+"idOrdenServicio":"14",
+}
+------------------------------------------->
+{
+    "cotizaciones": [
+        {
+            "ID_SERVICIO_COTIZACION": 2,
+            "ID_ORDEN_SERVICIO": 14,
+            "ID_TIPO_SERVICIO": 1,
+            "ID_SERVICIO": 1001,
+            "ID_UNIDAD": 1,
+            "PRECIO_UNITARIO": 780,
+            "CANTIDAD": 2,
+            "COTIZACION": 1560,
+            "DEDUCCION": 0,
+            "DEDUCCION_JUSTIFICACION": "",
+            "PRECIO_SERVICIO_FINAL": 0,
+            "VALIDA_DISPONIBILIDAD": 0
+        },
+        {
+            "ID_SERVICIO_COTIZACION": 3,
+            "ID_ORDEN_SERVICIO": 14,
+            "ID_TIPO_SERVICIO": 1,
+            "ID_SERVICIO": 1001,
+            "ID_UNIDAD": 11,
+            "PRECIO_UNITARIO": 780,
+            "CANTIDAD": 2,
+            "COTIZACION": 1560,
+            "DEDUCCION": 0,
+            "DEDUCCION_JUSTIFICACION": " ",
+            "PRECIO_SERVICIO_FINAL": 0,
+            "VALIDA_DISPONIBILIDAD": 0
+        }
+    ],
+    "success": true
+}
+
 
 
 
