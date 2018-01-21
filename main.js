@@ -1637,7 +1637,6 @@ app.get('/removeCotizacion', function (req, res) {
 //</editor-fold>
 
 
-
 //<editor-fold defaultstate="collapsed" desc="getAllTipoServicio">
 app.get('/getAllTipoServicio', function (req, res) {
     var requestID = new Date().getTime();
@@ -1689,7 +1688,6 @@ app.get('/getAllTipoServicio', function (req, res) {
 
 
 
-
 //<editor-fold defaultstate="collapsed" desc="getAllServicios">
 app.get('/getAllServicios', function (req, res) {
     var requestID = new Date().getTime();
@@ -1709,7 +1707,7 @@ app.get('/getAllServicios', function (req, res) {
                 inputValidation(response, req.query, [
                     new FieldValidation('idTipoServicio', ENC.STRING())
                 ]);
-                dp.idTipoServicio = req.query.idOrdenServicio;
+                dp.idTipoServicio = req.query.idTipoServicio;
 
                 return dp;
             })
