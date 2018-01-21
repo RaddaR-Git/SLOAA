@@ -367,7 +367,7 @@ idTipoServicio:1
 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓getUnidadXServicio
 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-http://localhost:3000/getUnidadXServicio
+http://localhost:3000/getUnidadYPrecioUnitarioXServicio
 <-------------------------------------------
 {
 idServicio:1001
@@ -377,10 +377,12 @@ idServicio:1001
     "unidades": [
         {
             "ID_UNIDAD": 1,
+            "PRECIO_UNITARIO": 780,
             "UNIDAD": "HORA"
         },
         {
             "ID_UNIDAD": 2,
+            "PRECIO_UNITARIO": 90,
             "UNIDAD": "KILOMETRO"
         }
     ],
