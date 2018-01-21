@@ -1,2 +1,0 @@
-[2018-01-20T21:42:13.977] [ERROR] ECC - RID:[1516506127113]-[SELECT]-[END]:[FAIL]:[Invalid column name 'undefined'.]
-[2018-01-20T21:42:13.981] [ERROR] ECC - RID:[1516506127113]-[REQUEST]-[ERROR]:[Invalid column name 'undefined'.]:[/getAllServicios]
