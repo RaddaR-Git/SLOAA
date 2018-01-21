@@ -1638,8 +1638,6 @@ app.get('/removeCotizacion', function (req, res) {
 
 
 
-
-
 //<editor-fold defaultstate="collapsed" desc="getAllTipoServicio">
 app.get('/getAllTipoServicio', function (req, res) {
     var requestID = new Date().getTime();
@@ -1688,6 +1686,61 @@ app.get('/getAllTipoServicio', function (req, res) {
             });
 });
 //</editor-fold>
+
+
+
+
+//<editor-fold defaultstate="collapsed" desc="getAllServicios">
+app.get('/getAllServicios', function (req, res) {
+    var requestID = new Date().getTime();
+    var response = {};
+    var dataPacket = {
+        requestID: requestID,
+        connectionParameters: SQLServerConnectionParameters,
+        looked: 0
+    };
+    mn.init(dataPacket)
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/getAllServicios]');
+                return dp;
+            })
+            .then(function (dp) {
+
+                inputValidation(response, req.query, [
+                    new FieldValidation('idTipoServicio', ENC.STRING())
+                ]);
+                dp.idTipoServicio = req.query.idOrdenServicio;
+
+                return dp;
+            })
+            .then(function (dp) {
+                dp.query = " SELECT [COT].* FROM [dbo].[SLOAA_TC_SERVICIO] [COT] WHERE [ID_TIPO_SERVICIO]="+dp.idTipoServicio+" " ;
+                return dp;
+            })
+            .then(msql.selectPromise)
+            .then(function (dp) {
+                //response = dp.queryResult;
+                if (dp.queryResult.rows !== null) {
+                    response.servicios = dp.queryResult.rows;
+                    response.success = true;
+                } else {
+                    response.success = false;
+                }
+                return dp;
+            })
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[END]:[/getAllServicios]');
+
+                res.jsonp(response);
+            })
+            .catch(function (err) {
+                mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/getAllServicios]');
+                response.error = err.message;
+                res.jsonp(response);
+            });
+});
+//</editor-fold>
+
 
 
 app.set('port', (process.env.PORT || 3000));
