@@ -1507,9 +1507,6 @@ app.get('/getAllCotizacionXOrden', function (req, res) {
 //</editor-fold>
 
 
-
-
-
 //<editor-fold defaultstate="collapsed" desc="setDeduccionCotizacion">
 app.get('/setDeduccionCotizacion', function (req, res) {
     var requestID = new Date().getTime();
@@ -1577,10 +1574,7 @@ app.get('/setDeduccionCotizacion', function (req, res) {
 //</editor-fold>
 
 
-
-
-
-//<editor-fold defaultstate="collapsed" desc="setDeduccionCotizacion">
+//<editor-fold defaultstate="collapsed" desc="removeCotizacion">
 app.get('/removeCotizacion', function (req, res) {
     var requestID = new Date().getTime();
     var response = {};
@@ -1636,6 +1630,59 @@ app.get('/removeCotizacion', function (req, res) {
             })
             .catch(function (err) {
                 mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/removeCotizacion]');
+                response.error = err.message;
+                res.jsonp(response);
+            });
+});
+//</editor-fold>
+
+
+
+
+
+//<editor-fold defaultstate="collapsed" desc="getAllServicioFromOrden">
+app.get('/getAllTipoServicio', function (req, res) {
+    var requestID = new Date().getTime();
+    var response = {};
+    var dataPacket = {
+        requestID: requestID,
+        connectionParameters: SQLServerConnectionParameters,
+        looked: 0
+    };
+    mn.init(dataPacket)
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/getAllTipoServicio]');
+                return dp;
+            })
+            .then(function (dp) {
+
+                inputValidation(response, req.query, [
+                ]);
+
+                return dp;
+            })
+            .then(function (dp) {
+                dp.query = " SELECT [COT].* FROM [dbo].[SLOAA_TC_TIPO_SERVICIO] [COT]" ;
+                return dp;
+            })
+            .then(msql.selectPromise)
+            .then(function (dp) {
+                //response = dp.queryResult;
+                if (dp.queryResult.rows !== null) {
+                    response.tipoServicio = dp.queryResult.rows;
+                    response.success = true;
+                } else {
+                    response.success = false;
+                }
+                return dp;
+            })
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[END]:[/getAllTipoServicio]');
+
+                res.jsonp(response);
+            })
+            .catch(function (err) {
+                mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/getAllTipoServicio]');
                 response.error = err.message;
                 res.jsonp(response);
             });
