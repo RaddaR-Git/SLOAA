@@ -185,9 +185,21 @@ http://localhost:3000/getAllCotizacionXOrden
 
 
 
-
-
-
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓setDeduccionCotizacion
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+http://localhost:3000/setDeduccionCotizacion
+<-------------------------------------------
+{
+"idOrdenServicio":"14",
+"idServicioCotizacion":"3"
+"deduccion"¨:"1001",
+"deduccionJustificacion":"por que quiero"
+}
+------------------------------------------->
+{
+    "success": true
+}
 
 
 

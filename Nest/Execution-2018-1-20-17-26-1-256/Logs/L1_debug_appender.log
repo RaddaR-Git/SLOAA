@@ -1,3 +1,0 @@
-[2018-01-20T19:05:59.387] [INFO] ICC - RID:[1516496759387]-[REQUEST]-[START]:[/createOrdenServicio]
-[2018-01-20T19:05:59.392] [DEBUG] DCC - {"missing":[{"requiredFieldName":"idAutoridad","requiredFieldType":"string"},{"requiredFieldName":"fechaSolicitud","requiredFieldType":"string"},{"requiredFieldName":"idCredencial","requiredFieldType":"string"},{"requiredFieldName":"domicilio","requiredFieldType":"string"}]}
-[2018-01-20T19:05:59.393] [ERROR] ECC - RID:[1516496759387]-[REQUEST]-[ERROR]:[Input parameter problem.]:[/createOrdenServicio]

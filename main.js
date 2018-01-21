@@ -1334,9 +1334,6 @@ app.get('/createOrdenServicio', function (req, res) {
 //</editor-fold>
 
 
-
-
-
 //<editor-fold defaultstate="collapsed" desc="addServicio">
 app.get('/addCotizacion', function (req, res) {
     var requestID = new Date().getTime();
@@ -1375,7 +1372,7 @@ app.get('/addCotizacion', function (req, res) {
                 dp.deduccionJustificacion = "";
                 dp.precioServicioFinal = 0;
                 dp.validaDisponibilidad = 0;
-                dp.looked=1;
+                dp.looked = 1;
                 return dp;
             })
 
@@ -1441,7 +1438,7 @@ app.get('/addCotizacion', function (req, res) {
             })
             //</editor-fold>
 
-            
+
 
             .then(function (dp) {
                 mc.info('RID:[' + requestID + ']-[REQUEST]-[END]:[/addCotizacion]');
@@ -1449,6 +1446,130 @@ app.get('/addCotizacion', function (req, res) {
             })
             .catch(function (err) {
                 mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/addCotizacion]');
+                response.error = err.message;
+                res.jsonp(response);
+            });
+});
+//</editor-fold>
+
+
+//<editor-fold defaultstate="collapsed" desc="getAllServicioFromOrden">
+app.get('/getAllCotizacionXOrden', function (req, res) {
+    var requestID = new Date().getTime();
+    var response = {};
+    var dataPacket = {
+        requestID: requestID,
+        connectionParameters: SQLServerConnectionParameters,
+        looked: 0
+    };
+    mn.init(dataPacket)
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/getAllCotizacionXOrden]');
+                return dp;
+            })
+            .then(function (dp) {
+
+                inputValidation(response, req.query, [
+                    new FieldValidation('idOrdenServicio', ENC.STRING())
+                ]);
+
+                dp.idOrdenServicio = req.query.idOrdenServicio;
+
+                return dp;
+            })
+            .then(function (dp) {
+                dp.query = " SELECT [COT].* FROM [dbo].[SLOAA_TR_SERVICIO_COTIZACION] [COT]\n" +
+                        " WHERE [COT].[ID_ORDEN_SERVICIO]=" + dp.idOrdenServicio + "";
+                return dp;
+            })
+            .then(msql.selectPromise)
+            .then(function (dp) {
+                //response = dp.queryResult;
+                if (dp.queryResult.rows !== null) {
+                    response.cotizaciones = dp.queryResult.rows;
+                    response.success = true;
+                } else {
+                    response.success = false;
+                }
+                return dp;
+            })
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[END]:[/getAllCotizacionXOrden]');
+
+                res.jsonp(response);
+            })
+            .catch(function (err) {
+                mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/getAllCotizacionXOrden]');
+                response.error = err.message;
+                res.jsonp(response);
+            });
+});
+//</editor-fold>
+
+
+
+
+
+//<editor-fold defaultstate="collapsed" desc="setDeduccionCotizacion">
+app.get('/setDeduccionCotizacion', function (req, res) {
+    var requestID = new Date().getTime();
+    var response = {};
+    var dataPacket = {
+        requestID: requestID,
+        connectionParameters: SQLServerConnectionParameters,
+        looked: 0
+    };
+    mn.init(dataPacket)
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/setDeduccionCotizacion]');
+                return dp;
+            })
+            .then(function (dp) {
+
+                inputValidation(response, req.query, [
+                    new FieldValidation('idOrdenServicio', ENC.STRING()),
+                    new FieldValidation('idServicioCotizacion', ENC.STRING()),
+                    new FieldValidation('deduccion', ENC.STRING()),
+                    new FieldValidation('deduccionJustificacion', ENC.STRING())
+                ]);
+
+                dp.idOrdenServicio = req.query.idOrdenServicio;
+                dp.idServicioCotizacion = req.query.idServicioCotizacion;
+                dp.deduccion = req.query.deduccion;
+                dp.deduccionJustificacion = req.query.deduccionJustificacion;
+                dp.looked = 1;
+                return dp;
+            })
+            .then(function (dp) {
+                dp.dml = " UPDATE [dbo].[SLOAA_TR_SERVICIO_COTIZACION] SET [DEDUCCION]="+dp.deduccion+",[DEDUCCION_JUSTIFICACION]='"+dp.deduccionJustificacion +"',[PRECIO_SERVICIO_FINAL]= [COTIZACION]-"+ dp.deduccion+"   \n" +
+                        " WHERE \n" +
+                        " 1=1\n" +
+                        " AND [ID_ORDEN_SERVICIO]="+ dp.idOrdenServicio+"\n" +
+                        " AND [ID_SERVICIO_COTIZACION]="+ dp.idServicioCotizacion+"";
+                return dp;
+            })
+            .then(msql.freeDMLPromise)
+
+            .then(function (dp) {
+                if (dp.resultDML !== null) {
+                    if (dp.resultDML.rowsAffected.length > 0) {
+                        response.success = true;
+                    } else {
+                        response.success = false;
+                        throw "No se pudo aplicar la deduccion";
+                    }
+                } else {
+                    response.success = false;
+                    throw " No se pudo aplicar la deduccion";
+                }
+                return dp;
+            })
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[END]:[/setDeduccionCotizacion]');
+                res.jsonp(response);
+            })
+            .catch(function (err) {
+                mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/setDeduccionCotizacion]');
                 response.error = err.message;
                 res.jsonp(response);
             });
