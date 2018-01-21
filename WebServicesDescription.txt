@@ -219,5 +219,170 @@ http://localhost:3000/removeCotizacion
 }
 
 
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓getAllTipoServicio
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+http://localhost:3000/removeCotizacion
+<-------------------------------------------
+{
+}
+------------------------------------------->
+{
+    "tipoServicio": [
+        {
+            "ID_TIPO_SERVICIO": 1,
+            "TIPO": "SERVICIO DE TRANSPORTES DE BIENES"
+        },
+        {
+            "ID_TIPO_SERVICIO": 2,
+            "TIPO": "SERVICIO DE MANIOBRAS"
+        },
+        {
+            "ID_TIPO_SERVICIO": 3,
+            "TIPO": "SERVICIO DE MONTACARGAS, PATINES, DIABLOS Y BASCULAS (ALMACENES) "
+        },
+        {
+            "ID_TIPO_SERVICIO": 4,
+            "TIPO": "SERVICIO DE EMPAQUETADO PALETIZADO Y EMPLAYE"
+        },
+        {
+            "ID_TIPO_SERVICIO": 5,
+            "TIPO": "SERVICIO DE TRANSPORTE DE PERSONAL"
+        },
+        {
+            "ID_TIPO_SERVICIO": 6,
+            "TIPO": "SERVICIO OFICINA MOVIL"
+        },
+        {
+            "ID_TIPO_SERVICIO": 7,
+            "TIPO": "SERVICIO DE EQUIPO DE PROTECCION PARA OPERATIVOS"
+        }
+    ],
+    "success": true
+}
 
 
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓getAllServicios
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+http://localhost:3000/getAllServicios
+<-------------------------------------------
+{
+idTipoServicio:1
+}
+------------------------------------------->
+{
+    "servicios": [
+        {
+            "ID_SERVICIO": 1001,
+            "ID_TIPO_SERVICIO": 1,
+            "NOMBRE_SERVICIO": "CAMION CON OPERADOR (MODELO 2010-2014)"
+        },
+        {
+            "ID_SERVICIO": 1002,
+            "ID_TIPO_SERVICIO": 1,
+            "NOMBRE_SERVICIO": "CAMION RABON CON OPERADOR (MODELO 2010- 2014)"
+        },
+        {
+            "ID_SERVICIO": 1003,
+            "ID_TIPO_SERVICIO": 1,
+            "NOMBRE_SERVICIO": "CAMION MUDANCERO CON OPERADOR (MODELO 2010-2014)"
+        },
+        {
+            "ID_SERVICIO": 1004,
+            "ID_TIPO_SERVICIO": 1,
+            "NOMBRE_SERVICIO": "CAMION TORTON CON OPERADOR (MODELO 2010-2014)"
+        },
+        {
+            "ID_SERVICIO": 1005,
+            "ID_TIPO_SERVICIO": 1,
+            "NOMBRE_SERVICIO": "TRACTOCAMION 5TA RUEDA PARA REMOLQUE CON OPERADOR (MODELO 2010-2014)"
+        },
+        {
+            "ID_SERVICIO": 1006,
+            "ID_TIPO_SERVICIO": 1,
+            "NOMBRE_SERVICIO": "TRACTOCAMION C/CAJA CON OPERADOR (MODELO 2010-2014)"
+        },
+        {
+            "ID_SERVICIO": 1007,
+            "ID_TIPO_SERVICIO": 1,
+            "NOMBRE_SERVICIO": "TRACTOCAMION DOBLE CAJA FULL CON OPERADOR (MODELO 2010-2014)"
+        },
+        {
+            "ID_SERVICIO": 1008,
+            "ID_TIPO_SERVICIO": 1,
+            "NOMBRE_SERVICIO": "TRACTOCAMION C/PLATAFORMA DE TRAILER CON OPERADOR"
+        },
+        {
+            "ID_SERVICIO": 1009,
+            "ID_TIPO_SERVICIO": 1,
+            "NOMBRE_SERVICIO": "TRACTOCAMION C/PLATAFORMA DE CAMA BAJA CON OPERADOR"
+        },
+        {
+            "ID_SERVICIO": 1010,
+            "ID_TIPO_SERVICIO": 1,
+            "NOMBRE_SERVICIO": "GRÚA TELESCOPICA CON OPERADOR"
+        },
+        {
+            "ID_SERVICIO": 1011,
+            "ID_TIPO_SERVICIO": 1,
+            "NOMBRE_SERVICIO": "MADRINA CON OPERADOR"
+        },
+        {
+            "ID_SERVICIO": 1012,
+            "ID_TIPO_SERVICIO": 1,
+            "NOMBRE_SERVICIO": "CAMIONETA DE 3 1/2 TONELADAS CON OPERADOR (MODELO 2010-2014)"
+        },
+        {
+            "ID_SERVICIO": 1013,
+            "ID_TIPO_SERVICIO": 1,
+            "NOMBRE_SERVICIO": "GRÚA PARA CARROS CON OPERADOR"
+        },
+        {
+            "ID_SERVICIO": 1014,
+            "ID_TIPO_SERVICIO": 1,
+            "NOMBRE_SERVICIO": "GRÚA TELESCOPICA CON OPERADOR"
+        },
+        {
+            "ID_SERVICIO": 1015,
+            "ID_TIPO_SERVICIO": 1,
+            "NOMBRE_SERVICIO": "GRÚA PARA TRACTOCAMION CON OPERADOR"
+        },
+        {
+            "ID_SERVICIO": 1016,
+            "ID_TIPO_SERVICIO": 1,
+            "NOMBRE_SERVICIO": "PLATAFORMA DESLIZANTE HIDRAULICA CON OPERADOR"
+        },
+        {
+            "ID_SERVICIO": 1017,
+            "ID_TIPO_SERVICIO": 1,
+            "NOMBRE_SERVICIO": "CAMION DE VOLTEO  14 MTS3 "
+        }
+    ],
+    "success": true
+}
+
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓getUnidadXServicio
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+http://localhost:3000/getUnidadXServicio
+<-------------------------------------------
+{
+idServicio:1001
+}
+------------------------------------------->
+{
+    "unidades": [
+        {
+            "ID_UNIDAD": 1,
+            "UNIDAD": "HORA"
+        },
+        {
+            "ID_UNIDAD": 2,
+            "UNIDAD": "KILOMETRO"
+        }
+    ],
+    "success": true
+}
