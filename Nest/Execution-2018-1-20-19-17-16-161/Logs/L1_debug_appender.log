@@ -1,0 +1,40 @@
+[2018-01-20T19:17:16.218] [INFO] ICC - [BACKEND]-[WEBSERVICES] init on port:[3000]
+[2018-01-20T19:17:37.818] [INFO] ICC - RID:[1516497457816]-[REQUEST]-[START]:[/addCotizacion]
+[2018-01-20T19:17:37.820] [INFO] ICC - RID:[1516497457816]-[FREE-DML]-[START]
+[2018-01-20T19:17:37.820] [DEBUG] DCC - RID:[1516497457816]-[FREE-DML]-[DML]:[ INSERT INTO [dbo].[SLOAA_TR_SERVICIO_COTIZACION]
+           (
+            [ID_ORDEN_SERVICIO]
+           ,[ID_TIPO_SERVICIO]
+           ,[ID_SERVICIO]
+           ,[ID_UNIDAD]
+		   
+		   
+           ,[PRECIO_UNITARIO]
+           ,[CANTIDAD]
+           ,[COTIZACION]
+		   
+           ,[DEDUCCION]
+           ,[DEDUCCION_JUSTIFICACION]
+           ,[PRECIO_SERVICIO_FINAL]
+           ,[VALIDA_DISPONIBILIDAD]
+		   )
+     VALUES
+           (
+		   14,
+		    1,
+		    1001,
+		    11,
+		   
+		    780,
+		    2,
+		    1560,
+		   
+		   
+		   
+		    0,
+		   ' ',
+		    0,
+		    0
+		   )]
+[2018-01-20T19:17:44.697] [INFO] ICC - RID:[1516497457816]-[FREE-DML]-[END]:[OK]
+[2018-01-20T19:17:44.699] [INFO] ICC - RID:[1516497457816]-[REQUEST]-[END]:[/addCotizacion]

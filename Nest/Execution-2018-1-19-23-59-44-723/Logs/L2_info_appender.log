@@ -1,0 +1,2 @@
+[2018-01-20T00:02:56.823] [INFO] ICC - RID:[1516428176821]-[REQUEST]-[START]:[/createOrdenServicio]
+[2018-01-20T00:02:56.825] [ERROR] ECC - RID:[1516428176821]-[REQUEST]-[ERROR]:[Input parameter problem.]:[/createOrdenServicio]

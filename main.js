@@ -1120,8 +1120,7 @@ app.get('/getAllOrdenServicio', function (req, res) {
 //</editor-fold>
 
 
-
-//<editor-fold defaultstate="collapsed" desc="getAllOrdenServicio">
+//<editor-fold defaultstate="collapsed" desc="createOrdenServicio">
 app.get('/createOrdenServicio', function (req, res) {
     var requestID = new Date().getTime();
     var response = {};
@@ -1151,8 +1150,48 @@ app.get('/createOrdenServicio', function (req, res) {
                 dp.headers = req.headers;
                 dp.ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
                 dp.metaFechaGeneracion = new Date().toISOString();
+                dp.anio = new Date().getFullYear()
                 return dp;
             })
+
+            //<editor-fold defaultstate="collapsed" desc="OBTIENE INFORMACION DE LA AUTORIDAD">
+            .then(function (dp) {
+                dp.query = "SELECT [ID_AUTORIDAD]\n" +
+                        "      ,[NOMBRE_AUTORIDAD]\n" +
+                        "      ,[ESTADO]\n" +
+                        "      ,[NIVEL]\n" +
+                        "      ,[SERVICIO]\n" +
+                        "      ,[ZONA]\n" +
+                        "  FROM [SOA_db].[dbo].[SLOAA_TC_AUTORIDAD]\n" +
+                        "  WHERE  [ID_AUTORIDAD]=" + dp.idAutoridad + "";
+                return dp;
+            })
+            .then(msql.selectPromise)
+            .then(function (dp) {
+                //response = dp.queryResult;
+                if (dp.queryResult.rows !== null) {
+                    currentRow = dp.queryResult.rows[0];
+                    if (currentRow !== null) {
+                        dp.newOrden = currentRow.NEW_ORDEN;
+                        dp.nombreAutoridad = currentRow.NOMBRE_AUTORIDAD;
+                        dp.estado = currentRow.ESTADO;
+                        dp.nivel = currentRow.NIVEL;
+                        dp.servicio = currentRow.SERVICIO;
+                        dp.zona = currentRow.ZONA;
+                        dp.looked = 1;
+                    } else {
+                        response.success = false;
+                        throw "Problemas con la consulta para Obtener Orden";
+                    }
+                } else {
+                    response.success = false;
+                    throw "No se pudo obtener nueva numero de Orden";
+                }
+                return dp;
+            })
+            //</editor-fold>
+
+            //<editor-fold defaultstate="collapsed" desc="OBTIENE CONSECUTIVO">
             .then(function (dp) {
                 dp.query = "SELECT\n" +
                         "	CASE\n" +
@@ -1164,7 +1203,6 @@ app.get('/createOrdenServicio', function (req, res) {
                         "  LEFT JOIN [dbo].[SLOAA_TR_CREDENCIAL] [CRED] ON [ORD].[ID_CREDENCIAL]=[CRED].[ID_CREDENCIAL]\n" +
                         "  WHERE\n" +
                         "  1=1\n" +
-                        "	AND MONTH([ORD].[METAINFO_FECHA_CREACION])= MONTH(GetDate()) \n" +
                         "	AND YEAR([ORD].[METAINFO_FECHA_CREACION])= YEAR(GetDate()) \n" +
                         "	AND [CRED].[ID_AUTORIDAD]=" + dp.idAutoridad + "";
 
@@ -1189,8 +1227,14 @@ app.get('/createOrdenServicio', function (req, res) {
                 }
                 return dp;
             })
+            //</editor-fold>
 
+            //<editor-fold defaultstate="collapsed" desc="INSERTA">
             .then(function (dp) {
+
+                dp.key = "TNRS-" + dp.estado + "-" + dp.servicio + "-" + dp.anio + "-" + dp.newOrden;
+                dp.key = dp.key.replace(/\|/g, "");
+                dp.key = dp.key.replace(/\s+/g, ' ');
 
 
                 dp.dml = "INSERT INTO [dbo].[SLOAA_TR_ORDEN_SERVICIO]\n" +
@@ -1216,8 +1260,11 @@ app.get('/createOrdenServicio', function (req, res) {
                         "		'" + dp.metaFechaGeneracion + "',\n" +
                         "		'" + dp.ip + "',\n" +
                         "		' ????????',\n" +
-                        "		'332132132131ds'\n" +
+                        "		'" + dp.key + "'\n" +
                         "	  )";
+
+
+
                 return dp;
             })
             .then(msql.freeDMLPromise)
@@ -1238,6 +1285,9 @@ app.get('/createOrdenServicio', function (req, res) {
                 }
                 return dp;
             })
+            //</editor-fold>
+
+            //<editor-fold defaultstate="collapsed" desc="RESCATA LO INSERTADO">
             .then(function (dp) {
                 dp.query = "SELECT \n" +
                         "       [NUM_ORDEN]\n" +
@@ -1262,13 +1312,15 @@ app.get('/createOrdenServicio', function (req, res) {
             .then(msql.selectPromise)
             .then(function (dp) {
                 //response = dp.queryResult;
-                if (dp.queryResult!==null&&dp.queryResult.rows !== null) {
+                if (dp.queryResult !== null && dp.queryResult.rows !== null) {
                     response.ordenServicio = dp.queryResult.rows[0];
-                }else{
-                     throw "Problema para recuperar la orden de Servicio";
+                } else {
+                    throw "Problema para recuperar la orden de Servicio";
                 }
                 return dp;
             })
+            //</editor-fold>
+
             .then(function (dp) {
                 mc.info('RID:[' + requestID + ']-[REQUEST]-[END]:[/createOrdenServicio]');
                 res.jsonp(response);
@@ -1281,6 +1333,127 @@ app.get('/createOrdenServicio', function (req, res) {
 });
 //</editor-fold>
 
+
+
+
+
+//<editor-fold defaultstate="collapsed" desc="addServicio">
+app.get('/addCotizacion', function (req, res) {
+    var requestID = new Date().getTime();
+    var response = {};
+    var dataPacket = {
+        requestID: requestID,
+        connectionParameters: SQLServerConnectionParameters,
+        looked: 0
+    };
+    mn.init(dataPacket)
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/addCotizacion]');
+                return dp;
+            })
+            .then(function (dp) {
+
+                inputValidation(response, req.query, [
+                    new FieldValidation('idOrdenServicio', ENC.STRING()),
+                    new FieldValidation('idTipoServicio', ENC.STRING()),
+                    new FieldValidation('idServicio', ENC.STRING()),
+                    new FieldValidation('idUnidad', ENC.STRING()),
+                    new FieldValidation('precioUnitario', ENC.STRING()),
+                    new FieldValidation('cantidad', ENC.STRING()),
+                    new FieldValidation('cotizacion', ENC.STRING())
+                ]);
+
+
+                dp.idOrdenServicio = req.query.idOrdenServicio;
+                dp.idTipoServicio = req.query.idTipoServicio;
+                dp.idServicio = req.query.idServicio;
+                dp.idUnidad = req.query.idUnidad;
+                dp.precioUnitario = req.query.precioUnitario;
+                dp.cantidad = req.query.cantidad;
+                dp.cotizacion = req.query.cotizacion;
+                dp.deduccion = 0;
+                dp.deduccionJustificacion = "";
+                dp.precioServicioFinal = 0;
+                dp.validaDisponibilidad = 0;
+                dp.looked=1;
+                return dp;
+            })
+
+            //<editor-fold defaultstate="collapsed" desc="INSERTA">
+            .then(function (dp) {
+
+                dp.dml = " INSERT INTO [dbo].[SLOAA_TR_SERVICIO_COTIZACION]\n" +
+                        "           (\n" +
+                        "            [ID_ORDEN_SERVICIO]\n" +
+                        "           ,[ID_TIPO_SERVICIO]\n" +
+                        "           ,[ID_SERVICIO]\n" +
+                        "           ,[ID_UNIDAD]\n" +
+                        "		   \n" +
+                        "		   \n" +
+                        "           ,[PRECIO_UNITARIO]\n" +
+                        "           ,[CANTIDAD]\n" +
+                        "           ,[COTIZACION]\n" +
+                        "		   \n" +
+                        "           ,[DEDUCCION]\n" +
+                        "           ,[DEDUCCION_JUSTIFICACION]\n" +
+                        "           ,[PRECIO_SERVICIO_FINAL]\n" +
+                        "           ,[VALIDA_DISPONIBILIDAD]\n" +
+                        "		   )\n" +
+                        "     VALUES\n" +
+                        "           (\n" +
+                        "		   " + dp.idOrdenServicio + ",\n" +
+                        "		    " + dp.idTipoServicio + ",\n" +
+                        "		    " + dp.idServicio + ",\n" +
+                        "		    " + dp.idUnidad + "1,\n" +
+                        "		   \n" +
+                        "		    " + dp.precioUnitario + ",\n" +
+                        "		    " + dp.cantidad + ",\n" +
+                        "		    " + dp.cotizacion + ",\n" +
+                        "		   \n" +
+                        "		   \n" +
+                        "		   \n" +
+                        "		    " + dp.deduccion + ",\n" +
+                        "		   ' " + dp.deduccionJustificacion + "',\n" +
+                        "		    " + dp.precioServicioFinal + ",\n" +
+                        "		    " + dp.validaDisponibilidad + "\n" +
+                        "		   )";
+
+
+
+                return dp;
+            })
+            .then(msql.freeDMLPromise)
+
+            .then(function (dp) {
+                if (dp.resultDML !== null) {
+                    if (dp.resultDML.rowsAffected.length > 0) {
+
+                        response.success = true;
+                    } else {
+                        response.success = false;
+                        throw "No se pudo añadir el servicio";
+                    }
+                } else {
+                    response.success = false;
+                    throw "No se pudo añadir el servicio";
+                }
+                return dp;
+            })
+            //</editor-fold>
+
+            
+
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[END]:[/addCotizacion]');
+                res.jsonp(response);
+            })
+            .catch(function (err) {
+                mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/addCotizacion]');
+                response.error = err.message;
+                res.jsonp(response);
+            });
+});
+//</editor-fold>
 
 
 app.set('port', (process.env.PORT || 3000));
