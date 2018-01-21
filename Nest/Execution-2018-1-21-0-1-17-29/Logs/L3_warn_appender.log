@@ -1,0 +1,2 @@
+[2018-01-21T00:02:57.774] [ERROR] ECC - RID:[1516514570979]-[SELECT]-[END]:[FAIL]:[Incorrect syntax near '14'.]
+[2018-01-21T00:02:57.777] [ERROR] ECC - RID:[1516514570979]-[REQUEST]-[ERROR]:[Incorrect syntax near '14'.]:[/closeOrdenServicio]
