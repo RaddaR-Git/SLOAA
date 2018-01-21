@@ -192,7 +192,7 @@ http://localhost:3000/setDeduccionCotizacion
 <-------------------------------------------
 {
 "idOrdenServicio":"14",
-"idServicioCotizacion":"3"
+"idServicioCotizacion":"3",
 "deduccion"¨:"1001",
 "deduccionJustificacion":"por que quiero"
 }
@@ -204,6 +204,19 @@ http://localhost:3000/setDeduccionCotizacion
 
 
 
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓removeCotizacion
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+http://localhost:3000/removeCotizacion
+<-------------------------------------------
+{
+"idOrdenServicio":"14",
+"idServicioCotizacion":"3"
+}
+------------------------------------------->
+{
+    "success": true
+}
 
 
 
