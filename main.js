@@ -1577,6 +1577,72 @@ app.get('/setDeduccionCotizacion', function (req, res) {
 //</editor-fold>
 
 
+
+
+
+//<editor-fold defaultstate="collapsed" desc="setDeduccionCotizacion">
+app.get('/removeCotizacion', function (req, res) {
+    var requestID = new Date().getTime();
+    var response = {};
+    var dataPacket = {
+        requestID: requestID,
+        connectionParameters: SQLServerConnectionParameters,
+        looked: 0
+    };
+    mn.init(dataPacket)
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/removeCotizacion]');
+                return dp;
+            })
+            .then(function (dp) {
+
+                inputValidation(response, req.query, [
+                    new FieldValidation('idOrdenServicio', ENC.STRING()),
+                    new FieldValidation('idServicioCotizacion', ENC.STRING())
+                ]);
+
+                dp.idOrdenServicio = req.query.idOrdenServicio;
+                dp.idServicioCotizacion = req.query.idServicioCotizacion;
+                dp.looked = 1;
+                return dp;
+            })
+            .then(function (dp) {
+                dp.dml = " DELETE FROM [dbo].[SLOAA_TR_SERVICIO_COTIZACION] \n" +
+                        " WHERE \n" +
+                        " 1=1\n" +
+                        " AND [ID_ORDEN_SERVICIO]="+ dp.idOrdenServicio+"\n" +
+                        " AND [ID_SERVICIO_COTIZACION]="+ dp.idServicioCotizacion+"";
+                return dp;
+            })
+            .then(msql.freeDMLPromise)
+
+            .then(function (dp) {
+                if (dp.resultDML !== null) {
+                    if (dp.resultDML.rowsAffected.length > 0) {
+                        response.success = true;
+                    } else {
+                        response.success = false;
+                        throw "No se pudo eliminar la cotizacion";
+                    }
+                } else {
+                    response.success = false;
+                    throw " No se pudo eliminar la cotizacion";
+                }
+                return dp;
+            })
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[END]:[/removeCotizacion]');
+                res.jsonp(response);
+            })
+            .catch(function (err) {
+                mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/removeCotizacion]');
+                response.error = err.message;
+                res.jsonp(response);
+            });
+});
+//</editor-fold>
+
+
 app.set('port', (process.env.PORT || 3000));
 var server = app.listen(app.get('port'), function () {
     mc.info('[BACKEND]-[WEBSERVICES] init on port:[' + app.get('port') + ']');
