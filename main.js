@@ -1640,7 +1640,7 @@ app.get('/removeCotizacion', function (req, res) {
 
 
 
-//<editor-fold defaultstate="collapsed" desc="getAllServicioFromOrden">
+//<editor-fold defaultstate="collapsed" desc="getAllTipoServicio">
 app.get('/getAllTipoServicio', function (req, res) {
     var requestID = new Date().getTime();
     var response = {};
