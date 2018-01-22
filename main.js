@@ -1005,7 +1005,7 @@ app.get('/login', function (req, res) {
                         "      ,[CRED].[ID_AUTORIDAD]\n" +
                         "	  ,[AUTH].[NOMBRE_AUTORIDAD]\n" +
                         "	  ,[AUTH].[ID_ZONA]\n" +
-                        "      ,[CRED].[ID_ROL]\n" +
+                        "         ,[CRED].[ID_ROL]\n" +
                         "	  ,[ROL].[NOMBRE_ROL]\n" +
                         "	  ,[ROL].[PRIVILEGIOS]\n" +
                         "      ,[CRED].[ID_CREDENCIAL_SUPERIOR]\n" +
@@ -1358,7 +1358,12 @@ app.get('/addCotizacion', function (req, res) {
                     new FieldValidation('idUnidad', ENC.STRING()),
                     new FieldValidation('precioUnitario', ENC.STRING()),
                     new FieldValidation('cantidad', ENC.STRING()),
-                    new FieldValidation('cotizacion', ENC.STRING())
+                    new FieldValidation('cotizacion', ENC.STRING()),
+                    
+                    new FieldValidation('idZona', ENC.STRING()),
+                    new FieldValidation('idSubZona', ENC.STRING()),
+                    new FieldValidation('idPestadorServicio', ENC.STRING())
+                    
                 ]);
 
 
@@ -1373,6 +1378,11 @@ app.get('/addCotizacion', function (req, res) {
                 dp.deduccionJustificacion = "";
                 dp.precioServicioFinal = 0;
                 dp.validaDisponibilidad = 0;
+                
+                dp.idZona = req.query.idZona;
+                dp.idSubZona = req.query.idSubZona;
+                dp.idPestadorServicio = req.query.idPestadorServicio;
+                
                 dp.looked = 1;
                 return dp;
             })
@@ -1396,24 +1406,33 @@ app.get('/addCotizacion', function (req, res) {
                         "           ,[DEDUCCION_JUSTIFICACION]\n" +
                         "           ,[PRECIO_SERVICIO_FINAL]\n" +
                         "           ,[VALIDA_DISPONIBILIDAD]\n" +
+                        
+                        "           ,[ID_ZONA]\n" +
+                        "           ,[ID_SUBZONA]\n" +
+                        "           ,[ID_PRESTADOR_SERVICIO]\n" +
                         "		   )\n" +
                         "     VALUES\n" +
                         "           (\n" +
-                        "		   " + dp.idOrdenServicio + ",\n" +
-                        "		    " + dp.idTipoServicio + ",\n" +
-                        "		    " + dp.idServicio + ",\n" +
-                        "		    " + dp.idUnidad + "1,\n" +
+                        "		   " + dp.idOrdenServicio + " \n" +
+                        "		   , " + dp.idTipoServicio + " \n" +
+                        "		   , " + dp.idServicio + " \n" +
+                        "		   , " + dp.idUnidad + " \n" +
                         "		   \n" +
-                        "		    " + dp.precioUnitario + ",\n" +
-                        "		    " + dp.cantidad + ",\n" +
-                        "		    " + dp.cotizacion + ",\n" +
+                        "		   , " + dp.precioUnitario + " \n" +
+                        "		   , " + dp.cantidad + " \n" +
+                        "		   , " + dp.cotizacion + " \n" +
                         "		   \n" +
                         "		   \n" +
                         "		   \n" +
-                        "		    " + dp.deduccion + ",\n" +
-                        "		   ' " + dp.deduccionJustificacion + "',\n" +
-                        "		    " + dp.precioServicioFinal + ",\n" +
-                        "		    " + dp.validaDisponibilidad + "\n" +
+                        "		   , " + dp.deduccion + " \n" +
+                        "		   , '" + dp.deduccionJustificacion + "' \n" +
+                        "		   , " + dp.precioServicioFinal + " \n" +
+                        "		   , " + dp.validaDisponibilidad + " \n" +
+                        
+                        "		   , " + dp.idZona + "\n" +
+                        "		   , " + dp.idSubZona + "\n" +
+                        "		   , " + dp.idPestadorServicio + "\n" +
+                        
                         "		   )";
 
 
