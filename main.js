@@ -1359,11 +1359,11 @@ app.get('/addCotizacion', function (req, res) {
                     new FieldValidation('precioUnitario', ENC.STRING()),
                     new FieldValidation('cantidad', ENC.STRING()),
                     new FieldValidation('cotizacion', ENC.STRING()),
-                    
+
                     new FieldValidation('idZona', ENC.STRING()),
                     new FieldValidation('idSubZona', ENC.STRING()),
                     new FieldValidation('idPestadorServicio', ENC.STRING())
-                    
+
                 ]);
 
 
@@ -1378,11 +1378,11 @@ app.get('/addCotizacion', function (req, res) {
                 dp.deduccionJustificacion = "";
                 dp.precioServicioFinal = 0;
                 dp.validaDisponibilidad = 0;
-                
+
                 dp.idZona = req.query.idZona;
                 dp.idSubZona = req.query.idSubZona;
                 dp.idPestadorServicio = req.query.idPestadorServicio;
-                
+
                 dp.looked = 1;
                 return dp;
             })
@@ -1406,7 +1406,6 @@ app.get('/addCotizacion', function (req, res) {
                         "           ,[DEDUCCION_JUSTIFICACION]\n" +
                         "           ,[PRECIO_SERVICIO_FINAL]\n" +
                         "           ,[VALIDA_DISPONIBILIDAD]\n" +
-                        
                         "           ,[ID_ZONA]\n" +
                         "           ,[ID_SUBZONA]\n" +
                         "           ,[ID_PRESTADOR_SERVICIO]\n" +
@@ -1428,11 +1427,9 @@ app.get('/addCotizacion', function (req, res) {
                         "		   , '" + dp.deduccionJustificacion + "' \n" +
                         "		   , " + dp.precioServicioFinal + " \n" +
                         "		   , " + dp.validaDisponibilidad + " \n" +
-                        
                         "		   , " + dp.idZona + "\n" +
                         "		   , " + dp.idSubZona + "\n" +
                         "		   , " + dp.idPestadorServicio + "\n" +
-                        
                         "		   )";
 
 
@@ -1496,7 +1493,11 @@ app.get('/updateServicio', function (req, res) {
                     new FieldValidation('idUnidad', ENC.STRING()),
                     new FieldValidation('precioUnitario', ENC.STRING()),
                     new FieldValidation('cantidad', ENC.STRING()),
-                    new FieldValidation('cotizacion', ENC.STRING())
+                    new FieldValidation('cotizacion', ENC.STRING()),
+
+                    new FieldValidation('idZona', ENC.STRING()),
+                    new FieldValidation('idSubZona', ENC.STRING()),
+                    new FieldValidation('idPestadorServicio', ENC.STRING())
                 ]);
 
 
@@ -1514,6 +1515,9 @@ app.get('/updateServicio', function (req, res) {
                 dp.deduccionJustificacion = "";
                 dp.precioServicioFinal = 0;
                 dp.validaDisponibilidad = 0;
+                dp.idZona = req.query.idZona;
+                dp.idSubZona = req.query.idSubZona;
+                dp.idPestadorServicio = req.query.idPestadorServicio;
                 dp.looked = 1;
                 return dp;
             })
@@ -1535,6 +1539,9 @@ app.get('/updateServicio', function (req, res) {
                         "           ,[DEDUCCION_JUSTIFICACION]='" + dp.deduccionJustificacion + "'\n" +
                         "           ,[PRECIO_SERVICIO_FINAL]=" + dp.precioServicioFinal + "\n" +
                         "           ,[VALIDA_DISPONIBILIDAD]=" + dp.validaDisponibilidad + "\n" +
+                        "           ,[ID_ZONA]=" + dp.idZona + "\n" +
+                        "           ,[ID_SUBZONA]=" + dp.idSubZona + "\n" +
+                        "           ,[ID_PRESTADOR_SERVICIO]=" + dp.idPestadorServicio + "\n" +
                         "WHERE [ID_SERVICIO_COTIZACION]=" + dp.idServicioCotizacion + "";
 
                 return dp;
@@ -1774,12 +1781,29 @@ app.get('/getAllTipoServicio', function (req, res) {
             .then(function (dp) {
 
                 inputValidation(response, req.query, [
+                    new FieldValidation('idZona', ENC.STRING())
                 ]);
+                dp.idZona = req.query.idZona;
 
                 return dp;
             })
             .then(function (dp) {
-                dp.query = " SELECT [COT].* FROM [dbo].[SLOAA_TC_TIPO_SERVICIO] [COT]";
+                dp.query = "SELECT \n" +
+                        " DISTINCT([SEL].[ID_TIPO_SERVICIO]),\n" +
+                        "		  [SEL].[TIPO]\n" +
+                        " FROM  (\n" +
+                        "		SELECT [PSXS].[ID_PRESTADOR_SERVICIO]\n" +
+                        "			  ,[PSXS].[ID_ZONA]\n" +
+                        "			  ,[PSXS].[ID_SUBZONA]\n" +
+                        "			  ,[PSXS].[ID_TIPO_SERVICIO]\n" +
+                        "			  ,[TS].[TIPO]\n" +
+                        "			  ,[PSXS].[ID_SERVICIO]\n" +
+                        "		  FROM [SLOAA_TC_PRESTADOR_SERVICIOS_X_SERVICIO] [PSXS]\n" +
+                        "		  LEFT JOIN [SLOAA_TC_TIPO_SERVICIO] [TS] ON [PSXS].[ID_TIPO_SERVICIO]=[TS].[ID_TIPO_SERVICIO]\n" +
+                        "		  WHERE \n" +
+                        "		  1=1\n" +
+                        "		  AND [PSXS].[ID_ZONA]=" + dp.idZona + "\n" +
+                        "  )[SEL] ";
                 return dp;
             })
             .then(msql.selectPromise)
@@ -1824,14 +1848,34 @@ app.get('/getAllServicios', function (req, res) {
             .then(function (dp) {
 
                 inputValidation(response, req.query, [
+                    new FieldValidation('idZona', ENC.STRING()),
                     new FieldValidation('idTipoServicio', ENC.STRING())
                 ]);
+
+
+                dp.idZona = req.query.idZona;
                 dp.idTipoServicio = req.query.idTipoServicio;
 
                 return dp;
             })
             .then(function (dp) {
-                dp.query = " SELECT [COT].* FROM [dbo].[SLOAA_TC_SERVICIO] [COT] WHERE [ID_TIPO_SERVICIO]=" + dp.idTipoServicio + " ";
+                dp.query = "SELECT \n" +
+                        " DISTINCT([SEL].[ID_SERVICIO]),\n" +
+                        "		  [SEL].[NOMBRE_SERVICIO]\n" +
+                        " FROM  (\n" +
+                        "		SELECT [PSXS].[ID_PRESTADOR_SERVICIO]\n" +
+                        "			  ,[PSXS].[ID_ZONA]\n" +
+                        "			  ,[PSXS].[ID_SUBZONA]\n" +
+                        "			  ,[PSXS].[ID_TIPO_SERVICIO]\n" +
+                        "			  ,[PSXS].[ID_SERVICIO]\n" +
+                        "			  ,[SERV].[NOMBRE_SERVICIO]\n" +
+                        "		  FROM [SLOAA_TC_PRESTADOR_SERVICIOS_X_SERVICIO] [PSXS]\n" +
+                        "		  LEFT JOIN [SLOAA_TC_SERVICIO] [SERV] ON [PSXS].[ID_SERVICIO]=[SERV].[ID_SERVICIO]\n" +
+                        "		  WHERE \n" +
+                        "		  1=1\n" +
+                        "		  AND [PSXS].[ID_ZONA]="+dp.idZona +"\n" +
+                        "		  AND [PSXS].[ID_TIPO_SERVICIO]="+ dp.idTipoServicio +"\n" +
+                        "  )[SEL]";
                 return dp;
             })
             .then(msql.selectPromise)
@@ -1859,7 +1903,7 @@ app.get('/getAllServicios', function (req, res) {
 //</editor-fold>
 
 
-//<editor-fold defaultstate="collapsed" desc="getUnidadXServicio">
+//<editor-fold defaultstate="collapsed" desc="getUnidadYPrecioUnitarioXServicio">
 app.get('/getUnidadYPrecioUnitarioXServicio', function (req, res) {
     var requestID = new Date().getTime();
     var response = {};
@@ -1876,8 +1920,10 @@ app.get('/getUnidadYPrecioUnitarioXServicio', function (req, res) {
             .then(function (dp) {
 
                 inputValidation(response, req.query, [
+                    new FieldValidation('idTipoServicio', ENC.STRING()),
                     new FieldValidation('idServicio', ENC.STRING())
                 ]);
+                dp.idTipoServicio = req.query.idTipoServicio;
                 dp.idServicio = req.query.idServicio;
 
                 return dp;
@@ -1891,8 +1937,9 @@ app.get('/getUnidadYPrecioUnitarioXServicio', function (req, res) {
                         "      DISTINCT([PU].[ID_UNIDAD]),\n" +
                         "	  [PU].[PRECIO_UNITARIO]\n" +
                         "  FROM [dbo].[SLOAA_TR_PRECIO_UNITARIO] [PU]\n" +
-                        "  WHERE\n" +
-                        "  [PU].[ID_SERVICIO]=" + dp.idServicio + "\n" +
+                        "  WHERE 1=1 \n" +
+                        "  AND [PU].[ID_TIPO_SERVICIO]=" + dp.idTipoServicio + "\n" +
+                        "  AND  [PU].[ID_SERVICIO]=" + dp.idServicio + "\n" +
                         ")[QRY]\n" +
                         "LEFT JOIN [dbo].[SLOAA_TC_UNIDAD] [UNI] ON [QRY].[ID_UNIDAD]=[UNI].[ID_UNIDAD]";
                 return dp;
@@ -2301,7 +2348,6 @@ app.get('/closeOrdenServicio', function (req, res) {
 //</editor-fold>
 
 
-
 //<editor-fold defaultstate="collapsed" desc="setStatusOrdenServicio">
 app.get('/setStatusOrdenServicio', function (req, res) {
     var requestID = new Date().getTime();
@@ -2370,10 +2416,6 @@ app.get('/setStatusOrdenServicio', function (req, res) {
             });
 });
 //</editor-fold>
-
-
-
-
 
 
 //<editor-fold defaultstate="collapsed" desc="serviceConfirm">
