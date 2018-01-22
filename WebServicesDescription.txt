@@ -127,12 +127,18 @@ http://localhost:3000/addCotizacion
 "idUnidad":"1",
 "precioUnitario":"780",
 "cantidad":"2",
-"cotizacion":"1560"
+"cotizacion":"1560",
+
+"idZona":"3",
+"idSubZona":"1",
+"idPestadorServicio":"1"
 }
 ------------------------------------------->
 {
     "success": true
 }
+
+
 
 
 
@@ -142,13 +148,19 @@ http://localhost:3000/addCotizacion
 http://localhost:3000/updateServicio
 <-------------------------------------------
 {
-"idServicioCotizacion":"2",
-"idTipoServicio":"2"
-"idServicio"¨:"2001",
+"idServicioCotizacion":"3",
+"idTipoServicio":"1"
+"idServicio"¨:"1002",
 "idUnidad":"1",
 "precioUnitario":"780",
 "cantidad":"4",
 "cotizacion":"15600"
+
+"idZona":"3",
+"idSubZona":"1",
+"idPestadorServicio":"1"
+
+
 }
 ------------------------------------------->
 {
@@ -252,6 +264,7 @@ http://localhost:3000/removeCotizacion
 http://localhost:3000/removeCotizacion
 <-------------------------------------------
 {
+        "idZona":3
 }
 ------------------------------------------->
 {
@@ -259,30 +272,6 @@ http://localhost:3000/removeCotizacion
         {
             "ID_TIPO_SERVICIO": 1,
             "TIPO": "SERVICIO DE TRANSPORTES DE BIENES"
-        },
-        {
-            "ID_TIPO_SERVICIO": 2,
-            "TIPO": "SERVICIO DE MANIOBRAS"
-        },
-        {
-            "ID_TIPO_SERVICIO": 3,
-            "TIPO": "SERVICIO DE MONTACARGAS, PATINES, DIABLOS Y BASCULAS (ALMACENES) "
-        },
-        {
-            "ID_TIPO_SERVICIO": 4,
-            "TIPO": "SERVICIO DE EMPAQUETADO PALETIZADO Y EMPLAYE"
-        },
-        {
-            "ID_TIPO_SERVICIO": 5,
-            "TIPO": "SERVICIO DE TRANSPORTE DE PERSONAL"
-        },
-        {
-            "ID_TIPO_SERVICIO": 6,
-            "TIPO": "SERVICIO OFICINA MOVIL"
-        },
-        {
-            "ID_TIPO_SERVICIO": 7,
-            "TIPO": "SERVICIO DE EQUIPO DE PROTECCION PARA OPERATIVOS"
         }
     ],
     "success": true
@@ -296,95 +285,21 @@ http://localhost:3000/removeCotizacion
 http://localhost:3000/getAllServicios
 <-------------------------------------------
 {
-idTipoServicio:1
+
+    idTipoServicio:1
+    idZona:3,
+    
 }
 ------------------------------------------->
 {
     "servicios": [
         {
             "ID_SERVICIO": 1001,
-            "ID_TIPO_SERVICIO": 1,
             "NOMBRE_SERVICIO": "CAMION CON OPERADOR (MODELO 2010-2014)"
         },
         {
             "ID_SERVICIO": 1002,
-            "ID_TIPO_SERVICIO": 1,
             "NOMBRE_SERVICIO": "CAMION RABON CON OPERADOR (MODELO 2010- 2014)"
-        },
-        {
-            "ID_SERVICIO": 1003,
-            "ID_TIPO_SERVICIO": 1,
-            "NOMBRE_SERVICIO": "CAMION MUDANCERO CON OPERADOR (MODELO 2010-2014)"
-        },
-        {
-            "ID_SERVICIO": 1004,
-            "ID_TIPO_SERVICIO": 1,
-            "NOMBRE_SERVICIO": "CAMION TORTON CON OPERADOR (MODELO 2010-2014)"
-        },
-        {
-            "ID_SERVICIO": 1005,
-            "ID_TIPO_SERVICIO": 1,
-            "NOMBRE_SERVICIO": "TRACTOCAMION 5TA RUEDA PARA REMOLQUE CON OPERADOR (MODELO 2010-2014)"
-        },
-        {
-            "ID_SERVICIO": 1006,
-            "ID_TIPO_SERVICIO": 1,
-            "NOMBRE_SERVICIO": "TRACTOCAMION C/CAJA CON OPERADOR (MODELO 2010-2014)"
-        },
-        {
-            "ID_SERVICIO": 1007,
-            "ID_TIPO_SERVICIO": 1,
-            "NOMBRE_SERVICIO": "TRACTOCAMION DOBLE CAJA FULL CON OPERADOR (MODELO 2010-2014)"
-        },
-        {
-            "ID_SERVICIO": 1008,
-            "ID_TIPO_SERVICIO": 1,
-            "NOMBRE_SERVICIO": "TRACTOCAMION C/PLATAFORMA DE TRAILER CON OPERADOR"
-        },
-        {
-            "ID_SERVICIO": 1009,
-            "ID_TIPO_SERVICIO": 1,
-            "NOMBRE_SERVICIO": "TRACTOCAMION C/PLATAFORMA DE CAMA BAJA CON OPERADOR"
-        },
-        {
-            "ID_SERVICIO": 1010,
-            "ID_TIPO_SERVICIO": 1,
-            "NOMBRE_SERVICIO": "GRÚA TELESCOPICA CON OPERADOR"
-        },
-        {
-            "ID_SERVICIO": 1011,
-            "ID_TIPO_SERVICIO": 1,
-            "NOMBRE_SERVICIO": "MADRINA CON OPERADOR"
-        },
-        {
-            "ID_SERVICIO": 1012,
-            "ID_TIPO_SERVICIO": 1,
-            "NOMBRE_SERVICIO": "CAMIONETA DE 3 1/2 TONELADAS CON OPERADOR (MODELO 2010-2014)"
-        },
-        {
-            "ID_SERVICIO": 1013,
-            "ID_TIPO_SERVICIO": 1,
-            "NOMBRE_SERVICIO": "GRÚA PARA CARROS CON OPERADOR"
-        },
-        {
-            "ID_SERVICIO": 1014,
-            "ID_TIPO_SERVICIO": 1,
-            "NOMBRE_SERVICIO": "GRÚA TELESCOPICA CON OPERADOR"
-        },
-        {
-            "ID_SERVICIO": 1015,
-            "ID_TIPO_SERVICIO": 1,
-            "NOMBRE_SERVICIO": "GRÚA PARA TRACTOCAMION CON OPERADOR"
-        },
-        {
-            "ID_SERVICIO": 1016,
-            "ID_TIPO_SERVICIO": 1,
-            "NOMBRE_SERVICIO": "PLATAFORMA DESLIZANTE HIDRAULICA CON OPERADOR"
-        },
-        {
-            "ID_SERVICIO": 1017,
-            "ID_TIPO_SERVICIO": 1,
-            "NOMBRE_SERVICIO": "CAMION DE VOLTEO  14 MTS3 "
         }
     ],
     "success": true
@@ -397,6 +312,7 @@ idTipoServicio:1
 http://localhost:3000/getUnidadYPrecioUnitarioXServicio
 <-------------------------------------------
 {
+idTipoServicio:1,
 idServicio:1001
 }
 ------------------------------------------->
@@ -417,6 +333,27 @@ idServicio:1001
 }
 
 
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓getAllProvedores
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+http://localhost:3000/getAllProvedores
+<-------------------------------------------
+{
+idZona:3,
+idSubZona:1
+idTipoServicio:1,
+idServicio:1001,
+}
+------------------------------------------->
+{
+    "provedores": [
+        {
+            "ID_PRESTADOR_SERVICIO": 1,
+            "NOMBRE": "La ponedoda"
+        }
+    ],
+    "success": true
+}
 
 
 
@@ -507,9 +444,10 @@ idStatus:3
 http://localhost:3000/serviceConfirm
 <-------------------------------------------
 {
-idServicioCotizacion:2,
+idServicioCotizacion:9,
 idOrdenServicio:14,
-idServicio:2001
+idTipoServicio:1
+idServicio:1001
 }
 ------------------------------------------->
 {

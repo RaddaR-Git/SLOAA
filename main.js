@@ -1873,8 +1873,8 @@ app.get('/getAllServicios', function (req, res) {
                         "		  LEFT JOIN [SLOAA_TC_SERVICIO] [SERV] ON [PSXS].[ID_SERVICIO]=[SERV].[ID_SERVICIO]\n" +
                         "		  WHERE \n" +
                         "		  1=1\n" +
-                        "		  AND [PSXS].[ID_ZONA]="+dp.idZona +"\n" +
-                        "		  AND [PSXS].[ID_TIPO_SERVICIO]="+ dp.idTipoServicio +"\n" +
+                        "		  AND [PSXS].[ID_ZONA]=" + dp.idZona + "\n" +
+                        "		  AND [PSXS].[ID_TIPO_SERVICIO]=" + dp.idTipoServicio + "\n" +
                         "  )[SEL]";
                 return dp;
             })
@@ -1896,6 +1896,85 @@ app.get('/getAllServicios', function (req, res) {
             })
             .catch(function (err) {
                 mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/getAllServicios]');
+                response.error = err.message;
+                res.jsonp(response);
+            });
+});
+//</editor-fold>
+
+
+//<editor-fold defaultstate="collapsed" desc="getAllProvedores">
+app.get('/getAllProvedores', function (req, res) {
+    var requestID = new Date().getTime();
+    var response = {};
+    var dataPacket = {
+        requestID: requestID,
+        connectionParameters: SQLServerConnectionParameters,
+        looked: 0
+    };
+    mn.init(dataPacket)
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/getAllProvedores]');
+                return dp;
+            })
+            .then(function (dp) {
+
+                inputValidation(response, req.query, [
+                    new FieldValidation('idZona', ENC.STRING()),
+                    new FieldValidation('idSubZona', ENC.STRING()),
+                    new FieldValidation('idTipoServicio', ENC.STRING()),
+                    new FieldValidation('idServicio', ENC.STRING())
+                ]);
+
+
+                dp.idZona = req.query.idZona;
+                dp.idSubZona = req.query.idSubZona;
+                dp.idTipoServicio = req.query.idTipoServicio;
+                dp.idServicio = req.query.idServicio;
+
+                return dp;
+            })
+            .then(function (dp) {
+                dp.query = "SELECT \n" +
+                        " DISTINCT([SEL].[ID_PRESTADOR_SERVICIO]),\n" +
+                        "		  [SEL].[NOMBRE]\n" +
+                        " FROM  (\n" +
+                        "		SELECT [PSXS].[ID_PRESTADOR_SERVICIO]\n" +
+                        "			  ,[PSXS].[ID_ZONA]\n" +
+                        "			  ,[PSXS].[ID_SUBZONA]\n" +
+                        "			  ,[PSXS].[ID_TIPO_SERVICIO]\n" +
+                        "			  ,[PSXS].[ID_SERVICIO]\n" +
+                        "			  ,[PS].[NOMBRE]\n" +
+                        "			  ,[PS].[CORREO_ELECTRONICO]\n" +
+                        "		  FROM [SLOAA_TC_PRESTADOR_SERVICIOS_X_SERVICIO] [PSXS]\n" +
+                        "		  LEFT JOIN [SLOAA_TC_PRESTADOR_SERVICIOS] [PS] ON [PSXS].[ID_PRESTADOR_SERVICIO]=[PS].[ID_PRESTADOR_SERVICIO]\n" +
+                        "		  WHERE \n" +
+                        "		  1=1\n" +
+                        "		  AND [PSXS].[ID_ZONA]="+dp.idZona+"\n" +
+                        "		  AND [PSXS].[ID_SUBZONA]="+dp.idSubZona+"\n" +
+                        "		  AND [PSXS].[ID_TIPO_SERVICIO]="+ dp.idTipoServicio +"\n" +
+                        "		  AND [PSXS].[ID_SERVICIO]="+dp.idServicio +"\n" +
+                        "  )[SEL]";
+                return dp;
+            })
+            .then(msql.selectPromise)
+            .then(function (dp) {
+                //response = dp.queryResult;
+                if (dp.queryResult.rows !== null) {
+                    response.provedores = dp.queryResult.rows;
+                    response.success = true;
+                } else {
+                    response.success = false;
+                }
+                return dp;
+            })
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[END]:[/getAllProvedores]');
+
+                res.jsonp(response);
+            })
+            .catch(function (err) {
+                mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/getAllProvedores]');
                 response.error = err.message;
                 res.jsonp(response);
             });
@@ -2439,11 +2518,13 @@ app.get('/serviceConfirm', function (req, res) {
                 inputValidation(response, req.query, [
                     new FieldValidation('idServicioCotizacion', ENC.STRING()),
                     new FieldValidation('idOrdenServicio', ENC.STRING()),
+                    new FieldValidation('idTipoServicio', ENC.STRING()),
                     new FieldValidation('idServicio', ENC.STRING())
                 ]);
 
                 dp.idServicioCotizacion = req.query.idServicioCotizacion;
                 dp.idOrdenServicio = req.query.idOrdenServicio;
+                dp.idTipoServicio = req.query.idTipoServicio;
                 dp.idServicio = req.query.idServicio;
 
                 dp.looked = 1;
@@ -2457,10 +2538,10 @@ app.get('/serviceConfirm', function (req, res) {
                 dp.dml = " UPDATE [dbo].[SLOAA_TR_SERVICIO_COTIZACION] SET\n" +
                         "            [VALIDA_DISPONIBILIDAD]=1 \n" +
                         "WHERE 1=1 \n"
-
-                        + " AND [ID_SERVICIO_COTIZACION]=" + dp.idServicioCotizacion + " \n";
-                +" AND [ID_TIPO_SERVICIO]=" + dp.idOrdenServicio + " \n";
-                +" AND [ID_SERVICIO]=" + dp.idServicio + " \n";
+                        +" AND [ID_ORDEN_SERVICIO]=" + dp.idOrdenServicio + " \n"
+                        +" AND [ID_SERVICIO_COTIZACION]=" + dp.idServicioCotizacion + " \n"
+                        +" AND [ID_TIPO_SERVICIO]=" + dp.idTipoServicio + " \n"
+                        +" AND [ID_SERVICIO]=" + dp.idServicio + " \n";
                 return dp;
             })
             .then(msql.freeDMLPromise)
