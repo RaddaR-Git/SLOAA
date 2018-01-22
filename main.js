@@ -1004,6 +1004,7 @@ app.get('/login', function (req, res) {
                         "      ,[CRED].[USUARIO_NOMBRE]\n" +
                         "      ,[CRED].[ID_AUTORIDAD]\n" +
                         "	  ,[AUTH].[NOMBRE_AUTORIDAD]\n" +
+                        "	  ,[AUTH].[ID_ZONA]\n" +
                         "      ,[CRED].[ID_ROL]\n" +
                         "	  ,[ROL].[NOMBRE_ROL]\n" +
                         "	  ,[ROL].[PRIVILEGIOS]\n" +
@@ -2394,11 +2395,11 @@ app.get('/serviceConfirm', function (req, res) {
 
                 dp.dml = " UPDATE [dbo].[SLOAA_TR_SERVICIO_COTIZACION] SET\n" +
                         "            [VALIDA_DISPONIBILIDAD]=1 \n" +
-                        "WHERE 1=1 \n" 
-                        
+                        "WHERE 1=1 \n"
+
                         + " AND [ID_SERVICIO_COTIZACION]=" + dp.idServicioCotizacion + " \n";
-                + " AND [ID_TIPO_SERVICIO]=" + dp.idOrdenServicio + " \n";
-                + " AND [ID_SERVICIO]=" + dp.idServicio + " \n";
+                +" AND [ID_TIPO_SERVICIO]=" + dp.idOrdenServicio + " \n";
+                +" AND [ID_SERVICIO]=" + dp.idServicio + " \n";
                 return dp;
             })
             .then(msql.freeDMLPromise)
