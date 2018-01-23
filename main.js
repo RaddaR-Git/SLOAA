@@ -859,6 +859,7 @@ var replaceAll = function (str, find, replace) {
 //------------------------------------------------------------------------------
 
 //<editor-fold defaultstate="collapsed" desc="DECLARATION">
+var path = require('path')
 var sql = require('mssql');
 var mysql = require('mysql');
 var log4js = require('log4js');
@@ -883,6 +884,11 @@ var msql = new ENCManagerSQLServer();
 var mm = new ENCManagerMail();
 var mcph = new ENCripto();
 var server;
+
+
+app.set("view engine", "pug");
+app.set("views", path.join(__dirname, "myHtmlTemplates"));
+
 
 var SQLServerConnectionParameters = {
     user: 'sa',
@@ -2516,12 +2522,12 @@ app.get('/serviceConfirm', function (req, res) {
 
 
                 inputValidation(response, req.query, [
-                    
+
                     new FieldValidation('services', ENC.STRING())
-                    
+
                 ]);
 
-               
+
                 dp.services = req.query.services;
 
                 dp.looked = 1;
@@ -2534,20 +2540,20 @@ app.get('/serviceConfirm', function (req, res) {
 
                 dp.dml = " UPDATE [dbo].[SLOAA_TR_SERVICIO_COTIZACION] SET\n" +
                         "            [VALIDA_DISPONIBILIDAD]=1 \n" +
-                        "WHERE 1=1 \n"
-                        //+ " AND [ID_ORDEN_SERVICIO]=" + dp.idOrdenServicio + " \n"
-                        //+ " AND [ID_SERVICIO_COTIZACION]=" + dp.idServicioCotizacion + " \n"
-                        //+ " AND [ID_TIPO_SERVICIO]=" + dp.idTipoServicio + " \n";
+                        "WHERE 1=1 \n";
+                //+ " AND [ID_ORDEN_SERVICIO]=" + dp.idOrdenServicio + " \n"
+                //+ " AND [ID_SERVICIO_COTIZACION]=" + dp.idServicioCotizacion + " \n"
+                //+ " AND [ID_TIPO_SERVICIO]=" + dp.idTipoServicio + " \n";
                 //dp.dml =dp.dml+ " AND [ID_SERVICIO]=" + dp.idServicio + " \n";
-                
-              
-                    dp.dml =dp.dml+ " AND [ID_SERVICIO] IN (" + dp.services + ") \n";
-                
-                        
-                        
-                        
-                        
-                        
+
+
+                dp.dml = dp.dml + " AND [ID_SERVICIO] IN (" + dp.services + ") \n";
+
+
+
+
+
+
                 return dp;
             })
             .then(msql.freeDMLPromise)
@@ -2585,8 +2591,8 @@ app.get('/serviceConfirm', function (req, res) {
 
 
 
-var ip='10.15.17.158';
-var port='3000';
+var ip = '10.15.17.158';
+var port = '3000';
 //<editor-fold defaultstate="collapsed" desc="sendMailConfirmacionProvedor">
 app.get('/sendMailConfirmacionProvedor', function (req, res) {
     var requestID = new Date().getTime();
@@ -2690,7 +2696,7 @@ app.get('/sendMailConfirmacionProvedor', function (req, res) {
                     for (var i = 0; i < rows.length; i++) {
                         currentRow = rows[i];
                         currentMail = currentRow.CORREO_ELECTRONICO;
-                        
+
 
                         currentMailList = dp.mailList;
                         currentMailObject = currentMailList[currentMail];
@@ -2698,10 +2704,10 @@ app.get('/sendMailConfirmacionProvedor', function (req, res) {
                             currentMailObject = {
                                 idCotizaciones: "",
                                 currentLlaveSistema: currentRow.LLAVE_SISTEMA,
-                                idServicioCotizacion:currentRow.ID_SERVICIO_COTIZACION,
-                                idOrdenServicio:currentRow.ID_ORDEN_SERVICIO,
-                                idTipoServicio:currentRow.ID_TIPO_SERVICIO,
-                                idServicio:currentRow.ID_SERVICIO,
+                                idServicioCotizacion: currentRow.ID_SERVICIO_COTIZACION,
+                                idOrdenServicio: currentRow.ID_ORDEN_SERVICIO,
+                                idTipoServicio: currentRow.ID_TIPO_SERVICIO,
+                                idServicio: currentRow.ID_SERVICIO,
                                 email: currentMail,
                                 servicios: []
                             };
@@ -2754,11 +2760,11 @@ app.get('/sendMailConfirmacionProvedor', function (req, res) {
 //                    currentMailObject.servicios;
 
                     data = "";
-                    
-                    
+
+
                     data = data + "<p><img src='https://bower.io/img/bower-logo.png'/></p>";
                     //data = data + "<p><a href='http://"+ip+":"+port+"/serviceConfirm?services=" + currentMailObject.idCotizaciones + "&idOrdenServicio="+currentMailObject.idOrdenServicio+"&idServicioCotizacion="+currentMailObject.idServicioCotizacion+"&idTipoServicio="+currentMailObject.idTipoServicio+"&idServicio="+currentMailObject.idServicio+"'    >Verifica tu disponibilidad</a></p>";
-                    data = data + "<p><a href='http://"+ip+":"+port+"/serviceConfirm?services=" + currentMailObject.idCotizaciones + "'    >Verifica tu disponibilidad</a></p>";
+                    data = data + "<p><a href='http://" + ip + ":" + port + "/serviceConfirm?services=" + currentMailObject.idCotizaciones + "'    >Verifica tu disponibilidad</a></p>";
 
 
                     for (var serviceKey in currentMailObject.servicios) {
@@ -2806,7 +2812,47 @@ app.get('/sendMailConfirmacionProvedor', function (req, res) {
 
 
 
+//<editor-fold defaultstate="collapsed" desc="getReport">
+app.get('/getReport', function (req, res) {
+    var requestID = new Date().getTime();
+    var response = {};
+    var dataPacket = {
+        requestID: requestID,
+        connectionParameters: SQLServerConnectionParameters,
+        looked: 0
+    };
+    mn.init(dataPacket)
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/getReport]');
+                return dp;
+            })
+            .then(function (dp) {
 
+                inputValidation(response, req.query, [
+                    new FieldValidation('id', ENC.STRING())
+                ]);
+
+                dp.id = req.query.id;
+                dp.mailList = {};
+                return dp;
+            })
+            .then(function (dp) {
+
+                return dp;
+            })
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[END]:[/getReport]');
+                res.render("view1");
+                //res.jsonp(response);
+            })
+            .catch(function (err) {
+                mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/getReport]');
+                response.error = err.message;
+                res.render("view1");
+                //res.jsonp(response);
+            });
+});
+//</editor-fold>
 
 
 
