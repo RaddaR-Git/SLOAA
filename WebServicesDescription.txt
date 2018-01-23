@@ -444,10 +444,7 @@ idStatus:3
 http://localhost:3000/serviceConfirm
 <-------------------------------------------
 {
-idServicioCotizacion:9,
-idOrdenServicio:14,
-idTipoServicio:1
-idServicio:1001
+services:'9,8'
 }
 ------------------------------------------->
 {
@@ -455,6 +452,18 @@ idServicio:1001
 }
 
 
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓sendMailConfirmacionProvedor
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+http://localhost:3000/sendMailConfirmacionProvedor
+<-------------------------------------------
+{
+idOrdenServicio:14
+}
+------------------------------------------->
+{
+    "success": true
+}
 
 
 

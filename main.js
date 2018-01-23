@@ -904,15 +904,15 @@ var SQLServerConnectionParameters = {
 //    secure: false,
 //    database: 'radar_enc'
 //};
-//var mailParameters1 = {
-//    host: 'smtp.gmail.com',
-//    port: 465,
-//    //secure: false, // secure:true for port 465, secure:false for port 587
-//    auth: {
-//        user: 'raddar.contacto@gmail.com',
-//        pass: 'Ttt01011'
-//    }
-//};
+var mailParameters1 = {
+    host: 'smtp.gmail.com',
+    port: 465,
+    //secure: false, // secure:true for port 465, secure:false for port 587
+    auth: {
+        user: 'raddar.contacto@gmail.com',
+        pass: 'Ttt01011'
+    }
+};
 //var mailParameters2 = {
 //    host: 'a2plcpnl0014.prod.iad2.secureserver.net',
 //    port: 465,
@@ -1950,10 +1950,10 @@ app.get('/getAllProvedores', function (req, res) {
                         "		  LEFT JOIN [SLOAA_TC_PRESTADOR_SERVICIOS] [PS] ON [PSXS].[ID_PRESTADOR_SERVICIO]=[PS].[ID_PRESTADOR_SERVICIO]\n" +
                         "		  WHERE \n" +
                         "		  1=1\n" +
-                        "		  AND [PSXS].[ID_ZONA]="+dp.idZona+"\n" +
-                        "		  AND [PSXS].[ID_SUBZONA]="+dp.idSubZona+"\n" +
-                        "		  AND [PSXS].[ID_TIPO_SERVICIO]="+ dp.idTipoServicio +"\n" +
-                        "		  AND [PSXS].[ID_SERVICIO]="+dp.idServicio +"\n" +
+                        "		  AND [PSXS].[ID_ZONA]=" + dp.idZona + "\n" +
+                        "		  AND [PSXS].[ID_SUBZONA]=" + dp.idSubZona + "\n" +
+                        "		  AND [PSXS].[ID_TIPO_SERVICIO]=" + dp.idTipoServicio + "\n" +
+                        "		  AND [PSXS].[ID_SERVICIO]=" + dp.idServicio + "\n" +
                         "  )[SEL]";
                 return dp;
             })
@@ -2516,16 +2516,13 @@ app.get('/serviceConfirm', function (req, res) {
 
 
                 inputValidation(response, req.query, [
-                    new FieldValidation('idServicioCotizacion', ENC.STRING()),
-                    new FieldValidation('idOrdenServicio', ENC.STRING()),
-                    new FieldValidation('idTipoServicio', ENC.STRING()),
-                    new FieldValidation('idServicio', ENC.STRING())
+                    
+                    new FieldValidation('services', ENC.STRING())
+                    
                 ]);
 
-                dp.idServicioCotizacion = req.query.idServicioCotizacion;
-                dp.idOrdenServicio = req.query.idOrdenServicio;
-                dp.idTipoServicio = req.query.idTipoServicio;
-                dp.idServicio = req.query.idServicio;
+               
+                dp.services = req.query.services;
 
                 dp.looked = 1;
                 return dp;
@@ -2538,10 +2535,19 @@ app.get('/serviceConfirm', function (req, res) {
                 dp.dml = " UPDATE [dbo].[SLOAA_TR_SERVICIO_COTIZACION] SET\n" +
                         "            [VALIDA_DISPONIBILIDAD]=1 \n" +
                         "WHERE 1=1 \n"
-                        +" AND [ID_ORDEN_SERVICIO]=" + dp.idOrdenServicio + " \n"
-                        +" AND [ID_SERVICIO_COTIZACION]=" + dp.idServicioCotizacion + " \n"
-                        +" AND [ID_TIPO_SERVICIO]=" + dp.idTipoServicio + " \n"
-                        +" AND [ID_SERVICIO]=" + dp.idServicio + " \n";
+                        //+ " AND [ID_ORDEN_SERVICIO]=" + dp.idOrdenServicio + " \n"
+                        //+ " AND [ID_SERVICIO_COTIZACION]=" + dp.idServicioCotizacion + " \n"
+                        //+ " AND [ID_TIPO_SERVICIO]=" + dp.idTipoServicio + " \n";
+                //dp.dml =dp.dml+ " AND [ID_SERVICIO]=" + dp.idServicio + " \n";
+                
+              
+                    dp.dml =dp.dml+ " AND [ID_SERVICIO] IN (" + dp.services + ") \n";
+                
+                        
+                        
+                        
+                        
+                        
                 return dp;
             })
             .then(msql.freeDMLPromise)
@@ -2579,7 +2585,222 @@ app.get('/serviceConfirm', function (req, res) {
 
 
 
+var ip='10.15.17.158';
+var port='3000';
+//<editor-fold defaultstate="collapsed" desc="sendMailConfirmacionProvedor">
+app.get('/sendMailConfirmacionProvedor', function (req, res) {
+    var requestID = new Date().getTime();
+    var response = {};
+    var dataPacket = {
+        requestID: requestID,
+        connectionParameters: SQLServerConnectionParameters,
+        looked: 0
+    };
+    mn.init(dataPacket)
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/sendMailConfirmacionProvedor]');
+                return dp;
+            })
+            .then(function (dp) {
 
+                inputValidation(response, req.query, [
+                    new FieldValidation('idOrdenServicio', ENC.STRING())
+                ]);
+
+                dp.idOrdenServicio = req.query.idOrdenServicio;
+                dp.mailList = {};
+                return dp;
+            })
+
+
+            //<editor-fold defaultstate="collapsed" desc="FORMATEA OBJETOS MAIL">
+            .then(function (dp) {
+                dp.query = "SELECT\n" +
+                        "\n" +
+                        "       [COT].[ID_SERVICIO_COTIZACION]\n" +
+                        "	  \n" +
+                        "	  ,[OS].[ID_ORDEN_SERVICIO]\n" +
+                        "	  ,[OS].[DOMICILIO]\n" +
+                        "	  ,[OS].[LLAVE_SISTEMA]\n" +
+                        "\n" +
+                        "	  \n" +
+                        "      ,[TS].[ID_TIPO_SERVICIO]\n" +
+                        "	  ,[TS].[TIPO]\n" +
+                        "\n" +
+                        "      ,[SERV].[ID_SERVICIO]\n" +
+                        "	  ,[SERV].[NOMBRE_SERVICIO]\n" +
+                        "\n" +
+                        "\n" +
+                        "      ,[ZON].[ID_ZONA]\n" +
+                        "	  ,[ZON].[ZONA]\n" +
+                        "\n" +
+                        "      ,[SZON].[ID_SUBZONA]\n" +
+                        "	  ,[SZON].[SUBZONA]\n" +
+                        "\n" +
+                        "      ,[PS].[ID_PRESTADOR_SERVICIO]\n" +
+                        "	  ,[PS].[NOMBRE]\n" +
+                        "	  ,[PS].[CORREO_ELECTRONICO]\n" +
+                        "\n" +
+                        "\n" +
+                        "	  ,[UNI].[ID_UNIDAD]\n" +
+                        "	  ,[UNI].[UNIDAD]\n" +
+                        "	 \n" +
+                        "	  ,[COT].[CANTIDAD]\n" +
+                        "	  ,[COT].[COTIZACION]\n" +
+                        "\n" +
+                        "  FROM [SLOAA_TR_SERVICIO_COTIZACION] [COT]\n" +
+                        "  \n" +
+                        "  \n" +
+                        "	  LEFT JOIN  [SLOAA_TC_PRESTADOR_SERVICIOS] [PS] ON \n" +
+                        "	  [PS].[ID_PRESTADOR_SERVICIO]=[COT].[ID_PRESTADOR_SERVICIO] \n" +
+                        "      AND [PS].[ID_ZONA]=[COT].[ID_ZONA]\n" +
+                        "      AND [PS].[ID_SUBZONA]=[COT].[ID_SUBZONA]\n" +
+                        "\n" +
+                        "	  LEFT JOIN  [SLOAA_TR_ORDEN_SERVICIO] [OS] ON \n" +
+                        "	  [COT].[ID_ORDEN_SERVICIO]=[OS].[ID_ORDEN_SERVICIO]\n" +
+                        "\n" +
+                        "	  LEFT JOIN [SLOAA_TC_TIPO_SERVICIO]  [TS] ON \n" +
+                        "	  [COT].[ID_TIPO_SERVICIO]=[TS].[ID_TIPO_SERVICIO]\n" +
+                        "\n" +
+                        "	   LEFT JOIN [SLOAA_TC_SERVICIO]  [SERV] ON \n" +
+                        "	  [COT].[ID_TIPO_SERVICIO]=[SERV].[ID_TIPO_SERVICIO]\n" +
+                        "	  AND [COT].[ID_SERVICIO]=[SERV].[ID_SERVICIO]\n" +
+                        "\n" +
+                        "\n" +
+                        "	   LEFT JOIN  [SLOAA_TC_ZONA] [ZON] ON \n" +
+                        "	  [COT].[ID_ZONA]=[ZON].[ID_ZONA]\n" +
+                        "\n" +
+                        "	  LEFT JOIN  [SLOAA_TC_SUBZONA] [SZON] ON \n" +
+                        "	  [COT].[ID_ZONA]=[SZON].[ID_ZONA]\n" +
+                        "	  AND [COT].[ID_SUBZONA]=[SZON].[ID_SUBZONA]\n" +
+                        "\n" +
+                        "\n" +
+                        "	  LEFT JOIN  [SLOAA_TC_UNIDAD] [UNI] ON \n" +
+                        "	  [COT].[ID_UNIDAD]=[UNI].[ID_UNIDAD]\n" +
+                        "\n" +
+                        "  WHERE \n" +
+                        "  \n" +
+                        "  [COT].[ID_ORDEN_SERVICIO]=" + dp.idOrdenServicio + "";
+                return dp;
+            })
+            .then(msql.selectPromise)
+            .then(function (dp) {
+                if (dp.queryResult.rows !== null) {
+                    rows = dp.queryResult.rows;
+                    for (var i = 0; i < rows.length; i++) {
+                        currentRow = rows[i];
+                        currentMail = currentRow.CORREO_ELECTRONICO;
+                        
+
+                        currentMailList = dp.mailList;
+                        currentMailObject = currentMailList[currentMail];
+                        if (typeof currentMailObject === "undefined") {
+                            currentMailObject = {
+                                idCotizaciones: "",
+                                currentLlaveSistema: currentRow.LLAVE_SISTEMA,
+                                idServicioCotizacion:currentRow.ID_SERVICIO_COTIZACION,
+                                idOrdenServicio:currentRow.ID_ORDEN_SERVICIO,
+                                idTipoServicio:currentRow.ID_TIPO_SERVICIO,
+                                idServicio:currentRow.ID_SERVICIO,
+                                email: currentMail,
+                                servicios: []
+                            };
+                            currentMailList[currentMail] = currentMailObject;
+                        }
+
+                        currentServicio = {
+                            idServicioCotizacion: currentRow.ID_SERVICIO_COTIZACION,
+                            idOrdenServicio: currentRow.ID_ORDEN_SERVICIO,
+                            domicilio: currentRow.DOMICILIO,
+                            llaveSistema: currentRow.LLAVE_SISTEMA,
+                            idTipoServicio: currentRow.ID_TIPO_SERVICIO,
+                            tipo: currentRow.TIPO,
+                            idServicio: currentRow.ID_SERVICIO,
+                            nombreServicio: currentRow.NOMBRE_SERVICIO,
+                            idZona: currentRow.ID_ZONA,
+                            zona: currentRow.ZONA,
+                            idSubzona: currentRow.ID_SUBZONA,
+                            subzona: currentRow.SUBZONA,
+                            idPrestadorServicio: currentRow.ID_PRESTADOR_SERVICIO,
+                            nombre: currentRow.NOMBRE,
+                            correoElectronico: currentRow.CORREO_ELECTRONICO,
+                            idUnidad: currentRow.ID_UNIDAD,
+                            unidad: currentRow.UNIDAD,
+                            cantidad: currentRow.CANTIDAD,
+                            cotizacion: currentRow.COTIZACION
+                        };
+                        currentMailObject.servicios.push(currentServicio);
+
+                        if (currentMailObject.idCotizaciones.length === 0) {
+                            currentMailObject.idCotizaciones = currentMailObject.idCotizaciones + currentRow.ID_SERVICIO_COTIZACION + "";
+                        } else {
+                            currentMailObject.idCotizaciones = currentMailObject.idCotizaciones + "," + currentRow.ID_SERVICIO_COTIZACION;
+                        }
+                    }
+                    response.success = true;
+                } else {
+                    response.success = false;
+                }
+                return dp;
+            })
+            //</editor-fold>
+
+
+            .then(function (dp) {
+                for (var mailKey in dp.mailList) {
+                    currentMailObject = dp.mailList[mailKey];
+//                    currentMailObject.idCotizaciones;
+//                    currentMailObject.currentMail;
+//                    currentMailObject.servicios;
+
+                    data = "";
+                    
+                    
+                    data = data + "<p><img src='https://bower.io/img/bower-logo.png'/></p>";
+                    //data = data + "<p><a href='http://"+ip+":"+port+"/serviceConfirm?services=" + currentMailObject.idCotizaciones + "&idOrdenServicio="+currentMailObject.idOrdenServicio+"&idServicioCotizacion="+currentMailObject.idServicioCotizacion+"&idTipoServicio="+currentMailObject.idTipoServicio+"&idServicio="+currentMailObject.idServicio+"'    >Verifica tu disponibilidad</a></p>";
+                    data = data + "<p><a href='http://"+ip+":"+port+"/serviceConfirm?services=" + currentMailObject.idCotizaciones + "'    >Verifica tu disponibilidad</a></p>";
+
+
+                    for (var serviceKey in currentMailObject.servicios) {
+                        currentServiceObject = currentMailObject.servicios[serviceKey];
+                        data = data + "<p>" + currentServiceObject.nombreServicio + "</p>";
+                    }
+
+                    mc.info(data);
+
+                    dp2 = {};
+                    mn.init(dp2)
+                            .then(function (dp2) {
+                                dp2.mailParameters = mailParameters1;
+                                dp2.from = 'contacto@enclave.com.mx';
+                                dp2.to = mailKey;
+                                dp2.subject = 'Confirma Disponibilidad';
+                                dp2.text = ' defaultText';
+                                dp2.html = data;
+                                return dp2;
+                            })
+                            .then(mm.sendMail)
+                            .catch(function (err) {
+                                mc.error(err);
+                            });
+
+
+                }
+
+
+            })
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[END]:[/sendMailConfirmacionProvedor]');
+
+                res.jsonp(response);
+            })
+            .catch(function (err) {
+                mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/sendMailConfirmacionProvedor]');
+                response.error = err.message;
+                res.jsonp(response);
+            });
+});
+//</editor-fold>
 
 
 
