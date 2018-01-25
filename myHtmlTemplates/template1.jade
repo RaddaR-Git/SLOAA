@@ -1,0 +1,106 @@
+doctype
+html
+  head
+    title #{title} - My Site
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body
+
+header
+
+
+-var dateObj = new Date();
+-var month = dateObj.getUTCMonth() + 1; //months from 1-12
+-var day = dateObj.getUTCDate();
+-var year = dateObj.getUTCFullYear();
+
+
+    .container
+    p #{year + "/" + month + "/" + day}
+
+.container
+    
+
+div
+        table(cellspacing="5" width='100%')
+            tr
+                td(width='200') <img src="https://tramitesdigitales.sat.gob.mx/SIPRED.Monitor.Externo/images/logoH_col.svg" height="200" width="200"/>
+                td(align="center") PREFACTURA SERVICIO LOGÍSTICO PARA LA OPERACIÓN DE LAS  AUTORIDADES ADUANERAS, <br> FISCALES Y ADMINISTRATIVAS 2018
+
+
+  
+div
+    table(cellspacing="5" width='100%')
+        -for (var orden in ordenes){
+            tr(bgcolor="gray" style="color:white;")
+                td(colspan=2 align="center") #{ordenes[orden].llaveSistema}
+            tr(bgcolor="gray")
+                td(bgcolor="#b2b2b2" width="150") Fecha
+                td(bgcolor="white") #{ordenes[orden].fechaSolicitud}
+            tr(bgcolor="gray")
+                td(bgcolor="#b2b2b2") Domicilio
+                td(bgcolor="white") #{ordenes[orden].domicilio}
+                
+            tr(bgcolor="gray")
+                td(colspan=2 align="center" bgcolor="#b2b2b2" style="color:white;") Servicios;
+            tr
+                td(colspan=2)
+                
+                    table(cellspacing="2" width='100%')
+                        tr(bgcolor="gray")
+                                td(bgcolor="#cecece") Id Servicio
+                                td(bgcolor="#cecece") Servicio
+                                td(bgcolor="#cecece") Unidad
+                                td(bgcolor="#cecece") Cantidad
+                                td(bgcolor="#cecece") Precio Unitario
+                                td(bgcolor="#cecece") Cotizacion
+                                td(bgcolor="#cecece") Deduccion
+                                td(bgcolor="#cecece") Total
+
+                         -for (var servicio in ordenes[orden].servicios){
+                            tr
+                                td(bgcolor="#dbdbdb")  #{ordenes[orden].servicios[servicio].ID_SERVICIO_COTIZACION}
+                                td(bgcolor="#dbdbdb")  #{ordenes[orden].servicios[servicio].NOMBRE_SERVICIO}
+                                td(bgcolor="#dbdbdb")  #{ordenes[orden].servicios[servicio].UNIDAD}
+                                td(bgcolor="#dbdbdb")  #{ordenes[orden].servicios[servicio].CANTIDAD}
+                                td(bgcolor="#dbdbdb")  #{ordenes[orden].servicios[servicio].PRECIO_UNITARIO}
+                                td(bgcolor="#dbdbdb")  #{ordenes[orden].servicios[servicio].COTIZACION}
+                                td(bgcolor="#dbdbdb")  #{ordenes[orden].servicios[servicio].DEDUCCION}
+                                td  &nbsp;
+                         -}
+                            tr
+                                td  &nbsp;
+                                td  &nbsp;
+                                td  &nbsp;
+                                td  &nbsp;
+                                td  &nbsp;
+                                td(bgcolor="#dbdbdb")  #{ordenes[orden].cotizacion}
+                                td(bgcolor="#dbdbdb")  #{ordenes[orden].deducciones}
+                                td(bgcolor="#dbdbdb")  #{ordenes[orden].total}
+            tr(bgcolor="gray")
+                td(bgcolor="#cecece") Firma Generador
+                td(bgcolor="#dbdbdb") #{ordenes[orden].firma1}
+            tr(bgcolor="gray")
+                td(bgcolor="#cecece") Firma Revisor
+                td(bgcolor="#dbdbdb") #{ordenes[orden].firma2}
+            div &nbsp;
+        -}
+                        
+                                
+div &nbsp;
+
+
+
+
+div &nbsp;
+div &nbsp;
+div &nbsp;
+div &nbsp;
+
+ 
+            
+footer
+    <button onClick="window.print()" >Imprimir</button>    
+
+
+
+

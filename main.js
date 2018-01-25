@@ -852,6 +852,9 @@ var replaceAll = function (str, find, replace) {
 };
 //</editor-fold>
 
+
+
+
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 //----------------------------[WEB SERVICES]------------------------------------
@@ -876,6 +879,9 @@ app.use(express.static(__dirname + '/front'));//for file satatic service express
 app.use(express.static('Images'));//for file satatic service express;
 app.use(express.static('Nest'));//for file satatic service express;
 
+app.set("view engine", "jade");//for JADE
+app.set("views", path.join(__dirname, "myHtmlTemplates"));//for JADE
+
 //var validator = require("email-validator");
 var mn = new ENCManagerNest();
 var mc = new ENCManagerCommunication();
@@ -886,8 +892,7 @@ var mcph = new ENCripto();
 var server;
 
 
-app.set("view engine", "pug");
-app.set("views", path.join(__dirname, "myHtmlTemplates"));
+
 
 
 var SQLServerConnectionParameters = {
@@ -2053,9 +2058,6 @@ app.get('/getUnidadYPrecioUnitarioXServicio', function (req, res) {
 });
 //</editor-fold>
 
-
-
-
 //<editor-fold defaultstate="collapsed" desc="firma1OrdenServicioGenerador">
 app.get('/firma1OrdenServicioGenerador', function (req, res) {
     var requestID = new Date().getTime();
@@ -2330,8 +2332,6 @@ app.get('/firma2OrdenServicioSupervisor', function (req, res) {
 //</editor-fold>
 
 
-
-
 //<editor-fold defaultstate="collapsed" desc="closeOrdenServicio">
 app.get('/closeOrdenServicio', function (req, res) {
     var requestID = new Date().getTime();
@@ -2349,7 +2349,7 @@ app.get('/closeOrdenServicio', function (req, res) {
             .then(function (dp) {
 
                 inputValidation(response, req.query, [
-                    new FieldValidation('idOrdenServicio', ENC.STRING()),
+                    new FieldValidation('idOrdenServicio', ENC.STRING())
                 ]);
 
                 dp.idOrdenServicio = req.query.idOrdenServicio;
@@ -2519,8 +2519,6 @@ app.get('/serviceConfirm', function (req, res) {
             })
             .then(function (dp) {
 
-
-
                 inputValidation(response, req.query, [
 
                     new FieldValidation('services', ENC.STRING())
@@ -2588,8 +2586,6 @@ app.get('/serviceConfirm', function (req, res) {
             });
 });
 //</editor-fold>
-
-
 
 var ip = '10.15.17.158';
 var port = '3000';
@@ -2809,11 +2805,8 @@ app.get('/sendMailConfirmacionProvedor', function (req, res) {
 //</editor-fold>
 
 
-
-
-
 //<editor-fold defaultstate="collapsed" desc="getReport">
-app.get('/getReport', function (req, res) {
+app.get('/getPrefacturaMenual', function (req, res) {
     var requestID = new Date().getTime();
     var response = {};
     var dataPacket = {
@@ -2823,7 +2816,7 @@ app.get('/getReport', function (req, res) {
     };
     mn.init(dataPacket)
             .then(function (dp) {
-                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/getReport]');
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/getPrefacturaMenual]');
                 return dp;
             })
             .then(function (dp) {
@@ -2838,17 +2831,93 @@ app.get('/getReport', function (req, res) {
             })
             .then(function (dp) {
 
+                dp.query = "SELECT \n" +
+                        "	  [SERV].*\n" +
+                        "	, [ORD].* \n" +
+                        "	, [UNI].* \n" +
+                        "	, [SS].* \n" +
+                        "FROM [SLOAA_TR_SERVICIO_COTIZACION] [SERV]\n" +
+                        "LEFT JOIN [SLOAA_TR_ORDEN_SERVICIO] [ORD] ON  [SERV].[ID_ORDEN_SERVICIO]=[ORD].[ID_ORDEN_SERVICIO]\n" +
+                        "LEFT JOIN [SLOAA_TC_UNIDAD] [UNI] ON  [SERV].[ID_UNIDAD]=[UNI].[ID_UNIDAD]\n" +
+                        "LEFT JOIN [SLOAA_TC_SERVICIO] [SS] ON  [SERV].[ID_SERVICIO]=[SS].[ID_SERVICIO] and [SERV].[ID_TIPO_SERVICIO]=[SS].[ID_TIPO_SERVICIO]\n" +
+                        "\n" +
+                        "WHERE \n" +
+                        "1=1\n" +
+                        "AND MONTH([ORD].[FECHA_SOLICITUD])=MONTH(GetDate())\n" +
+                        "\n" +
+                        "\n" +
+                        "ORDER BY\n" +
+                        "[ORD].[FECHA_SOLICITUD],\n" +
+                        "[ORD].[ID_ORDEN_SERVICIO],\n" +
+                        "[SERV].[ID_SERVICIO]";
+                return dp;
+            })
+            .then(msql.selectPromise)
+            .then(function (dp) {
+                //response = dp.queryResult;
+                if (dp.queryResult.rows !== null) {
+                    dp.servicios = dp.queryResult.rows;
+                    dp.success = true;
+                } else {
+                    throw new Error("Error de parametros");
+                }
+                return dp;
+            })
+            .then(function (dp) {
+
+                dp.ordenes = {};
+                for (var currentKey in dp.servicios) {
+                    currentRow = dp.servicios[currentKey];
+                    currentOrden = dp.ordenes[currentRow.LLAVE_SISTEMA];
+                    if (typeof currentOrden === "undefined") {
+                        currentOrden = {
+                            llaveSistema: currentRow.LLAVE_SISTEMA,
+                            idOrdenServicio: currentRow.ID_ORDEN_SERVICIO,
+                            fechaSolicitud: currentRow.FECHA_SOLICITUD.toISOString().replace("T"," ").replace("Z"," "),
+                            domicilio: currentRow.DOMICILIO,
+                            firma1: currentRow.FIRMA2_USER1,
+                            firma2: currentRow.FIRMA2_USER2,
+                            cotizacion: 0,
+                            deducciones: 0,
+                            total: 0,
+                            servicios: []
+                        }
+                        dp.ordenes[currentRow.LLAVE_SISTEMA] = currentOrden;
+                    }
+
+                    currentOrden.servicios.push(dp.servicios[currentKey]);
+
+                    cotizacion = Number(currentRow.COTIZACION);
+                    deduccion = Number(currentRow.DEDUCCION);
+
+                    if (!isNaN(cotizacion)) {
+                        currentOrden.cotizacion = currentOrden.cotizacion + cotizacion;
+                    }
+                    if (!isNaN(deduccion)) {
+                        currentOrden.deducciones = currentOrden.deducciones + deduccion;
+                    }
+                    currentOrden.total = currentOrden.cotizacion - currentOrden.deducciones;
+                }
+
+
+
+
+
                 return dp;
             })
             .then(function (dp) {
                 mc.info('RID:[' + requestID + ']-[REQUEST]-[END]:[/getReport]');
-                res.render("view1");
+                res.render("template1", {
+                    ordenes: dp.ordenes,
+                    servicios: dp.servicios,
+                    title: 'title chingon'
+                });
                 //res.jsonp(response);
             })
             .catch(function (err) {
                 mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/getReport]');
                 response.error = err.message;
-                res.render("view1");
+                //res.render("view1");
                 //res.jsonp(response);
             });
 });
