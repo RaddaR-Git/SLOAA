@@ -1,0 +1,74 @@
+
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+1	SAT REVISOR
+{
+"f1":false,
+"f2":false,
+"f3":{
+		"gen":false,
+		"rev":false
+		},
+"f4":true,
+"f5":false,
+"f6":{
+		"gen":false,
+		"rev":false
+		},
+"f7":false
+}
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+2	AUTORIDAD ESTANDAR
+{
+"f1":true,
+"f2":true,
+"f3":{
+		"gen":true,
+		"rev":false
+		},
+"f4":false,
+"f5":true,
+"f6":{
+		"gen":true,
+		"rev":false
+		},
+"f7":true
+}
+
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+3	AUTORIDAD SUPERVISOR
+{
+"f1":true,
+"f2":true,
+"f3":{
+		"gen":true,
+		"rev":true
+		},
+"f4":false,
+"f5":true,
+"f6":{
+		"gen":true,
+		"rev":true
+		},
+"f7":true
+}
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+4	PRESTADOR DE SERVICIOS
+{
+"f1":false,
+"f2":false,
+"f3":{
+		"gen":true,
+		"rev":false
+		},
+"f4":false,
+"f5":false,
+"f6":{
+		"gen":false,
+		"rev":false
+		},
+"f7":true
+}

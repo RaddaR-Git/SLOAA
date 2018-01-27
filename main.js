@@ -1076,35 +1076,85 @@ app.get('/getAllOrdenServicio', function (req, res) {
             .then(function (dp) {
 
                 inputValidation(response, req.query, [
-                    new FieldValidation('idCredencial', ENC.STRING())
+                    new FieldValidation('idCredencial', ENC.STRING()),
+                    new FieldValidation('idRol', ENC.STRING()),
+                    new FieldValidation('idAutoridad', ENC.STRING())
                 ]);
 
                 dp.idCredencial = req.query.idCredencial;
+                dp.idRol = req.query.idRol;
+                dp.idAutoridad = req.query.idAutoridad;
+
 
                 return dp;
             })
             .then(function (dp) {
-                dp.query = "SELECT  [ORD].[ID_ORDEN_SERVICIO]\n" +
-                        "      ,[ORD].[NUM_ORDEN]\n" +
-                        "      ,[ORD].[FECHA_SOLICITUD]\n" +
-                        "      ,[ORD].[ID_CREDENCIAL]\n" +
-                        "      ,[ORD].[DOMICILIO]\n" +
-                        "      ,[ORD].[FIRMA1_USER1]\n" +
-                        "      ,[ORD].[FIRMA1_USER2]\n" +
-                        "      ,[ORD].[FIRMA2_USER1]\n" +
-                        "      ,[ORD].[FIRMA2_USER2]\n" +
-                        "      ,[ORD].[ID_STATUS]\n" +
-                        "      ,[ORD].[METAINFO_FECHA_CREACION]\n" +
-                        "      ,[ORD].[METAINFO_IP]\n" +
-                        "      ,[ORD].[METAINFO_MAC_ADRR]\n" +
-                        "      ,[ORD].[LLAVE_SISTEMA]\n" +
-                        "  FROM [dbo].[SLOAA_TR_ORDEN_SERVICIO] [ORD]\n" +
+                dp.query = "SELECT  \n" +
+                                    "	    [ORD].[ID_ORDEN_SERVICIO]\n" +
+                                    "      ,[ORD].[NUM_ORDEN]\n" +
+                                    "      ,[ORD].[FECHA_SOLICITUD]\n" +
+                                    "      ,[ORD].[DOMICILIO]\n" +
+                                    "      ,[ORD].[FIRMA1_USER1]\n" +
+                                    "      ,[ORD].[FIRMA1_USER2]\n" +
+                                    "      ,[ORD].[FIRMA2_USER1]\n" +
+                                    "      ,[ORD].[FIRMA2_USER2]\n" +
+                                    "      ,[ORD].[ID_STATUS]\n" +
+                                    "      ,[ORD].[METAINFO_FECHA_CREACION]\n" +
+                                    "      ,[ORD].[METAINFO_IP]\n" +
+                                    "      ,[ORD].[METAINFO_MAC_ADRR]\n" +
+                                    "      ,[ORD].[LLAVE_SISTEMA]\n" +
+                                    "      ,[ORD].[CIERRE_TOTAL]\n" +
+                                    "	  \n" +
+                                    "	   ,[CRED].[ID_CREDENCIAL]\n" +
+                                    "      ,[CRED].[NOMBRE]\n" +
+                                    "      ,[CRED].[CARGO]\n" +
+                                    "      ,[CRED].[TELEFONO]\n" +
+                                    "      ,[CRED].[EXT]\n" +
+                                    "      ,[CRED].[EMAIL]\n" +
+                                    "      ,[CRED].[PTT]\n" +
+                                    "      ,[CRED].[MOVIL]\n" +
+                                    "      ,[CRED].[USUARIO_NOMBRE]\n" +
+                                    "      ,[CRED].[USUARIO_PASSWORD]\n" +
+                                    "      ,[CRED].[ID_ROL]\n" +
+                                    "      ,[CRED].[ID_CREDENCIAL_SUPERIOR]\n" +
+                                    "\n" +
+                                    "	   ,[AUTH].[ID_AUTORIDAD]\n" +
+                                    "      ,[AUTH].[NOMBRE_AUTORIDAD]\n" +
+                                    "      ,[AUTH].[ESTADO]\n" +
+                                    "      ,[AUTH].[NIVEL]\n" +
+                                    "      ,[AUTH].[SERVICIO]\n" +
+                                    "      ,[AUTH].[ID_ZONA] \n"+
+                        "       " +
+                        "  FROM \n" +
+                        "  [SLOAA_TR_ORDEN_SERVICIO] [ORD]\n" +
+                        " LEFT JOIN [SLOAA_TR_CREDENCIAL] [CRED] ON  [CRED].[ID_CREDENCIAL]=[ORD].[ID_CREDENCIAL]\n" +
+                        " LEFT JOIN [SLOAA_TC_AUTORIDAD] [AUTH] ON  [AUTH].[ID_AUTORIDAD]=[CRED].[ID_AUTORIDAD]\n" +
                         "  WHERE\n" +
                         "  1=1\n ";
 
-                if (dp.idCredencial !== "") {
-                    dp.query = dp.query + "   AND  [ORD].[ID_CREDENCIAL]=" + dp.idCredencial + "\n ";
+                if (dp.idRol === "1") {
                 }
+
+                if (dp.idRol === "2") {
+                    if (dp.idCredencial !== "") {
+                        dp.query = dp.query + "   AND  [AUTH].[ID_AUTORIDAD]=" + dp.idCredencial + "\n ";
+                        dp.query = dp.query + "   AND  [ORD].[ID_CREDENCIAL]=" + dp.idCredencial + "\n ";
+                    }
+                }
+
+                if (dp.idRol === "3") {
+                    if (dp.idCredencial !== "") {
+                        dp.query = dp.query + "   AND  [AUTH].[ID_AUTORIDAD]=" + dp.idCredencial + "\n ";
+                        dp.query = dp.query + "   AND  ([CRED].[ID_CREDENCIAL]=" + dp.idCredencial + "   OR  [CRED].[ID_CREDENCIAL_SUPERIOR]=" + dp.idCredencial + "    )\n ";
+                    }
+                }
+
+                if (dp.idRol === "4") {
+                    if (dp.idCredencial !== "") {
+                        dp.query = dp.query + "   AND  [ORD].[ID_STATUS]=7\n ";
+                    }
+                }
+
                 return dp;
             })
             .then(msql.selectPromise)
@@ -2536,7 +2586,7 @@ app.get('/serviceConfirm', function (req, res) {
             .then(function (dp) {
 
 
-                dp.dml = " UPDATE [dbo].[SLOAA_TR_SERVICIO_COTIZACION] SET\n" +
+                dp.dml = " UPDATE [SLOAA_TR_SERVICIO_COTIZACION] SET\n" +
                         "            [VALIDA_DISPONIBILIDAD]=1 \n" +
                         "WHERE 1=1 \n";
                 //+ " AND [ID_ORDEN_SERVICIO]=" + dp.idOrdenServicio + " \n"
@@ -2545,7 +2595,7 @@ app.get('/serviceConfirm', function (req, res) {
                 //dp.dml =dp.dml+ " AND [ID_SERVICIO]=" + dp.idServicio + " \n";
 
 
-                dp.dml = dp.dml + " AND [ID_SERVICIO] IN (" + dp.services + ") \n";
+                dp.dml = dp.dml + " AND [ID_SERVICIO_COTIZACION] IN (" + dp.services + ") \n";
 
 
 
@@ -2577,12 +2627,18 @@ app.get('/serviceConfirm', function (req, res) {
 
             .then(function (dp) {
                 mc.info('RID:[' + requestID + ']-[REQUEST]-[END]:[/serviceConfirm]');
-                res.jsonp(response);
+
+                res.render("confirmacion", {
+                    title: 'Confirmacion'
+                });
             })
             .catch(function (err) {
                 mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/serviceConfirm]');
-                response.error = err.message;
-                res.jsonp(response);
+
+                res.render("error", {
+                    error: err.message,
+                    title: 'Confirmacion'
+                });
             });
 });
 //</editor-fold>
@@ -2643,7 +2699,6 @@ app.get('/sendMailConfirmacionProvedor', function (req, res) {
                         "	  ,[PS].[NOMBRE]\n" +
                         "	  ,[PS].[CORREO_ELECTRONICO]\n" +
                         "\n" +
-                        "\n" +
                         "	  ,[UNI].[ID_UNIDAD]\n" +
                         "	  ,[UNI].[UNIDAD]\n" +
                         "	 \n" +
@@ -2680,9 +2735,11 @@ app.get('/sendMailConfirmacionProvedor', function (req, res) {
                         "	  LEFT JOIN  [SLOAA_TC_UNIDAD] [UNI] ON \n" +
                         "	  [COT].[ID_UNIDAD]=[UNI].[ID_UNIDAD]\n" +
                         "\n" +
-                        "  WHERE \n" +
+                        "  WHERE  1=1\n" +
                         "  \n" +
-                        "  [COT].[ID_ORDEN_SERVICIO]=" + dp.idOrdenServicio + "";
+                        "  AND [COT].[ID_ORDEN_SERVICIO]=" + dp.idOrdenServicio + "";
+                "  AND [COT].[VALIDA_DISPONIBILIDAD]=0";
+
                 return dp;
             })
             .then(msql.selectPromise)
@@ -2700,6 +2757,7 @@ app.get('/sendMailConfirmacionProvedor', function (req, res) {
                             currentMailObject = {
                                 idCotizaciones: "",
                                 currentLlaveSistema: currentRow.LLAVE_SISTEMA,
+                                domicilio: currentRow.DOMICILIO,
                                 idServicioCotizacion: currentRow.ID_SERVICIO_COTIZACION,
                                 idOrdenServicio: currentRow.ID_ORDEN_SERVICIO,
                                 idTipoServicio: currentRow.ID_TIPO_SERVICIO,
@@ -2758,15 +2816,42 @@ app.get('/sendMailConfirmacionProvedor', function (req, res) {
                     data = "";
 
 
-                    data = data + "<p><img src='https://bower.io/img/bower-logo.png'/></p>";
+                    data = data + "<p><img src='https://tramitesdigitales.sat.gob.mx/SIPRED.Monitor.Externo/images/logoH_col.svg' height='200' width='200'/></p> ";
                     //data = data + "<p><a href='http://"+ip+":"+port+"/serviceConfirm?services=" + currentMailObject.idCotizaciones + "&idOrdenServicio="+currentMailObject.idOrdenServicio+"&idServicioCotizacion="+currentMailObject.idServicioCotizacion+"&idTipoServicio="+currentMailObject.idTipoServicio+"&idServicio="+currentMailObject.idServicio+"'    >Verifica tu disponibilidad</a></p>";
-                    data = data + "<p><a href='http://" + ip + ":" + port + "/serviceConfirm?services=" + currentMailObject.idCotizaciones + "'    >Verifica tu disponibilidad</a></p>";
+                    data = data + "<div align='center' ><a href='http://" + ip + ":" + port + "/serviceConfirm?services=" + currentMailObject.idCotizaciones + "'    >Verifica tu disponibilidad haciendo click [AQUI]</a></div>";
+                    data = data + "<br>&nbsp";
+                    data = data + "<br>&nbsp";
+                    data = data + "<br>&nbsp";
+                    data = data + "<br>&nbsp";
 
+                    data = data + "<table cellspacing=1 border=1 bgcolor='gray' color='white' width=100%>";
+                    data = data + "  <tr><td> Orden de servicio [" + currentMailObject.currentLlaveSistema + "] </td></tr>";
+                    data = data + "  <tr><td> Domicilio [" + currentMailObject.domicilio + "] </td></tr>";
+                    data = data + "</table>";
+
+                    data = data + "<table cellspacing=1 border=1 bgcolor='#b5b5b5' width=100%>";
+                    data = data + "  <tr>";
+                    data = data + "      <td>Tipo de Servicio</td>";
+                    data = data + "      <td>Servicio</td>";
+                    data = data + "      <td>Unidades</td>";
+                    data = data + "      <td>Cantidad</td>";
+                    data = data + "      <td>Cotizacion</td>";
+                    data = data + "  </tr>";
 
                     for (var serviceKey in currentMailObject.servicios) {
                         currentServiceObject = currentMailObject.servicios[serviceKey];
-                        data = data + "<p>" + currentServiceObject.nombreServicio + "</p>";
+                        data = data + "  <tr>";
+                        data = data + "      <td>" + currentServiceObject.tipo + "</td>";
+                        data = data + "      <td>" + currentServiceObject.nombreServicio + "</td>";
+                        data = data + "      <td>" + currentServiceObject.unidad + "</td>";
+                        data = data + "      <td>" + currentServiceObject.cantidad + "</td>";
+                        data = data + "      <td>" + currentServiceObject.cotizacion + "</td>";
+                        data = data + "  </tr>";
+
                     }
+
+
+                    data = data + "</table>";
 
                     mc.info(data);
 
@@ -2822,30 +2907,51 @@ app.get('/getPrefacturaMenual', function (req, res) {
             .then(function (dp) {
 
                 inputValidation(response, req.query, [
-                    new FieldValidation('id', ENC.STRING())
+                    new FieldValidation('idAutoridad', ENC.STRING()),
+                    new FieldValidation('idOrden', ENC.STRING()),
+                    new FieldValidation('mensual', ENC.STRING())
                 ]);
-
-                dp.id = req.query.id;
+                dp.idAutoridad = req.query.idAutoridad;
+                dp.idOrden = req.query.idOrden;
+                dp.mensual = req.query.mensual;
                 dp.mailList = {};
                 return dp;
             })
             .then(function (dp) {
-
                 dp.query = "SELECT \n" +
                         "	  [SERV].*\n" +
                         "	, [ORD].* \n" +
                         "	, [UNI].* \n" +
                         "	, [SS].* \n" +
+                        "	, [CRED].* \n" +
+                        "	, [AUTH].* \n" +
                         "FROM [SLOAA_TR_SERVICIO_COTIZACION] [SERV]\n" +
                         "LEFT JOIN [SLOAA_TR_ORDEN_SERVICIO] [ORD] ON  [SERV].[ID_ORDEN_SERVICIO]=[ORD].[ID_ORDEN_SERVICIO]\n" +
                         "LEFT JOIN [SLOAA_TC_UNIDAD] [UNI] ON  [SERV].[ID_UNIDAD]=[UNI].[ID_UNIDAD]\n" +
                         "LEFT JOIN [SLOAA_TC_SERVICIO] [SS] ON  [SERV].[ID_SERVICIO]=[SS].[ID_SERVICIO] and [SERV].[ID_TIPO_SERVICIO]=[SS].[ID_TIPO_SERVICIO]\n" +
+                        "LEFT JOIN [SLOAA_TR_CREDENCIAL] [CRED] ON  [CRED].[ID_CREDENCIAL]=[ORD].[ID_CREDENCIAL]\n" +
+                        "LEFT JOIN [SLOAA_TC_AUTORIDAD] [AUTH] ON  [AUTH].[ID_AUTORIDAD]=[CRED].[ID_AUTORIDAD]\n" +
                         "\n" +
                         "WHERE \n" +
                         "1=1\n" +
-                        "AND MONTH([ORD].[FECHA_SOLICITUD])=MONTH(GetDate())\n" +
-                        "\n" +
-                        "\n" +
+                        "AND [ORD].[ID_STATUS]=7 \n";
+
+                if (dp.mensual !== "") {
+                    dp.query = dp.query + " AND MONTH([ORD].[FECHA_SOLICITUD])=MONTH(GetDate()) \n";
+                    dp.tipoReporte = "MENSUAL";
+                } else {
+                    dp.tipoReporte = "";
+                }
+
+                if (dp.idAutoridad !== "") {
+                    dp.query = dp.query + " AND [AUTH].[ID_AUTORIDAD]=" + dp.idAutoridad + " \n";
+                }
+                if (dp.idOrden !== "") {
+                    dp.query = dp.query + " AND [ORD].[ID_ORDEN_SERVICIO]=" + dp.idOrden + " \n";
+                }
+
+
+                dp.query = dp.query + "\n" +
                         "ORDER BY\n" +
                         "[ORD].[FECHA_SOLICITUD],\n" +
                         "[ORD].[ID_ORDEN_SERVICIO],\n" +
@@ -2869,11 +2975,12 @@ app.get('/getPrefacturaMenual', function (req, res) {
                 for (var currentKey in dp.servicios) {
                     currentRow = dp.servicios[currentKey];
                     currentOrden = dp.ordenes[currentRow.LLAVE_SISTEMA];
+                    dp.nombreAutoridad = currentRow.NOMBRE_AUTORIDAD;
                     if (typeof currentOrden === "undefined") {
                         currentOrden = {
                             llaveSistema: currentRow.LLAVE_SISTEMA,
                             idOrdenServicio: currentRow.ID_ORDEN_SERVICIO,
-                            fechaSolicitud: currentRow.FECHA_SOLICITUD.toISOString().replace("T"," ").replace("Z"," "),
+                            fechaSolicitud: currentRow.FECHA_SOLICITUD.toISOString().replace("T", " ").replace("Z", " "),
                             domicilio: currentRow.DOMICILIO,
                             firma1: currentRow.FIRMA2_USER1,
                             firma2: currentRow.FIRMA2_USER2,
@@ -2881,7 +2988,7 @@ app.get('/getPrefacturaMenual', function (req, res) {
                             deducciones: 0,
                             total: 0,
                             servicios: []
-                        }
+                        };
                         dp.ordenes[currentRow.LLAVE_SISTEMA] = currentOrden;
                     }
 
@@ -2908,15 +3015,22 @@ app.get('/getPrefacturaMenual', function (req, res) {
             .then(function (dp) {
                 mc.info('RID:[' + requestID + ']-[REQUEST]-[END]:[/getReport]');
                 res.render("template1", {
+                    tipoReporte: dp.tipoReporte,
+                    nombreAutoridad: dp.nombreAutoridad,
                     ordenes: dp.ordenes,
                     servicios: dp.servicios,
-                    title: 'title chingon'
+                    title: 'Prefactura'
                 });
                 //res.jsonp(response);
             })
             .catch(function (err) {
                 mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/getReport]');
                 response.error = err.message;
+
+                res.render("error", {
+                    error: err.message,
+                    title: 'Prefactura'
+                });
                 //res.render("view1");
                 //res.jsonp(response);
             });
