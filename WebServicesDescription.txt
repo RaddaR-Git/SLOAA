@@ -679,7 +679,12 @@ http://localhost:3000/setDeduccionCotizacion
 {
 "idOrdenServicio":"14",
 "idServicioCotizacion":"3",
-"deduccion"¨:"1001",
+
+ "deduccionCantidad" = 1,
+ "deduccionTiempo" = 1;
+ "cancelacion" = 1;
+
+"deduccion"¨:"400",
 "deduccionJustificacion":"por que quiero"
 }
 ------------------------------------------->

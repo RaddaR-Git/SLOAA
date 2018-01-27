@@ -1463,8 +1463,17 @@ app.get('/addCotizacion', function (req, res) {
                         "           ,[CANTIDAD]\n" +
                         "           ,[COTIZACION]\n" +
                         "		   \n" +
+                        
+                        
+                        "           ,[DEDUCCION_CANTIDAD]\n" +
+                        "           ,[DEDUCCION_TIEMPO]\n" +
+                        "           ,[CANCELACION]\n" +
+                        
                         "           ,[DEDUCCION]\n" +
                         "           ,[DEDUCCION_JUSTIFICACION]\n" +
+                        
+                        
+                        
                         "           ,[PRECIO_SERVICIO_FINAL]\n" +
                         "           ,[VALIDA_DISPONIBILIDAD]\n" +
                         "           ,[ID_ZONA]\n" +
@@ -1484,6 +1493,12 @@ app.get('/addCotizacion', function (req, res) {
                         "		   \n" +
                         "		   \n" +
                         "		   \n" +
+                        
+                        "		   , 0 \n" +
+                        "		   , 0 \n" +
+                        "		   , 0 \n" +
+                        
+                        
                         "		   , " + dp.deduccion + " \n" +
                         "		   , '" + dp.deduccionJustificacion + "' \n" +
                         "		   , " + dp.precioServicioFinal + " \n" +
@@ -1572,8 +1587,6 @@ app.get('/updateServicio', function (req, res) {
                 dp.precioUnitario = req.query.precioUnitario;
                 dp.cantidad = req.query.cantidad;
                 dp.cotizacion = req.query.cotizacion;
-                dp.deduccion = 0;
-                dp.deduccionJustificacion = "";
                 dp.precioServicioFinal = 0;
                 dp.validaDisponibilidad = 0;
                 dp.idZona = req.query.idZona;
@@ -1596,8 +1609,6 @@ app.get('/updateServicio', function (req, res) {
                         "           ,[CANTIDAD]=" + dp.cantidad + "\n" +
                         "           ,[COTIZACION]=" + dp.cotizacion + "\n" +
                         "		   \n" +
-                        "           ,[DEDUCCION]=" + dp.deduccion + "\n" +
-                        "           ,[DEDUCCION_JUSTIFICACION]='" + dp.deduccionJustificacion + "'\n" +
                         "           ,[PRECIO_SERVICIO_FINAL]=" + dp.precioServicioFinal + "\n" +
                         "           ,[VALIDA_DISPONIBILIDAD]=" + dp.validaDisponibilidad + "\n" +
                         "           ,[ID_ZONA]=" + dp.idZona + "\n" +
@@ -1714,19 +1725,30 @@ app.get('/setDeduccionCotizacion', function (req, res) {
                 inputValidation(response, req.query, [
                     new FieldValidation('idOrdenServicio', ENC.STRING()),
                     new FieldValidation('idServicioCotizacion', ENC.STRING()),
+                    
+                    new FieldValidation('deduccionCantidad', ENC.STRING()),
+                    new FieldValidation('deduccionTiempo', ENC.STRING()),
+                    new FieldValidation('cancelacion', ENC.STRING()),
+                    
                     new FieldValidation('deduccion', ENC.STRING()),
                     new FieldValidation('deduccionJustificacion', ENC.STRING())
                 ]);
 
                 dp.idOrdenServicio = req.query.idOrdenServicio;
                 dp.idServicioCotizacion = req.query.idServicioCotizacion;
+                
+                
+                dp.deduccionCantidad = req.query.deduccionCantidad;
+                dp.deduccionTiempo = req.query.deduccionTiempo;
+                dp.cancelacion = req.query.cancelacion;
+                
                 dp.deduccion = req.query.deduccion;
                 dp.deduccionJustificacion = req.query.deduccionJustificacion;
                 dp.looked = 1;
                 return dp;
             })
             .then(function (dp) {
-                dp.dml = " UPDATE [dbo].[SLOAA_TR_SERVICIO_COTIZACION] SET [DEDUCCION]=" + dp.deduccion + ",[DEDUCCION_JUSTIFICACION]='" + dp.deduccionJustificacion + "',[PRECIO_SERVICIO_FINAL]= [COTIZACION]-" + dp.deduccion + "   \n" +
+                dp.dml = " UPDATE [dbo].[SLOAA_TR_SERVICIO_COTIZACION] SET   [DEDUCCION_CANTIDAD]="+ dp.deduccionCantidad+" ,[DEDUCCION_TIEMPO]="+ dp.deduccionTiempo+" ,[CANCELACION]="+ dp.cancelacion+"       ,[DEDUCCION]=" + dp.deduccion + ",[DEDUCCION_JUSTIFICACION]='" + dp.deduccionJustificacion + "',[PRECIO_SERVICIO_FINAL]= [COTIZACION]-" + dp.deduccion + "   \n" +
                         " WHERE \n" +
                         " 1=1\n" +
                         " AND [ID_ORDEN_SERVICIO]=" + dp.idOrdenServicio + "\n" +
@@ -2414,8 +2436,9 @@ app.get('/closeOrdenServicio', function (req, res) {
                 dp.query = "  SELECT\n" +
                         "	SUM([COTIZACION]-[DEDUCCION]) TOTAL\n" +
                         "  FROM [dbo].[SLOAA_TR_SERVICIO_COTIZACION] [COT]\n" +
-                        "  WHERE\n" +
-                        "  [COT].[ID_ORDEN_SERVICIO]=" + dp.idOrdenServicio + "";
+                        "  WHERE 1=1 \n" +
+                        "  AND [COT].[ID_ORDEN_SERVICIO]=" + dp.idOrdenServicio + ""+
+                        "  AND [COT].[CANCELACION]=0";
 
 
                 return dp;
@@ -2935,6 +2958,7 @@ app.get('/getPrefacturaMenual', function (req, res) {
                         "WHERE \n" +
                         "1=1\n" +
                         "AND [ORD].[ID_STATUS]=7 \n";
+                        "AND [SERV].[CANCELACION]=1 \n";
 
                 if (dp.mensual !== "") {
                     dp.query = dp.query + " AND MONTH([ORD].[FECHA_SOLICITUD])=MONTH(GetDate()) \n";
