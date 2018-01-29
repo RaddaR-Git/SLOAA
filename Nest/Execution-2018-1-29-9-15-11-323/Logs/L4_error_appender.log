@@ -1,0 +1,4 @@
+[2018-01-29T09:15:14.845] [ERROR] ECC - RID:[1517238914844]-[REQUEST]-[ERROR]:[Input parameter problem.]:[/getAllCotizacionXOrden]
+[2018-01-29T09:15:14.859] [ERROR] ECC - RID:[1517238914858]-[REQUEST]-[ERROR]:[Input parameter problem.]:[/getAllCotizacionXOrden]
+[2018-01-29T09:15:19.436] [ERROR] ECC - RID:[1517238919370]-[SELECT]-[END]:[FAIL]:[Invalid column name 'ZONA'.]
+[2018-01-29T09:15:19.437] [ERROR] ECC - RID:[1517238919370]-[REQUEST]-[ERROR]:[Invalid column name 'ZONA'.]:[/createOrdenServicio]

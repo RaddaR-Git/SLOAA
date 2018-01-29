@@ -12,18 +12,33 @@ http://localhost:3000/login
 }
 ------------------------------------------->
 {
-    "credential": {
-        "ID_CREDENCIAL": 2,
-        "NOMBRE": "Oscar Avila",
-        "USUARIO_NOMBRE": "oscar.avilaper",
-        "ID_AUTORIDAD": 1,
-        "NOMBRE_AUTORIDAD": "Aduana Acapulco\r\n                                 ",
-        "ID_ROL": 3,
-        "NOMBRE_ROL": "AUTORIDAD SUPERVISOR",
-        "PRIVILEGIOS": "{}",
-        "ID_CREDENCIAL_SUPERIOR": null
-    },
-    "success": true
+	"credential": {
+		"ID_CREDENCIAL": 1,
+		"NOMBRE": "Carlos Palacios",
+		"USUARIO_NOMBRE": "carlos.palacios",
+		"ID_AUTORIDAD": 1,
+		"NOMBRE_AUTORIDAD": "Aduana Acapulco\r\n                                 ",
+		"ID_ZONA": 2,
+		"ID_ROL": 2,
+		"NOMBRE_ROL": "AUTORIDAD ESTANDAR",
+		"PRIVILEGIOS": {
+			"f1": true,
+			"f2": true,
+			"f3": {
+				tt "gen": true,
+				tt "rev": falsett
+			},
+			"f4": false,
+			"f5": true,
+			"f6": {
+				tt "gen": true,
+				tt "rev": falsett
+			},
+			"f7": true
+		},
+		"ID_CREDENCIAL_SUPERIOR": 2
+	},
+	"success": true
 }
 
 
@@ -75,450 +90,60 @@ http://localhost:3000/getAllOrdenServicio
             "NIVEL": "SRyS                                              ",
             "SERVICIO": "SRyS | Acapulco                                   ",
             "ID_ZONA": 2
-        },
-        {
-            "ID_ORDEN_SERVICIO": 2,
-            "NUM_ORDEN": 2,
-            "FECHA_SOLICITUD": "2018-01-19T00:00:00.000Z",
-            "DOMICILIO": "Neza donde matan",
-            "FIRMA1_USER1": null,
-            "FIRMA1_USER2": null,
-            "FIRMA2_USER1": null,
-            "FIRMA2_USER2": null,
-            "ID_STATUS": 1,
-            "METAINFO_FECHA_CREACION": "2018-01-19T00:00:00.000Z",
-            "METAINFO_IP": "10.15.17.158",
-            "METAINFO_MAC_ADRR": " 00:00:00:a1:2b:cc",
-            "LLAVE_SISTEMA": "dasdsadasdsadsa",
-            "CIERRE_TOTAL": null,
-            "ID_CREDENCIAL": 2,
-            "NOMBRE": "Oscar Avila",
-            "CARGO": "Desarrollador",
-            "TELEFONO": "555555555552\t55\tcarlos.palacios@enclave.com.mx\tsss\t555555555555",
-            "EXT": "55",
-            "EMAIL": "oscar.avila@enclave.com.mx",
-            "PTT": "sss",
-            "MOVIL": "555555555555",
-            "USUARIO_NOMBRE": "oscar.avilaper",
-            "USUARIO_PASSWORD": "54321",
-            "ID_ROL": 3,
-            "ID_CREDENCIAL_SUPERIOR": null,
-            "ID_AUTORIDAD": 1,
-            "NOMBRE_AUTORIDAD": "Aduana Acapulco\r\n                                 ",
-            "ESTADO": "Acapulco                                          ",
-            "NIVEL": "SRyS                                              ",
-            "SERVICIO": "SRyS | Acapulco                                   ",
-            "ID_ZONA": 2
-        },
-        {
-            "ID_ORDEN_SERVICIO": 3,
-            "NUM_ORDEN": 30,
-            "FECHA_SOLICITUD": "2018-01-19T00:00:00.000Z",
-            "DOMICILIO": "por ahi",
-            "FIRMA1_USER1": null,
-            "FIRMA1_USER2": null,
-            "FIRMA2_USER1": null,
-            "FIRMA2_USER2": null,
-            "ID_STATUS": 1,
-            "METAINFO_FECHA_CREACION": "2018-01-19T22:55:14.597Z",
-            "METAINFO_IP": "10.15.17.158",
-            "METAINFO_MAC_ADRR": " 00:00:00:a1:2b:cc",
-            "LLAVE_SISTEMA": "332132132131ds",
-            "CIERRE_TOTAL": null,
-            "ID_CREDENCIAL": 1,
-            "NOMBRE": "Carlos Palacios",
-            "CARGO": "Desarrollador",
-            "TELEFONO": "555555555552",
-            "EXT": "55",
-            "EMAIL": "carlos.palacios@enclave.com.mx",
-            "PTT": "sss",
-            "MOVIL": "555555555555",
-            "USUARIO_NOMBRE": "carlos.palacios",
-            "USUARIO_PASSWORD": "12345",
-            "ID_ROL": 2,
-            "ID_CREDENCIAL_SUPERIOR": 2,
-            "ID_AUTORIDAD": 1,
-            "NOMBRE_AUTORIDAD": "Aduana Acapulco\r\n                                 ",
-            "ESTADO": "Acapulco                                          ",
-            "NIVEL": "SRyS                                              ",
-            "SERVICIO": "SRyS | Acapulco                                   ",
-            "ID_ZONA": 2
-        },
-        {
-            "ID_ORDEN_SERVICIO": 4,
-            "NUM_ORDEN": 31,
-            "FECHA_SOLICITUD": "2018-01-19T00:00:00.000Z",
-            "DOMICILIO": "otro lugar",
-            "FIRMA1_USER1": null,
-            "FIRMA1_USER2": null,
-            "FIRMA2_USER1": null,
-            "FIRMA2_USER2": null,
-            "ID_STATUS": 1,
-            "METAINFO_FECHA_CREACION": "2018-01-20T00:48:27.290Z",
-            "METAINFO_IP": "::1",
-            "METAINFO_MAC_ADRR": " 00:00:00:a1:2b:cc",
-            "LLAVE_SISTEMA": "332132132131ds",
-            "CIERRE_TOTAL": null,
-            "ID_CREDENCIAL": 1,
-            "NOMBRE": "Carlos Palacios",
-            "CARGO": "Desarrollador",
-            "TELEFONO": "555555555552",
-            "EXT": "55",
-            "EMAIL": "carlos.palacios@enclave.com.mx",
-            "PTT": "sss",
-            "MOVIL": "555555555555",
-            "USUARIO_NOMBRE": "carlos.palacios",
-            "USUARIO_PASSWORD": "12345",
-            "ID_ROL": 2,
-            "ID_CREDENCIAL_SUPERIOR": 2,
-            "ID_AUTORIDAD": 1,
-            "NOMBRE_AUTORIDAD": "Aduana Acapulco\r\n                                 ",
-            "ESTADO": "Acapulco                                          ",
-            "NIVEL": "SRyS                                              ",
-            "SERVICIO": "SRyS | Acapulco                                   ",
-            "ID_ZONA": 2
-        },
-        {
-            "ID_ORDEN_SERVICIO": 5,
-            "NUM_ORDEN": 32,
-            "FECHA_SOLICITUD": "2018-01-19T00:00:00.000Z",
-            "DOMICILIO": "otro lugar",
-            "FIRMA1_USER1": null,
-            "FIRMA1_USER2": null,
-            "FIRMA2_USER1": null,
-            "FIRMA2_USER2": null,
-            "ID_STATUS": 1,
-            "METAINFO_FECHA_CREACION": "2018-01-20T00:56:46.527Z",
-            "METAINFO_IP": "::1",
-            "METAINFO_MAC_ADRR": " 00:00:00:a1:2b:cc",
-            "LLAVE_SISTEMA": "332132132131ds",
-            "CIERRE_TOTAL": null,
-            "ID_CREDENCIAL": 1,
-            "NOMBRE": "Carlos Palacios",
-            "CARGO": "Desarrollador",
-            "TELEFONO": "555555555552",
-            "EXT": "55",
-            "EMAIL": "carlos.palacios@enclave.com.mx",
-            "PTT": "sss",
-            "MOVIL": "555555555555",
-            "USUARIO_NOMBRE": "carlos.palacios",
-            "USUARIO_PASSWORD": "12345",
-            "ID_ROL": 2,
-            "ID_CREDENCIAL_SUPERIOR": 2,
-            "ID_AUTORIDAD": 1,
-            "NOMBRE_AUTORIDAD": "Aduana Acapulco\r\n                                 ",
-            "ESTADO": "Acapulco                                          ",
-            "NIVEL": "SRyS                                              ",
-            "SERVICIO": "SRyS | Acapulco                                   ",
-            "ID_ZONA": 2
-        },
-        {
-            "ID_ORDEN_SERVICIO": 6,
-            "NUM_ORDEN": 33,
-            "FECHA_SOLICITUD": "2018-01-19T00:00:00.000Z",
-            "DOMICILIO": "otro lugar",
-            "FIRMA1_USER1": null,
-            "FIRMA1_USER2": null,
-            "FIRMA2_USER1": null,
-            "FIRMA2_USER2": null,
-            "ID_STATUS": 1,
-            "METAINFO_FECHA_CREACION": "2018-01-20T07:08:06.460Z",
-            "METAINFO_IP": "::1",
-            "METAINFO_MAC_ADRR": " 00:00:00:a1:2b:cc",
-            "LLAVE_SISTEMA": "332132132131ds",
-            "CIERRE_TOTAL": null,
-            "ID_CREDENCIAL": 1,
-            "NOMBRE": "Carlos Palacios",
-            "CARGO": "Desarrollador",
-            "TELEFONO": "555555555552",
-            "EXT": "55",
-            "EMAIL": "carlos.palacios@enclave.com.mx",
-            "PTT": "sss",
-            "MOVIL": "555555555555",
-            "USUARIO_NOMBRE": "carlos.palacios",
-            "USUARIO_PASSWORD": "12345",
-            "ID_ROL": 2,
-            "ID_CREDENCIAL_SUPERIOR": 2,
-            "ID_AUTORIDAD": 1,
-            "NOMBRE_AUTORIDAD": "Aduana Acapulco\r\n                                 ",
-            "ESTADO": "Acapulco                                          ",
-            "NIVEL": "SRyS                                              ",
-            "SERVICIO": "SRyS | Acapulco                                   ",
-            "ID_ZONA": 2
-        },
-        {
-            "ID_ORDEN_SERVICIO": 7,
-            "NUM_ORDEN": 34,
-            "FECHA_SOLICITUD": "2018-01-19T00:00:00.000Z",
-            "DOMICILIO": "otro lugar",
-            "FIRMA1_USER1": null,
-            "FIRMA1_USER2": null,
-            "FIRMA2_USER1": null,
-            "FIRMA2_USER2": null,
-            "ID_STATUS": 1,
-            "METAINFO_FECHA_CREACION": "2018-01-20T07:23:16.043Z",
-            "METAINFO_IP": "::1",
-            "METAINFO_MAC_ADRR": " 00:00:00:a1:2b:cc",
-            "LLAVE_SISTEMA": "332132132131ds",
-            "CIERRE_TOTAL": null,
-            "ID_CREDENCIAL": 1,
-            "NOMBRE": "Carlos Palacios",
-            "CARGO": "Desarrollador",
-            "TELEFONO": "555555555552",
-            "EXT": "55",
-            "EMAIL": "carlos.palacios@enclave.com.mx",
-            "PTT": "sss",
-            "MOVIL": "555555555555",
-            "USUARIO_NOMBRE": "carlos.palacios",
-            "USUARIO_PASSWORD": "12345",
-            "ID_ROL": 2,
-            "ID_CREDENCIAL_SUPERIOR": 2,
-            "ID_AUTORIDAD": 1,
-            "NOMBRE_AUTORIDAD": "Aduana Acapulco\r\n                                 ",
-            "ESTADO": "Acapulco                                          ",
-            "NIVEL": "SRyS                                              ",
-            "SERVICIO": "SRyS | Acapulco                                   ",
-            "ID_ZONA": 2
-        },
-        {
-            "ID_ORDEN_SERVICIO": 8,
-            "NUM_ORDEN": 35,
-            "FECHA_SOLICITUD": "2018-01-19T00:00:00.000Z",
-            "DOMICILIO": "otro lugar",
-            "FIRMA1_USER1": null,
-            "FIRMA1_USER2": null,
-            "FIRMA2_USER1": null,
-            "FIRMA2_USER2": null,
-            "ID_STATUS": 1,
-            "METAINFO_FECHA_CREACION": "2018-01-20T07:27:31.190Z",
-            "METAINFO_IP": "::1",
-            "METAINFO_MAC_ADRR": " 00:00:00:a1:2b:cc",
-            "LLAVE_SISTEMA": "332132132131ds",
-            "CIERRE_TOTAL": null,
-            "ID_CREDENCIAL": 1,
-            "NOMBRE": "Carlos Palacios",
-            "CARGO": "Desarrollador",
-            "TELEFONO": "555555555552",
-            "EXT": "55",
-            "EMAIL": "carlos.palacios@enclave.com.mx",
-            "PTT": "sss",
-            "MOVIL": "555555555555",
-            "USUARIO_NOMBRE": "carlos.palacios",
-            "USUARIO_PASSWORD": "12345",
-            "ID_ROL": 2,
-            "ID_CREDENCIAL_SUPERIOR": 2,
-            "ID_AUTORIDAD": 1,
-            "NOMBRE_AUTORIDAD": "Aduana Acapulco\r\n                                 ",
-            "ESTADO": "Acapulco                                          ",
-            "NIVEL": "SRyS                                              ",
-            "SERVICIO": "SRyS | Acapulco                                   ",
-            "ID_ZONA": 2
-        },
-        {
-            "ID_ORDEN_SERVICIO": 9,
-            "NUM_ORDEN": 36,
-            "FECHA_SOLICITUD": "2018-01-19T00:00:00.000Z",
-            "DOMICILIO": "otro lugar",
-            "FIRMA1_USER1": null,
-            "FIRMA1_USER2": null,
-            "FIRMA2_USER1": null,
-            "FIRMA2_USER2": null,
-            "ID_STATUS": 1,
-            "METAINFO_FECHA_CREACION": "2018-01-20T07:29:45.590Z",
-            "METAINFO_IP": "::1",
-            "METAINFO_MAC_ADRR": " 00:00:00:a1:2b:cc",
-            "LLAVE_SISTEMA": "332132132131ds",
-            "CIERRE_TOTAL": null,
-            "ID_CREDENCIAL": 1,
-            "NOMBRE": "Carlos Palacios",
-            "CARGO": "Desarrollador",
-            "TELEFONO": "555555555552",
-            "EXT": "55",
-            "EMAIL": "carlos.palacios@enclave.com.mx",
-            "PTT": "sss",
-            "MOVIL": "555555555555",
-            "USUARIO_NOMBRE": "carlos.palacios",
-            "USUARIO_PASSWORD": "12345",
-            "ID_ROL": 2,
-            "ID_CREDENCIAL_SUPERIOR": 2,
-            "ID_AUTORIDAD": 1,
-            "NOMBRE_AUTORIDAD": "Aduana Acapulco\r\n                                 ",
-            "ESTADO": "Acapulco                                          ",
-            "NIVEL": "SRyS                                              ",
-            "SERVICIO": "SRyS | Acapulco                                   ",
-            "ID_ZONA": 2
-        },
-        {
-            "ID_ORDEN_SERVICIO": 10,
-            "NUM_ORDEN": 37,
-            "FECHA_SOLICITUD": "2018-01-19T00:00:00.000Z",
-            "DOMICILIO": "otro lugar",
-            "FIRMA1_USER1": null,
-            "FIRMA1_USER2": null,
-            "FIRMA2_USER1": null,
-            "FIRMA2_USER2": null,
-            "ID_STATUS": 1,
-            "METAINFO_FECHA_CREACION": "2018-01-20T07:32:36.023Z",
-            "METAINFO_IP": "::1",
-            "METAINFO_MAC_ADRR": " ????????",
-            "LLAVE_SISTEMA": "332132132131ds",
-            "CIERRE_TOTAL": null,
-            "ID_CREDENCIAL": 1,
-            "NOMBRE": "Carlos Palacios",
-            "CARGO": "Desarrollador",
-            "TELEFONO": "555555555552",
-            "EXT": "55",
-            "EMAIL": "carlos.palacios@enclave.com.mx",
-            "PTT": "sss",
-            "MOVIL": "555555555555",
-            "USUARIO_NOMBRE": "carlos.palacios",
-            "USUARIO_PASSWORD": "12345",
-            "ID_ROL": 2,
-            "ID_CREDENCIAL_SUPERIOR": 2,
-            "ID_AUTORIDAD": 1,
-            "NOMBRE_AUTORIDAD": "Aduana Acapulco\r\n                                 ",
-            "ESTADO": "Acapulco                                          ",
-            "NIVEL": "SRyS                                              ",
-            "SERVICIO": "SRyS | Acapulco                                   ",
-            "ID_ZONA": 2
-        },
-        {
-            "ID_ORDEN_SERVICIO": 12,
-            "NUM_ORDEN": 38,
-            "FECHA_SOLICITUD": "2018-01-19T00:00:00.000Z",
-            "DOMICILIO": "otro lugar",
-            "FIRMA1_USER1": null,
-            "FIRMA1_USER2": null,
-            "FIRMA2_USER1": null,
-            "FIRMA2_USER2": null,
-            "ID_STATUS": 1,
-            "METAINFO_FECHA_CREACION": "2018-01-20T23:16:30.607Z",
-            "METAINFO_IP": "::1",
-            "METAINFO_MAC_ADRR": " ????????",
-            "LLAVE_SISTEMA": "TNRS-Acapulco -SRyS | Acapulco -sur -2018-38",
-            "CIERRE_TOTAL": null,
-            "ID_CREDENCIAL": 1,
-            "NOMBRE": "Carlos Palacios",
-            "CARGO": "Desarrollador",
-            "TELEFONO": "555555555552",
-            "EXT": "55",
-            "EMAIL": "carlos.palacios@enclave.com.mx",
-            "PTT": "sss",
-            "MOVIL": "555555555555",
-            "USUARIO_NOMBRE": "carlos.palacios",
-            "USUARIO_PASSWORD": "12345",
-            "ID_ROL": 2,
-            "ID_CREDENCIAL_SUPERIOR": 2,
-            "ID_AUTORIDAD": 1,
-            "NOMBRE_AUTORIDAD": "Aduana Acapulco\r\n                                 ",
-            "ESTADO": "Acapulco                                          ",
-            "NIVEL": "SRyS                                              ",
-            "SERVICIO": "SRyS | Acapulco                                   ",
-            "ID_ZONA": 2
-        },
-        {
-            "ID_ORDEN_SERVICIO": 13,
-            "NUM_ORDEN": 39,
-            "FECHA_SOLICITUD": "2018-01-19T00:00:00.000Z",
-            "DOMICILIO": "otro lugar",
-            "FIRMA1_USER1": null,
-            "FIRMA1_USER2": null,
-            "FIRMA2_USER1": null,
-            "FIRMA2_USER2": null,
-            "ID_STATUS": 1,
-            "METAINFO_FECHA_CREACION": "2018-01-20T23:18:27.770Z",
-            "METAINFO_IP": "::1",
-            "METAINFO_MAC_ADRR": " ????????",
-            "LLAVE_SISTEMA": "TNRS-Acapulco -SRyS | Acapulco -2018-39",
-            "CIERRE_TOTAL": null,
-            "ID_CREDENCIAL": 1,
-            "NOMBRE": "Carlos Palacios",
-            "CARGO": "Desarrollador",
-            "TELEFONO": "555555555552",
-            "EXT": "55",
-            "EMAIL": "carlos.palacios@enclave.com.mx",
-            "PTT": "sss",
-            "MOVIL": "555555555555",
-            "USUARIO_NOMBRE": "carlos.palacios",
-            "USUARIO_PASSWORD": "12345",
-            "ID_ROL": 2,
-            "ID_CREDENCIAL_SUPERIOR": 2,
-            "ID_AUTORIDAD": 1,
-            "NOMBRE_AUTORIDAD": "Aduana Acapulco\r\n                                 ",
-            "ESTADO": "Acapulco                                          ",
-            "NIVEL": "SRyS                                              ",
-            "SERVICIO": "SRyS | Acapulco                                   ",
-            "ID_ZONA": 2
-        },
-        {
-            "ID_ORDEN_SERVICIO": 14,
-            "NUM_ORDEN": 40,
-            "FECHA_SOLICITUD": "2018-01-19T00:00:00.000Z",
-            "DOMICILIO": "otro lugar",
-            "FIRMA1_USER1": "esta es la firma",
-            "FIRMA1_USER2": "esta es la otra firma",
-            "FIRMA2_USER1": "ddddddddddd firma final",
-            "FIRMA2_USER2": "rrrrrrrrrrr firma final",
-            "ID_STATUS": 7,
-            "METAINFO_FECHA_CREACION": "2018-01-20T23:26:09.437Z",
-            "METAINFO_IP": "::1",
-            "METAINFO_MAC_ADRR": " ????????",
-            "LLAVE_SISTEMA": "TNRS-Acapulco -SRyS Acapulco -2018-40",
-            "CIERRE_TOTAL": 17160,
-            "ID_CREDENCIAL": 1,
-            "NOMBRE": "Carlos Palacios",
-            "CARGO": "Desarrollador",
-            "TELEFONO": "555555555552",
-            "EXT": "55",
-            "EMAIL": "carlos.palacios@enclave.com.mx",
-            "PTT": "sss",
-            "MOVIL": "555555555555",
-            "USUARIO_NOMBRE": "carlos.palacios",
-            "USUARIO_PASSWORD": "12345",
-            "ID_ROL": 2,
-            "ID_CREDENCIAL_SUPERIOR": 2,
-            "ID_AUTORIDAD": 1,
-            "NOMBRE_AUTORIDAD": "Aduana Acapulco\r\n                                 ",
-            "ESTADO": "Acapulco                                          ",
-            "NIVEL": "SRyS                                              ",
-            "SERVICIO": "SRyS | Acapulco                                   ",
-            "ID_ZONA": 2
-        },
-        {
-            "ID_ORDEN_SERVICIO": 15,
-            "NUM_ORDEN": 41,
-            "FECHA_SOLICITUD": "2018-01-19T00:00:00.000Z",
-            "DOMICILIO": "otro lugar",
-            "FIRMA1_USER1": null,
-            "FIRMA1_USER2": null,
-            "FIRMA2_USER1": null,
-            "FIRMA2_USER2": null,
-            "ID_STATUS": 1,
-            "METAINFO_FECHA_CREACION": "2018-01-21T06:01:21.667Z",
-            "METAINFO_IP": "::1",
-            "METAINFO_MAC_ADRR": " ????????",
-            "LLAVE_SISTEMA": "TNRS-Acapulco -SRyS Acapulco -2018-41",
-            "CIERRE_TOTAL": null,
-            "ID_CREDENCIAL": 1,
-            "NOMBRE": "Carlos Palacios",
-            "CARGO": "Desarrollador",
-            "TELEFONO": "555555555552",
-            "EXT": "55",
-            "EMAIL": "carlos.palacios@enclave.com.mx",
-            "PTT": "sss",
-            "MOVIL": "555555555555",
-            "USUARIO_NOMBRE": "carlos.palacios",
-            "USUARIO_PASSWORD": "12345",
-            "ID_ROL": 2,
-            "ID_CREDENCIAL_SUPERIOR": 2,
-            "ID_AUTORIDAD": 1,
-            "NOMBRE_AUTORIDAD": "Aduana Acapulco\r\n                                 ",
-            "ESTADO": "Acapulco                                          ",
-            "NIVEL": "SRyS                                              ",
-            "SERVICIO": "SRyS | Acapulco                                   ",
-            "ID_ZONA": 2
         }
     ],
+    "success": true
+}
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓getOrdenServicio
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+http://localhost:3000/getOrdenServicio
+<-------------------------------------------
+{
+"idCredencial":"1",
+"idRol":"1",
+"idAutoridad":"2"
+"idOrdenServicio":"22"
+}
+
+------------------------------------------->
+{
+    "ordenServicio": {
+        "ID_ORDEN_SERVICIO": 22,
+        "NUM_ORDEN": 43,
+        "FECHA_SOLICITUD": "2018-01-29T19:38:00.000Z",
+        "DOMICILIO": "testa",
+        "FIRMA1_USER1": "xxx",
+        "FIRMA1_USER2": "xxx",
+        "FIRMA2_USER1": "xxx",
+        "FIRMA2_USER2": "xxx",
+        "ID_STATUS": 1,
+        "METAINFO_FECHA_CREACION": "2018-01-29T19:39:08.343Z",
+        "METAINFO_IP": "::1",
+        "METAINFO_MAC_ADRR": " ????????",
+        "LLAVE_SISTEMA": "TNRS-Acapulco -SRyS Acapulco -2018-43",
+        "CIERRE_TOTAL": null,
+        "ID_CREDENCIAL": 1,
+        "NOMBRE": "Carlos Palacios",
+        "CARGO": "Desarrollador",
+        "TELEFONO": "555555555552",
+        "EXT": "55",
+        "EMAIL": "carlos.palacios@enclave.com.mx",
+        "PTT": "sss",
+        "MOVIL": "555555555555",
+        "USUARIO_NOMBRE": "carlos.palacios",
+        "USUARIO_PASSWORD": "12345",
+        "ID_ROL": 2,
+        "ID_CREDENCIAL_SUPERIOR": 2,
+        "ID_AUTORIDAD": 1,
+        "NOMBRE_AUTORIDAD": "Aduana Acapulco\r\n                                 ",
+        "ESTADO": "Acapulco                                          ",
+        "NIVEL": "SRyS                                              ",
+        "SERVICIO": "SRyS | Acapulco                                   ",
+        "ID_ZONA": 2
+    },
     "success": true
 }
 
@@ -537,22 +162,23 @@ http://localhost:3000/createOrdenServicio
 }
 ------------------------------------------->
 {
-    "metaFechaGeneracion": "2018-01-20T07:32:36.024Z",
+    "metaFechaGeneracion": "2018-01-29T16:49:18.011Z",
     "success": true,
     "ordenServicio": {
-        "NUM_ORDEN": 37,
-        "FECHA_SOLICITUD": "2012-06-18T10:34:09.000Z",
+        "ID_ORDEN_SERVICIO": 16
+        "NUM_ORDEN": 42,
+        "FECHA_SOLICITUD": "2018-01-19T00:00:00.000Z",
         "ID_CREDENCIAL": 1,
-        "DOMICILIO": "otro lugar",
+        "DOMICILIO": "xxx",
         "FIRMA1_USER1": null,
         "FIRMA1_USER2": null,
         "FIRMA2_USER1": null,
         "FIRMA2_USER2": null,
         "ID_STATUS": 1,
-        "METAINFO_FECHA_CREACION": "2018-01-20T07:32:36.023Z",
+        "METAINFO_FECHA_CREACION": "2018-01-29T16:49:18.010Z",
         "METAINFO_IP": "::1",
         "METAINFO_MAC_ADRR": " ????????",
-        "LLAVE_SISTEMA": "332132132131ds"
+        "LLAVE_SISTEMA": "TNRS-Acapulco -SRyS Acapulco -2018-42"
     }
 }
 
@@ -633,41 +259,28 @@ http://localhost:3000/getAllCotizacionXOrden
 {
     "cotizaciones": [
         {
-            "ID_SERVICIO_COTIZACION": 2,
+            "ID_SERVICIO_COTIZACION": 3,
             "ID_ORDEN_SERVICIO": 14,
             "ID_TIPO_SERVICIO": 1,
-            "ID_SERVICIO": 1001,
+            "ID_SERVICIO": 1002,
             "ID_UNIDAD": 1,
             "PRECIO_UNITARIO": 780,
             "CANTIDAD": 2,
             "COTIZACION": 1560,
-            "DEDUCCION": 0,
-            "DEDUCCION_JUSTIFICACION": "",
-            "PRECIO_SERVICIO_FINAL": 0,
-            "VALIDA_DISPONIBILIDAD": 0
-        },
-        {
-            "ID_SERVICIO_COTIZACION": 3,
-            "ID_ORDEN_SERVICIO": 14,
-            "ID_TIPO_SERVICIO": 1,
-            "ID_SERVICIO": 1001,
-            "ID_UNIDAD": 11,
-            "PRECIO_UNITARIO": 780,
-            "CANTIDAD": 2,
-            "COTIZACION": 1560,
-            "DEDUCCION": 0,
-            "DEDUCCION_JUSTIFICACION": " ",
-            "PRECIO_SERVICIO_FINAL": 0,
-            "VALIDA_DISPONIBILIDAD": 0
+            "DEDUCCION_CANTIDAD": 30,
+            "DEDUCCION_TIEMPO": 20,
+            "DEDUCCION": 400,
+            "DEDUCCION_JUSTIFICACION": "por que si",
+            "CANCELACION": 1,
+            "PRECIO_SERVICIO_FINAL": 1160,
+            "VALIDA_DISPONIBILIDAD": 0,
+            "ID_ZONA": 3,
+            "ID_SUBZONA": 1,
+            "ID_PRESTADOR_SERVICIO": 1
         }
     ],
     "success": true
 }
-
-
-
-
-
 
 
 
@@ -724,6 +337,29 @@ http://localhost:3000/removeCotizacion
         {
             "ID_TIPO_SERVICIO": 1,
             "TIPO": "SERVICIO DE TRANSPORTES DE BIENES"
+        }
+    ],
+    "success": true
+}
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓getAllSubZona
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+http://localhost:3000/getAllSubZona
+<-------------------------------------------
+{
+        "idZona":3
+}
+------------------------------------------->
+{
+    "subZona": [
+        {
+            "ID_SUBZONA": 1,
+            "SUBZONA": "Ecatepec La  Lobera"
+        },
+        {
+            "ID_SUBZONA": 2,
+            "SUBZONA": "Nezayork Norte"
         }
     ],
     "success": true
@@ -816,7 +452,8 @@ http://localhost:3000/firma1OrdenServicioGenerador
 <-------------------------------------------
 {
 idOrdenServicio:14,
-firma1User1:'esta es la firma'
+firma1UserId1:'esta es la firma'
+firma1UserName1:'juanito'
 }
 ------------------------------------------->
 {
@@ -829,7 +466,8 @@ http://localhost:3000/firma1OrdenServicioSupervisor
 <-------------------------------------------
 {
 idOrdenServicio:14,
-firma1User1:'esta es la otra firma'
+firma1UserId2:'esta es la otra firma'
+firma1UserName2:'juanito'
 }
 ------------------------------------------->
 {
@@ -842,7 +480,8 @@ http://localhost:3000/firma2OrdenServicioGenerador
 <-------------------------------------------
 {
 idOrdenServicio:14,
-firma1User1:'ddddddddddd firma final'
+firma2UserId1:'ddddddddddd firma final'
+firma2UserName1:'juanito'
 }
 ------------------------------------------->
 {
@@ -855,7 +494,8 @@ http://localhost:3000/firma2OrdenServicioSupervisor
 <-------------------------------------------
 {
 idOrdenServicio:14,
-firma1User1:'rrrrrrrrrrr firma final'
+firma2UserId2:'rrrrrrrrrrr firma final'
+firma2UserName2:'juanito'
 }
 ------------------------------------------->
 {

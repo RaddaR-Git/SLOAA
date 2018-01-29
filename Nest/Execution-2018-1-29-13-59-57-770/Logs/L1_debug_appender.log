@@ -1,0 +1,49 @@
+[2018-01-29T14:00:02.344] [INFO] ICC - RID:[1517256002344]-[REQUEST]-[START]:[/firma1OrdenServicioGenerador]
+[2018-01-29T14:00:02.345] [INFO] ICC - RID:[1517256002344]-[FREE-DML]-[START]
+[2018-01-29T14:00:02.345] [DEBUG] DCC - RID:[1517256002344]-[FREE-DML]-[DML]:[ UPDATE [dbo].[SLOAA_TR_ORDEN_SERVICIO] SET
+            [FIRMA1_USER1]='xxx'
+            ,[FIRMA1_USERNAME1]='juanito'
+WHERE [ID_ORDEN_SERVICIO]=43]
+[2018-01-29T14:00:02.473] [INFO] ICC - RID:[1517256002344]-[FREE-DML]-[END]:[OK]
+[2018-01-29T14:00:02.474] [INFO] ICC - RID:[1517256002344]-[REQUEST]-[END]:[/firma1OrdenServicioGenerador]
+[2018-01-29T14:00:26.133] [INFO] ICC - RID:[1517256026133]-[REQUEST]-[START]:[/firma1OrdenServicioGenerador]
+[2018-01-29T14:00:26.134] [INFO] ICC - RID:[1517256026133]-[FREE-DML]-[START]
+[2018-01-29T14:00:26.134] [DEBUG] DCC - RID:[1517256026133]-[FREE-DML]-[DML]:[ UPDATE [dbo].[SLOAA_TR_ORDEN_SERVICIO] SET
+            [FIRMA1_USER1]='xxx'
+            ,[FIRMA1_USERNAME1]='juanito'
+WHERE [ID_ORDEN_SERVICIO]=22]
+[2018-01-29T14:00:26.197] [INFO] ICC - RID:[1517256026133]-[FREE-DML]-[END]:[OK]
+[2018-01-29T14:00:26.198] [INFO] ICC - RID:[1517256026133]-[REQUEST]-[END]:[/firma1OrdenServicioGenerador]
+[2018-01-29T14:00:55.269] [INFO] ICC - RID:[1517256055269]-[REQUEST]-[START]:[/firma1OrdenServicioSupervisor]
+[2018-01-29T14:00:55.270] [DEBUG] DCC - {"missing":[{"requiredFieldName":"firma1UserId2","requiredFieldType":"string"},{"requiredFieldName":"firma1UserName2","requiredFieldType":"string"}],"extra":[{"inputFieldName":"firma1UserId1","inputFieldType":"string"},{"inputFieldName":"firma1UserName1","inputFieldType":"string"}]}
+[2018-01-29T14:00:55.270] [ERROR] ECC - RID:[1517256055269]-[REQUEST]-[ERROR]:[Input parameter problem.]:[/firma1OrdenServicioSupervisor]
+[2018-01-29T14:01:14.223] [INFO] ICC - RID:[1517256074223]-[REQUEST]-[START]:[/firma1OrdenServicioSupervisor]
+[2018-01-29T14:01:14.224] [INFO] ICC - RID:[1517256074223]-[FREE-DML]-[START]
+[2018-01-29T14:01:14.224] [DEBUG] DCC - RID:[1517256074223]-[FREE-DML]-[DML]:[ UPDATE [dbo].[SLOAA_TR_ORDEN_SERVICIO] SET
+            [FIRMA1_USER2]='xxx'
+            ,[FIRMA1_USERNAME2]='juanito'
+WHERE [ID_ORDEN_SERVICIO]=22]
+[2018-01-29T14:01:14.335] [INFO] ICC - RID:[1517256074223]-[FREE-DML]-[END]:[OK]
+[2018-01-29T14:01:14.336] [INFO] ICC - RID:[1517256074223]-[REQUEST]-[END]:[/firma1OrdenServicioSupervisor]
+[2018-01-29T14:01:33.445] [INFO] ICC - RID:[1517256093445]-[REQUEST]-[START]:[/firma2OrdenServicioGenerador]
+[2018-01-29T14:01:33.446] [DEBUG] DCC - {"missing":[{"requiredFieldName":"firma2UserId1","requiredFieldType":"string"},{"requiredFieldName":"firma2UserName1","requiredFieldType":"string"}],"extra":[{"inputFieldName":"firma1UserId2","inputFieldType":"string"},{"inputFieldName":"firma1UserName2","inputFieldType":"string"}]}
+[2018-01-29T14:01:33.446] [ERROR] ECC - RID:[1517256093445]-[REQUEST]-[ERROR]:[Input parameter problem.]:[/firma2OrdenServicioGenerador]
+[2018-01-29T14:01:40.269] [INFO] ICC - RID:[1517256100269]-[REQUEST]-[START]:[/firma2OrdenServicioGenerador]
+[2018-01-29T14:01:40.269] [INFO] ICC - RID:[1517256100269]-[FREE-DML]-[START]
+[2018-01-29T14:01:40.270] [DEBUG] DCC - RID:[1517256100269]-[FREE-DML]-[DML]:[ UPDATE [dbo].[SLOAA_TR_ORDEN_SERVICIO] SET
+            [FIRMA2_USER1]='xxx'
+            ,[FIRMA2_USERNAME1]='juanito'
+WHERE [ID_ORDEN_SERVICIO]=22]
+[2018-01-29T14:01:40.369] [INFO] ICC - RID:[1517256100269]-[FREE-DML]-[END]:[OK]
+[2018-01-29T14:01:40.370] [INFO] ICC - RID:[1517256100269]-[REQUEST]-[END]:[/firma2OrdenServicioGenerador]
+[2018-01-29T14:02:04.643] [INFO] ICC - RID:[1517256124643]-[REQUEST]-[START]:[/firma2OrdenServicioSupervisor]
+[2018-01-29T14:02:04.644] [DEBUG] DCC - {"missing":[{"requiredFieldName":"firma2UserId2","requiredFieldType":"string"},{"requiredFieldName":"firma2UserName2","requiredFieldType":"string"}],"extra":[{"inputFieldName":"firma2UserId1","inputFieldType":"string"},{"inputFieldName":"firma2UserName1","inputFieldType":"string"}]}
+[2018-01-29T14:02:04.644] [ERROR] ECC - RID:[1517256124643]-[REQUEST]-[ERROR]:[Input parameter problem.]:[/firma2OrdenServicioSupervisor]
+[2018-01-29T14:02:12.699] [INFO] ICC - RID:[1517256132699]-[REQUEST]-[START]:[/firma2OrdenServicioSupervisor]
+[2018-01-29T14:02:12.699] [INFO] ICC - RID:[1517256132699]-[FREE-DML]-[START]
+[2018-01-29T14:02:12.699] [DEBUG] DCC - RID:[1517256132699]-[FREE-DML]-[DML]:[ UPDATE [dbo].[SLOAA_TR_ORDEN_SERVICIO] SET
+            [FIRMA2_USER2]='xxx'
+            ,[FIRMA2_USERNAME2]='juanito'
+WHERE [ID_ORDEN_SERVICIO]=22]
+[2018-01-29T14:02:12.778] [INFO] ICC - RID:[1517256132699]-[FREE-DML]-[END]:[OK]
+[2018-01-29T14:02:12.778] [INFO] ICC - RID:[1517256132699]-[REQUEST]-[END]:[/firma2OrdenServicioSupervisor]

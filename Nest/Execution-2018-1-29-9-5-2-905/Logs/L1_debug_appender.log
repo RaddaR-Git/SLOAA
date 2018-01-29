@@ -1,0 +1,25 @@
+[2018-01-29T09:05:03.048] [INFO] ICC - [BACKEND]-[WEBSERVICES] init on port:[3000]
+[2018-01-29T09:05:05.445] [INFO] ICC - RID:[1517238305444]-[REQUEST]-[START]:[/defaultSelect]
+[2018-01-29T09:05:05.446] [INFO] ICC - RID:[1517238305444]-[SELECT]-[START]
+[2018-01-29T09:05:05.446] [DEBUG] DCC - RID:[1517238305444]-[SELECT]-[QUERY]:[SELECT [CRED].[ID_CREDENCIAL]
+      ,[CRED].[NOMBRE]
+      ,[CRED].[USUARIO_NOMBRE]
+      ,[CRED].[ID_AUTORIDAD]
+	  ,[AUTH].[NOMBRE_AUTORIDAD]
+	  ,[AUTH].[ID_ZONA]
+         ,[CRED].[ID_ROL]
+	  ,[ROL].[NOMBRE_ROL]
+	  ,[ROL].[PRIVILEGIOS]
+      ,[CRED].[ID_CREDENCIAL_SUPERIOR]
+  FROM [dbo].[SLOAA_TR_CREDENCIAL] [CRED]
+  LEFT JOIN  [dbo].[SLOAA_TC_AUTORIDAD] [AUTH] ON [CRED].[ID_AUTORIDAD]=[AUTH].[ID_AUTORIDAD]
+  LEFT JOIN  [dbo].[SLOAA_TS_ROL] [ROL] ON [CRED].[ID_ROL]=[ROL].[ID_ROL]
+  
+  WHERE 
+	            [CRED].[USUARIO_NOMBRE]='carlos.palacios'
+		AND [CRED].[USUARIO_PASSWORD]='12345']
+[2018-01-29T09:05:05.502] [INFO] ICC - RID:[1517238305444]-[SELECT]-[END]:[OK]
+[2018-01-29T09:05:05.502] [INFO] ICC - RID:[1517238305444]-[REQUEST]-[END]:[/defaultSelect]
+[2018-01-29T09:05:05.690] [INFO] ICC - RID:[1517238305690]-[REQUEST]-[START]:[/getAllOrdenServicio]
+[2018-01-29T09:05:05.690] [DEBUG] DCC - {"missing":[{"requiredFieldName":"idRol","requiredFieldType":"string"},{"requiredFieldName":"idAutoridad","requiredFieldType":"string"},{"requiredFieldName":"string","requiredFieldType":"string"}],"extra":[{"inputFieldName":"callback","inputFieldType":"string"}]}
+[2018-01-29T09:05:05.691] [ERROR] ECC - RID:[1517238305690]-[REQUEST]-[ERROR]:[Input parameter problem.]:[/getAllOrdenServicio]
