@@ -17,7 +17,7 @@ http://localhost:3000/login
 		"NOMBRE": "Carlos Palacios",
 		"USUARIO_NOMBRE": "carlos.palacios",
 		"ID_AUTORIDAD": 1,
-		"NOMBRE_AUTORIDAD": "Aduana Acapulco\r\n                                 ",
+		"NOMBRE_AUTORIDAD": "Aduana Acapulco",
 		"ID_ZONA": 2,
 		"ID_ROL": 2,
 		"NOMBRE_ROL": "AUTORIDAD ESTANDAR",
@@ -25,14 +25,14 @@ http://localhost:3000/login
 			"f1": true,
 			"f2": true,
 			"f3": {
-				tt "gen": true,
-				tt "rev": falsett
+				"gen": true,
+				"rev": falsett
 			},
 			"f4": false,
 			"f5": true,
 			"f6": {
-				tt "gen": true,
-				tt "rev": falsett
+				"gen": true,
+				"rev": falsett
 			},
 			"f7": true
 		},
