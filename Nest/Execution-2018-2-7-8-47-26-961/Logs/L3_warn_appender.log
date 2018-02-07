@@ -1,0 +1,7 @@
+[2018-02-07T10:08:02.883] [ERROR] ECC - RID:[1518019682859]-[SELECT]-[END]:[FAIL]:[Incorrect syntax near '='.]
+[2018-02-07T10:08:02.883] [ERROR] ECC - RID:[1518019682859]-[REQUEST]-[ERROR]:[Incorrect syntax near '='.]:[/getAllCotizacionXOrden]
+[2018-02-07T10:08:39.241] [ERROR] ECC - RID:[1518019719218]-[SELECT]-[END]:[FAIL]:[Incorrect syntax near '='.]
+[2018-02-07T10:08:39.241] [ERROR] ECC - RID:[1518019719218]-[REQUEST]-[ERROR]:[Incorrect syntax near '='.]:[/getAllCotizacionXOrden]
+[2018-02-07T10:19:47.155] [ERROR] ECC - RID:[1518020387155]-[REQUEST]-[ERROR]:[Input parameter problem.]:[/getAllCotizacionXOrden]
+[2018-02-07T10:20:05.668] [ERROR] ECC - RID:[1518020405668]-[REQUEST]-[ERROR]:[Input parameter problem.]:[/getAllOrdenServicio]
+[2018-02-07T10:20:26.692] [ERROR] ECC - RID:[1518020426692]-[REQUEST]-[ERROR]:[Input parameter problem.]:[/getAllOrdenServicio]

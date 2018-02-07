@@ -1,0 +1,7 @@
+[2018-02-07T11:13:03.387] [ERROR] ECC - RID:[1518023583386]-[REQUEST]-[ERROR]:[Input parameter problem.]:[/getUnidadYPrecioUnitarioXServicio]
+[2018-02-07T11:13:30.898] [ERROR] ECC - RID:[1518023610877]-[SELECT]-[END]:[FAIL]:[Incorrect syntax near the keyword 'AND'.]
+[2018-02-07T11:13:30.899] [ERROR] ECC - RID:[1518023610877]-[REQUEST]-[ERROR]:[Incorrect syntax near the keyword 'AND'.]:[/getUnidadYPrecioUnitarioXServicio]
+[2018-02-07T11:13:31.898] [ERROR] ECC - RID:[1518023611882]-[SELECT]-[END]:[FAIL]:[Incorrect syntax near the keyword 'AND'.]
+[2018-02-07T11:13:31.898] [ERROR] ECC - RID:[1518023611882]-[REQUEST]-[ERROR]:[Incorrect syntax near the keyword 'AND'.]:[/getUnidadYPrecioUnitarioXServicio]
+[2018-02-07T11:13:35.367] [ERROR] ECC - RID:[1518023615306]-[SELECT]-[END]:[FAIL]:[Incorrect syntax near the keyword 'AND'.]
+[2018-02-07T11:13:35.367] [ERROR] ECC - RID:[1518023615306]-[REQUEST]-[ERROR]:[Incorrect syntax near the keyword 'AND'.]:[/getUnidadYPrecioUnitarioXServicio]

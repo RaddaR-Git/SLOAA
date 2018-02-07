@@ -1,0 +1,4 @@
+[2018-02-07T15:13:22.108] [ERROR] ECC - RID:[1518038002072]-[SELECT]-[END]:[FAIL]:[Incorrect syntax near ')'.]
+[2018-02-07T15:13:22.108] [ERROR] ECC - RID:[1518038002072]-[REQUEST]-[ERROR]:[Incorrect syntax near ')'.]:[/getAllProvedores]
+[2018-02-07T15:13:23.900] [ERROR] ECC - RID:[1518038003880]-[SELECT]-[END]:[FAIL]:[Incorrect syntax near ')'.]
+[2018-02-07T15:13:23.901] [ERROR] ECC - RID:[1518038003880]-[REQUEST]-[ERROR]:[Incorrect syntax near ')'.]:[/getUnidadYPrecioUnitarioXServicio]

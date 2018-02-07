@@ -25,7 +25,7 @@ var error = new Error();
         error.code = '[' + module + ']-[' + type + ']';
         error.message = '[' + errorMessage + ']';
         return error;
-}
+        }
 
 }
 //</editor-fold>
@@ -38,37 +38,37 @@ var error = new Error();
 class ENC extends ENCPrimal {
 constructor() {
 super();
-}
+        }
 static NULL() {
 return  'null';
-}
+        }
 static UNDEFINED() {
 return  'undefined';
-}
+        }
 static BOOLEAN() {
 return  'boolean';
-}
+        }
 static NUMBER() {
 return  'number';
-}
+        }
 static STRING() {
 return 'string';
-}
+        }
 static SYMBOL() {
 return 'symbol';
-}
+        }
 static FUNCTION() {
 return  'function';
-}
+        }
 static ARRAY() {
 return  'array';
-}
+        }
 static OBJECT() {
 return  'object';
-}
+        }
 static UNSUPPORTED() {
 return  'unsupported';
-}
+        }
 static getType(inObject) {
 switch (typeof inObject) {
 case ENC.NULL():
@@ -90,33 +90,33 @@ case ENC.NULL():
         case ENC.OBJECT():
         if (inObject === null) {
 return ENC.NULL();
-} else if (inObject === undefined) {
+        } else if (inObject === undefined) {
 return ENC.UNDEFINED();
-} else if (inObject instanceof Function) {
+        } else if (inObject instanceof Function) {
 return ENC.FUNCTION();
-} else if (Array.isArray(inObject)) {
+        } else if (Array.isArray(inObject)) {
 return ENC.ARRAY();
-}
+        }
 return ENC.OBJECT();
         default:
         return ENC.UNSUPPORTED();
-}
+        }
 }
 
 static isType(inData, type) {
 if (ENC.getType(inData) === type) {
 return true;
-} else {
+        } else {
 return false;
-}
+        }
 }
 static validateType(variableName, inData, type) {
 var currentType = ENC.getType(inData);
         if (currentType === type) {
 return true;
-} else {
+        } else {
 throw ENCError.createError('ENC', 'Validation', 'Want var[' + variableName + '] type:[' + type + '] recive type:[' + currentType + ']]');
-}
+        }
 }
 
 static validateObjectFields(inData, fieldValidations) {
@@ -124,7 +124,7 @@ var response = {
 missing: [],
         typeFail: [],
         extra: []
-};
+        };
         var currentRequiredFieldName = null;
         var currentRequiredFieldType = null;
         var currentInputFieldName = null;
@@ -136,11 +136,11 @@ currentRequiredFieldName = fieldValidations[i].requiredFieldName;
         fieldsRequired[currentRequiredFieldName] = true;
         if (!inData.hasOwnProperty(currentRequiredFieldName)) {
 response.missing.push(new FieldMissing(currentRequiredFieldName, currentRequiredFieldType));
-} else {
+        } else {
 currentInputFieldType = ENC.getType(inData[currentRequiredFieldName]);
         if (currentInputFieldType !== currentRequiredFieldType) {
 response.typeFail.push(new FieldTypeProblem(currentRequiredFieldName, currentRequiredFieldType, currentInputFieldType));
-}
+        }
 }
 }
 for (var property in inData) {
@@ -148,33 +148,33 @@ currentInputFieldName = property;
         currentInputFieldType = ENC.getType(inData[currentInputFieldName]);
         if (!fieldsRequired.hasOwnProperty(currentInputFieldName)) {
 response.extra.push(new FieldExtra(currentInputFieldName, currentInputFieldType));
-}
+        }
 }
 var flag = false;
         if (response.missing.length === 0) {
 delete response.missing;
-} else {
+        } else {
 flag = true;
-}
+        }
 if (response.typeFail.length === 0) {
 delete response.typeFail;
-} else {
+        } else {
 flag = true;
-}
+        }
 if (response.extra.length === 0) {
 delete response.extra;
-} else {
+        } else {
 flag = true;
-}
+        }
 if (flag) {
 return response;
-} else {
+        } else {
 return null;
-}
+        }
 }
 static isStringValidNumber(input) {
 return /^\d+$/.test(input);
-}
+        }
 }
 //</editor-fold>
 
@@ -188,28 +188,28 @@ class FieldValidation {
 constructor(requiredFieldName, requiredFieldType) {
 this.requiredFieldName = requiredFieldName;
         this.requiredFieldType = requiredFieldType;
-}
+        }
 }
 
 class FieldMissing {
 constructor(requiredFieldName, requiredFieldType) {
 this.requiredFieldName = requiredFieldName;
         this.requiredFieldType = requiredFieldType;
-}
+        }
 }
 
 class FieldExtra {
 constructor(inputFieldName, inputFieldType) {
 this.inputFieldName = inputFieldName;
         this.inputFieldType = inputFieldType;
-}
+        }
 }
 class FieldTypeProblem {
 constructor(requiredFieldName, requiredFieldType, inputFieldType) {
 this.requiredFieldName = requiredFieldName;
         this.requiredFieldType = requiredFieldType;
         this.inputFieldType = inputFieldType;
-}
+        }
 }
 //</editor-fold>
 
@@ -222,22 +222,22 @@ this.requiredFieldName = requiredFieldName;
 class ENCRandomGenerator extends ENCPrimal {
 constructor() {
 super();
-}
+        }
 static getNumberBetween(min, max) {
 return Math.floor(Math.random() * (max - min) + min);
-}
+        }
 static getAlphabetic() {
 var abcRange = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         return abcRange.charAt(Math.floor(Math.random() * abcRange.length));
-}
+        }
 static getAlphaNumeric() {
 var abcRange = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         return abcRange.charAt(Math.floor(Math.random() * abcRange.length));
-}
+        }
 static getNumeric() {
 var abcRange = '0123456789';
         return abcRange.charAt(Math.floor(Math.random() * abcRange.length));
-}
+        }
 static getRandomKey() {
 var key = '';
         key = key + ENCRandomGenerator.getAlphabetic();
@@ -246,7 +246,7 @@ var key = '';
         key = key + ENCRandomGenerator.getAlphabetic();
         key = key + ENCRandomGenerator.getNumberBetween(1000, 9999);
         return key;
-}
+        }
 static getFullRandomKey() {
 var key = '';
         key = key + ENCRandomGenerator.getAlphaNumeric();
@@ -260,7 +260,7 @@ var key = '';
         key = key + ENCRandomGenerator.getNumeric();
         key = key + ENCRandomGenerator.getAlphaNumeric();
         return key;
-}
+        }
 }
 //</editor-fold>
 
@@ -273,7 +273,7 @@ var key = '';
 class ENCripto extends ENCPrimal {
 constructor() {
 super();
-}
+        }
 
 encrypt(text, password) {
 var algorithm = 'aes-256-ctr';
@@ -281,7 +281,7 @@ var algorithm = 'aes-256-ctr';
         var crypted = cipher.update(text, 'utf8', 'hex');
         crypted += cipher.final('hex');
         return crypted;
-}
+        }
 
 decrypt(text, password) {
 try {
@@ -290,9 +290,9 @@ var algorithm = 'aes-256-ctr';
         var dec = decipher.update(text, 'hex', 'utf8');
         dec += decipher.final('utf8');
         return dec;
-} catch (e) {
+        } catch (e) {
 return "";
-}
+        }
 
 }
 
@@ -316,10 +316,10 @@ class ENCUnit extends ENCPrimal {
 constructor(inUnitData) {
 super();
         this.unitData = inUnitData;
-}
+        }
 addData(inUnitData) {
 this.unitData = inUnitData;
-}
+        }
 getDataAsString() {
 switch (ENC.getType(this.unitData)) {
 case ENC.NULL():
@@ -329,9 +329,9 @@ case ENC.NULL():
         case ENC.BOOLEAN():
         if (this.unitData) {
 return 'true';
-} else {
+        } else {
 return 'false';
-}
+        }
 case ENC.NUMBER():
         return this.unitData.toString();
         case ENC.STRING():
@@ -346,7 +346,7 @@ case ENC.NUMBER():
         return JSON.stringify(this.unitData);
         default:
         return '[E-Unsuported]';
-}
+        }
 }
 getDataAsInt() {
 var tempData;
@@ -366,12 +366,12 @@ case 'string':
         default:
         tempData = 0;
         break;
-}
+        }
 if (isNaN(tempData)) {
 return 0;
-} else {
+        } else {
 return tempData;
-}
+        }
 }
 getDataAsFloat() {
 var tempData;
@@ -391,16 +391,16 @@ case 'string':
         default:
         tempData = 0;
         break;
-}
+        }
 if (isNaN(tempData)) {
 return 0;
-} else {
+        } else {
 return tempData;
-}
+        }
 }
 getDataAsObject() {
 return this.unitData;
-}
+        }
 }
 //</editor-fold>
 //------------------------------------------------------------------------------
@@ -414,25 +414,25 @@ constructor() {
 super();
         this.columns = new Array();
         this.rows = new Array();
-}
+        }
 getRow(rowPos) {
 return this.rows[rowPos];
-}
+        }
 getRows() {
 return this.rows;
-}
+        }
 getColumn(columnPos) {
 return this.columns[columnPos];
-}
+        }
 getColumns() {
 return this.columns;
-}
+        }
 getFisrtRow() {
 return this.rows[0];
-}
+        }
 hasRows() {
 return this.rows.length > 0;
-}
+        }
 
 }
 //</editor-fold>
@@ -454,10 +454,10 @@ class ENCManagerNest extends ENCPrimal {
 constructor() {
 super();
         this.nestExecution = new Date();
-}
+        }
 nestRute() {
 return  __dirname + "/" + 'Nest/';
-}
+        }
 currentExecutionRute() {
 return  'Nest/Execution-' +
         (this.nestExecution.getFullYear()) + '-' +
@@ -467,16 +467,16 @@ return  'Nest/Execution-' +
         (this.nestExecution.getMinutes()) + '-' +
         (this.nestExecution.getSeconds()) + '-' +
         (this.nestExecution.getMilliseconds()) + '/';
-}
+        }
 logsRute() {
 return this.currentExecutionRute() + 'Logs/';
-}
+        }
 init(inputObject) {
 return new Promise(function (resolve, reject) {
 resolve(inputObject);
         return;
-});
-}
+        });
+        }
 }
 //</editor-fold>
 //------------------------------------------------------------------------------
@@ -514,37 +514,37 @@ super();
         this.loggerWarn = log4js.getLogger("WCC");
         this.loggerError = log4js.getLogger("ECC");
         this.loggerFatal = log4js.getLogger("FCC");
-}
+        }
 
 trace(msg) {
 this.currentMsg.addData(msg);
         this.loggerTrace.trace(this.currentMsg.getDataAsString());
-}
+        }
 debug(msg) {
 this.currentMsg.addData(msg);
         this.loggerDebug.debug(this.currentMsg.getDataAsString());
-}
+        }
 info(msg) {
 this.currentMsg.addData(msg);
         this.loggerInfo.info(this.currentMsg.getDataAsString());
-}
+        }
 warn(msg) {
 this.currentMsg.addData(msg);
         this.loggerWarn.warn(this.currentMsg.getDataAsString());
-}
+        }
 error(msg) {
 this.currentMsg.addData(msg);
         this.loggerError.error(this.currentMsg.getDataAsString());
-}
+        }
 fatal(msg) {
 this.currentMsg.addData(msg);
         this.loggerFatal.fatal(this.currentMsg.getDataAsString());
-}
+        }
 
 mail(msg) {
 this.currentMsg.addData(msg);
         this.loggerFatal.fatal(this.currentMsg.getDataAsString());
-}
+        }
 
 }
 //</editor-fold>
@@ -557,7 +557,7 @@ this.currentMsg.addData(msg);
 class ENCManagerMysql extends ENCPrimal {
 constructor(inManagerCommunication) {
 super();
-}
+        }
 selectPromise(input) {
 return new Promise(function (resolve, reject) {
 
@@ -565,10 +565,10 @@ try {
 ENC.validateType('requestID', input.requestID, ENC.NUMBER());
         ENC.validateType('connectionParameters', input.connectionParameters, ENC.OBJECT());
         ENC.validateType('query', input.query, ENC.STRING());
-} catch (err) {
+        } catch (err) {
 reject(err);
         return;
-}
+        }
 
 mc.info('RID:[' + input.requestID + ']-[SELECT]-[START]');
         mc.debug('RID:[' + input.requestID + ']-[SELECT]-[QUERY]:[' + input.query + ']');
@@ -593,8 +593,8 @@ mc.info('RID:[' + input.requestID + ']-[SELECT]-[START]');
                 mc.info('RID:[' + input.requestID + ']-[SELECT]-[END]:[OK]');
         });
         });
-});
-}
+        });
+        }
 
 freeDMLPromise(input) {
 return new Promise(function (resolve, reject) {
@@ -603,10 +603,10 @@ ENC.validateType('requestID', input.requestID, ENC.NUMBER());
         ENC.validateType('connectionParameters', input.connectionParameters, ENC.OBJECT());
         ENC.validateType('looked', input.looked, ENC.NUMBER());
         ENC.validateType('dml', input.dml, ENC.STRING());
-} catch (err) {
+        } catch (err) {
 reject(err);
         return;
-}
+        }
 
 if (input.looked === 1) {
 mc.info('RID:[' + input.requestID + ']-[FREE-DML]-[START]');
@@ -630,12 +630,12 @@ mc.info('RID:[' + input.requestID + ']-[FREE-DML]-[START]');
                 mc.info('RID:[' + input.requestID + ']-[FREE-DML]-[END]:[OK]');
         });
         });
-} else {
+        } else {
 mc.info('RID:[' + input.requestID + ']-[FREE-DML]-[LOOKED]-[END]:[OK]');
         resolve(input);
-}
+        }
 });
-}
+        }
 }
 //</editor-fold>
 //------------------------------------------------------------------------------
@@ -647,7 +647,7 @@ mc.info('RID:[' + input.requestID + ']-[FREE-DML]-[LOOKED]-[END]:[OK]');
 class ENCManagerSQLServer extends ENCPrimal {
 constructor(inManagerCommunication) {
 super();
-}
+        }
 selectPromise(input) {
 return new Promise(function (resolve, reject) {
 
@@ -655,10 +655,10 @@ try {
 ENC.validateType('requestID', input.requestID, ENC.NUMBER());
         ENC.validateType('connectionParameters', input.connectionParameters, ENC.OBJECT());
         ENC.validateType('query', input.query, ENC.STRING());
-} catch (err) {
+        } catch (err) {
 reject(err);
         return;
-}
+        }
 
 mc.info('RID:[' + input.requestID + ']-[SELECT]-[START]');
         mc.debug('RID:[' + input.requestID + ']-[SELECT]-[QUERY]:[' + input.query + ']');
@@ -675,7 +675,7 @@ reject(err);
         } catch (e) {
 }
 return;
-}
+        }
 
 var request = new sql.Request();
         request.query(input.query, function (err, recordset) {
@@ -699,9 +699,9 @@ var request = new sql.Request();
         }
         mc.info('RID:[' + input.requestID + ']-[SELECT]-[END]:[OK]');
         });
-});
-});
-}
+        });
+        });
+        }
 
 freeDMLPromise(input) {
 return new Promise(function (resolve, reject) {
@@ -710,10 +710,10 @@ ENC.validateType('requestID', input.requestID, ENC.NUMBER());
         ENC.validateType('connectionParameters', input.connectionParameters, ENC.OBJECT());
         ENC.validateType('looked', input.looked, ENC.NUMBER());
         ENC.validateType('dml', input.dml, ENC.STRING());
-} catch (err) {
+        } catch (err) {
 reject(err);
         return;
-}
+        }
 
 if (input.looked === 1) {
 
@@ -732,7 +732,7 @@ reject(err);
         } catch (e) {
 }
 return;
-}
+        }
 
 var request = new sql.Request();
         request.query(input.dml, function (err, result) {
@@ -753,13 +753,13 @@ var request = new sql.Request();
         }
         mc.info('RID:[' + input.requestID + ']-[FREE-DML]-[END]:[OK]');
         });
-});
-} else {
+        });
+        } else {
 mc.info('RID:[' + input.requestID + ']-[FREE-DML]-[LOOKED]-[END]:[OK]');
         resolve(input);
-}
+        }
 });
-}
+        }
 }
 //</editor-fold>
 
@@ -772,7 +772,7 @@ mc.info('RID:[' + input.requestID + ']-[FREE-DML]-[LOOKED]-[END]:[OK]');
 class ENCManagerMail extends ENCPrimal {
 constructor(inManagerCommunication) {
 super();
-}
+        }
 sendMail(input) {
 return new Promise(function (resolve, reject) {
 mc.debug('Inicia envio de mail');
@@ -787,7 +787,7 @@ mc.debug('Inicia envio de mail');
         } catch (err) {
 reject(err);
         return;
-}
+        }
 mc.debug('Parametros de envio de Email validados.');
         var mailOptions = {
         from: input.from, // sender address
@@ -806,8 +806,8 @@ mc.debug('Parametros de envio de Email validados.');
                 resolve(input);
                 mc.debug('Mail enviado Exitosamente al correo:[' + input.to + ']');
         });
-});
-}
+        });
+        }
 }
 //</editor-fold>
 //------------------------------------------------------------------------------
@@ -829,9 +829,9 @@ ENC.validateType('response', response, ENC.OBJECT());
 response.inputValidation = inputValidation;
         mc.debug(response.inputValidation);
         throw new Error("Input parameter problem.");
-} else {
+        } else {
 return response;
-}
+        }
 };
         var replaceAll = function (str, find, replace) {
         var temp = str;
@@ -1101,7 +1101,6 @@ return response;
                         "      ,[CRED].[PTT]\n" +
                         "      ,[CRED].[MOVIL]\n" +
                         "      ,[CRED].[USUARIO_NOMBRE]\n" +
-                        "      ,[CRED].[USUARIO_PASSWORD]\n" +
                         "      ,[CRED].[ID_ROL]\n" +
                         "      ,[CRED].[ID_CREDENCIAL_SUPERIOR]\n" +
                         "\n" +
@@ -1112,10 +1111,12 @@ return response;
                         "      ,[AUTH].[SERVICIO]\n" +
                         "      ,[AUTH].[ID_ZONA] \n" +
                         "       " +
+                        "      ,[STATUS].[NOMBRE_STATUS]\n" +
                         "  FROM \n" +
                         "  [SLOAA_TR_ORDEN_SERVICIO] [ORD]\n" +
                         " LEFT JOIN [SLOAA_TR_CREDENCIAL] [CRED] ON  [CRED].[ID_CREDENCIAL]=[ORD].[ID_CREDENCIAL]\n" +
                         " LEFT JOIN [SLOAA_TC_AUTORIDAD] [AUTH] ON  [AUTH].[ID_AUTORIDAD]=[CRED].[ID_AUTORIDAD]\n" +
+                        " LEFT JOIN [dbo].[SLOAA_TC_STATUS] [STATUS] ON  [ORD].[ID_STATUS]=[STATUS].[ID_STATUS]\n" +
                         "  WHERE\n" +
                         "  1=1\n ";
                         if (dp.idRol === "1") {
@@ -1290,6 +1291,8 @@ return response;
                 });
         });
 //</editor-fold>
+
+
 //<editor-fold defaultstate="collapsed" desc="getSigns">
         app.get('/getSigns', function (req, res) {
         var requestID = new Date().getTime();
@@ -1337,14 +1340,14 @@ return response;
 
                 if (dp.idRol === "2") {
                 if (dp.idCredencial !== "") {
-                dp.query = dp.query + "   AND  [AUTH].[ID_AUTORIDAD]=" + dp.idCredencial + "\n ";
+                dp.query = dp.query + "   AND  [AUTH].[ID_AUTORIDAD]=" + dp.idAutoridad + "\n ";
                         dp.query = dp.query + "   AND  [ORD].[ID_CREDENCIAL]=" + dp.idCredencial + "\n ";
                 }
                 }
 
                 if (dp.idRol === "3") {
                 if (dp.idCredencial !== "") {
-                dp.query = dp.query + "   AND  [AUTH].[ID_AUTORIDAD]=" + dp.idCredencial + "\n ";
+                dp.query = dp.query + "   AND  [AUTH].[ID_AUTORIDAD]=" + dp.idAutoridad + "\n ";
                         dp.query = dp.query + "   AND  ([CRED].[ID_CREDENCIAL]=" + dp.idCredencial + "   OR  [CRED].[ID_CREDENCIAL_SUPERIOR]=" + dp.idCredencial + "    )\n ";
                 }
                 }
@@ -1749,7 +1752,9 @@ return response;
                         new FieldValidation('cotizacion', ENC.STRING()),
                         new FieldValidation('idZona', ENC.STRING()),
                         new FieldValidation('idSubZona', ENC.STRING()),
-                        new FieldValidation('idPestadorServicio', ENC.STRING())
+                        new FieldValidation('idPestadorServicio', ENC.STRING()),
+                        new FieldValidation('_dc', ENC.STRING()),
+                        new FieldValidation('callback', ENC.STRING())
                 ]);
                         dp.idServicioCotizacion = req.query.idServicioCotizacion;
                         dp.idTipoServicio = req.query.idTipoServicio;
@@ -1850,8 +1855,8 @@ return response;
                         return dp;
                 })
                 .then(function (dp) {
-                dp.query = " SELECT [COT].* FROM [dbo].[SLOAA_TR_SERVICIO_COTIZACION] [COT]\n" +
-                        " WHERE [COT].[ID_ORDEN_SERVICIO]=" + dp.idOrdenServicio + "";
+                dp.query = "SELECT COT.ID_SERVICIO_COTIZACION, COT.ID_ORDEN_SERVICIO, COT.ID_TIPO_SERVICIO, COT.ID_SERVICIO, COT.ID_UNIDAD, COT.ID_ZONA, COT.ID_SUBZONA, COT.ID_PRESTADOR_SERVICIO, COT.PRECIO_UNITARIO, COT.CANTIDAD, COT.COTIZACION, COT.DEDUCCION, COT.DEDUCCION_JUSTIFICACION, COT.PRECIO_SERVICIO_FINAL, SERV.NOMBRE_SERVICIO, TIPO.TIPO, PRES.NOMBRE, SUBZ.SUBZONA, ZONA.ZONA FROM SLOAA_TR_SERVICIO_COTIZACION COT INNER JOIN SLOAA_TR_PRECIO_UNITARIO UNIT ON COT.ID_TIPO_SERVICIO = UNIT.ID_TIPO_SERVICIO AND COT.ID_SERVICIO = UNIT.ID_SERVICIO AND COT.ID_UNIDAD = UNIT.ID_UNIDAD INNER JOIN SLOAA_TC_SERVICIO SERV ON SERV.ID_SERVICIO = UNIT.ID_SERVICIO AND SERV.ID_SERVICIO = UNIT.ID_SERVICIO INNER JOIN SLOAA_TC_TIPO_SERVICIO TIPO ON TIPO.ID_TIPO_SERVICIO = SERV.ID_TIPO_SERVICIO INNER JOIN SLOAA_TC_PRESTADOR_SERVICIOS_X_SERVICIO PRESERV ON PRESERV.ID_PRESTADOR_SERVICIO = COT.ID_PRESTADOR_SERVICIO AND PRESERV.ID_TIPO_SERVICIO = COT.ID_TIPO_SERVICIO AND PRESERV.ID_SERVICIO = COT.ID_SERVICIO INNER JOIN SLOAA_TC_PRESTADOR_SERVICIOS PRES ON PRES.ID_PRESTADOR_SERVICIO = PRESERV.ID_PRESTADOR_SERVICIO AND PRES.ID_ZONA = PRESERV.ID_ZONA AND PRES.ID_SUBZONA = PRESERV.ID_SUBZONA INNER JOIN SLOAA_TC_SUBZONA SUBZ ON SUBZ.ID_ZONA = PRES.ID_ZONA AND SUBZ.ID_SUBZONA = PRES.ID_SUBZONA INNER JOIN SLOAA_TC_ZONA ZONA ON ZONA.ID_ZONA = SUBZ.ID_ZONA \n\
+                        WHERE ID_ORDEN_SERVICIO =" + dp.idOrdenServicio + "";
                         return dp;
                 })
                 .then(msql.selectPromise)
@@ -2014,8 +2019,6 @@ return response;
 //</editor-fold>
 
 
-
-
 //<editor-fold defaultstate="collapsed" desc="getAllSubZona">
         app.get('/getAllSubZona', function (req, res) {
         var requestID = new Date().getTime();
@@ -2071,7 +2074,6 @@ return response;
                 });
         });
 //</editor-fold>
-
 
 
 //<editor-fold defaultstate="collapsed" desc="getAllTipoServicio">
@@ -2371,6 +2373,7 @@ return response;
                 });
         });
 //</editor-fold>
+
 
 //<editor-fold defaultstate="collapsed" desc="firma1OrdenServicioGenerador">
         app.get('/firma1OrdenServicioGenerador', function (req, res) {
@@ -2774,7 +2777,9 @@ return response;
 
                 inputValidation(response, req.query, [
                         new FieldValidation('idOrdenServicio', ENC.STRING()),
-                        new FieldValidation('idStatus', ENC.STRING())
+                        new FieldValidation('idStatus', ENC.STRING()),
+                        new FieldValidation('_dc', ENC.STRING()),
+                        new FieldValidation('callback', ENC.STRING())
                 ]);
                         dp.idOrdenServicio = req.query.idOrdenServicio;
                         dp.idStatus = req.query.idStatus;
@@ -3137,7 +3142,7 @@ return response;
 
 
 //<editor-fold defaultstate="collapsed" desc="getReport">
-        app.get('/getPrefacturaMenual', function (req, res) {
+        app.get('/getPrefacturaMensual', function (req, res) {
         var requestID = new Date().getTime();
                 var response = {};
                 var dataPacket = {
@@ -3147,7 +3152,7 @@ return response;
                 };
                 mn.init(dataPacket)
                 .then(function (dp) {
-                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/getPrefacturaMenual]');
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/getPrefacturaMensual]');
                         return dp;
                 })
                 .then(function (dp) {
