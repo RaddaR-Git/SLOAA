@@ -833,7 +833,8 @@ var launchWindow = function (recordBase) {
                                                     combobox.setValue(combobox.minValue);
                                                     combobox.up('form').down('toolbar #addService').setDisabled(true);
                                                 } else {
-                                                    var value = combobox.up('fieldset').getComponent('ID_UNIDAD').getValue();
+                                                    var value = combobox.up('fieldset').getComponent('ID_UNIDAD').getSelection();
+                                                    var value = Ext.isEmpty(value) ? 0 : value.data.PRECIO_UNITARIO;
                                                     combobox.up('fieldset').getComponent('costoUnitario').setValue(value);
                                                     combobox.up('fieldset').getComponent('total').setValue(value * newValue);
                                                     if (newValue === combobox.minValue) {

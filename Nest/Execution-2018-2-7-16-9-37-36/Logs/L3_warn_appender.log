@@ -8,3 +8,8 @@
 [2018-02-07T16:23:43.846] [ERROR] ECC - RID:[1518042223846]-[REQUEST]-[ERROR]:[Input parameter problem.]:[/getAllCotizacionXOrden]
 [2018-02-07T16:23:53.990] [ERROR] ECC - RID:[1518042233989]-[REQUEST]-[ERROR]:[Input parameter problem.]:[/getAllOrdenServicio]
 [2018-02-07T16:24:32.847] [ERROR] ECC - RID:[1518042272847]-[REQUEST]-[ERROR]:[Input parameter problem.]:[/getAllOrdenServicio]
+[2018-02-07T16:36:57.653] [ERROR] ECC - RID:[1518043017652]-[REQUEST]-[ERROR]:[Input parameter problem.]:[/getAllCotizacionXOrden]
+[2018-02-07T16:37:12.780] [ERROR] ECC - RID:[1518043032780]-[REQUEST]-[ERROR]:[Input parameter problem.]:[/getAllOrdenServicio]
+[2018-02-07T16:37:25.205] [ERROR] ECC - RID:[1518043045205]-[REQUEST]-[ERROR]:[Input parameter problem.]:[/getAllCotizacionXOrden]
+[2018-02-07T16:37:35.580] [ERROR] ECC - RID:[1518043055580]-[REQUEST]-[ERROR]:[Input parameter problem.]:[/getAllOrdenServicio]
+[2018-02-07T16:37:51.854] [ERROR] ECC - RID:[1518043071854]-[REQUEST]-[ERROR]:[Input parameter problem.]:[/getAllCotizacionXOrden]
