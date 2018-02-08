@@ -954,7 +954,6 @@ var launchWindow = function (recordBase) {
                         ],
                         listeners: {
                             itemclick: function (grid, record, item, index, e, eOpts) {
-                                console.log(record);
                                 var newOrder = Ext.isEmpty(recordBase);
                                 var isAgree = !newOrder && parseInt(recordBase.data.ID_STATUS) >= 2;
                                 var haveAccess = login.privilegios.f2;
