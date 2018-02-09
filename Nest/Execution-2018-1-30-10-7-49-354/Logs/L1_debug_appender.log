@@ -1,6 +1,0 @@
-[2018-01-30T20:25:12.453] [INFO] ICC - RID:[1517365512453]-[REQUEST]-[START]:[/getAllCotizacionXOrden]
-[2018-01-30T20:25:12.454] [DEBUG] DCC - {"missing":[{"requiredFieldName":"idOrdenServicio","requiredFieldType":"string"}]}
-[2018-01-30T20:25:12.454] [ERROR] ECC - RID:[1517365512453]-[REQUEST]-[ERROR]:[Input parameter problem.]:[/getAllCotizacionXOrden]
-[2018-01-30T20:25:18.750] [INFO] ICC - RID:[1517365518750]-[REQUEST]-[START]:[/getAllCotizacionXOrden]
-[2018-01-30T20:25:18.750] [DEBUG] DCC - {"missing":[{"requiredFieldName":"idOrdenServicio","requiredFieldType":"string"}]}
-[2018-01-30T20:25:18.750] [ERROR] ECC - RID:[1517365518750]-[REQUEST]-[ERROR]:[Input parameter problem.]:[/getAllCotizacionXOrden]
