@@ -60,7 +60,6 @@ var login = Ext.create('Ext.window.Window', {
         }
     ]
 });
-
 var createViewport = function () {
     Ext.onReady(function () {
         Ext.create('Ext.container.Viewport', {
@@ -186,7 +185,6 @@ var createViewport = function () {
                                                 var grid = Ext.getCmp('serviceOrdersGrid');
                                                 var formValues = button.up('form').getValues();
                                                 var filters = new Array();
-
                                                 Ext.Object.each(formValues, function (key, value) {
                                                     if (!Ext.isEmpty(value)) {
                                                         switch (key) {
@@ -202,7 +200,6 @@ var createViewport = function () {
                                                         }
                                                     }
                                                 });
-
                                                 if (!Ext.isEmpty(dateFilter)) {
                                                     filters.push({property: 'FECHA_SOLICITUD', filterFn: function (item) {
                                                             var dateString = Ext.Date.format(item.data.FECHA_SOLICITUD, 'd/m/Y');
@@ -366,7 +363,6 @@ var createViewport = function () {
         //alert("init");
     });
 };
-
 var launchWindow = function (recordBase) {
     var thisWin = Ext.create('Ext.window.Window', {
         title: 'Orden de Servicio',
@@ -391,7 +387,6 @@ var launchWindow = function (recordBase) {
                     var newOrder = Ext.isEmpty(recordBase);
                     var isAgree = !newOrder && parseInt(recordBase.data.ID_STATUS) >= 1;
                     var haveAccess = login.privilegios.f1;
-
                     if (newOrder) {
                         if (haveAccess) {
                             panel.getComponent('e1f1').getComponent('fechaSolicitud').setValue(new Date());
@@ -534,7 +529,6 @@ var launchWindow = function (recordBase) {
                         var newOrder = Ext.isEmpty(recordBase);
                         var isAgree = !newOrder && parseInt(recordBase.data.ID_STATUS) >= 2;
                         var haveAccess = login.privilegios.f2;
-
                         if (newOrder) {
                             if (haveAccess) {
                                 panel.getComponent('e2f1').setVisible(true);
@@ -881,7 +875,6 @@ var launchWindow = function (recordBase) {
                             params.precioUnitario = button.up('form').getComponent('e2f1s2').getComponent('costoUnitario').getValue();
                             params.cotizacion = button.up('form').getComponent('e2f1s2').getComponent('total').getValue();
                             params.idZona = login.credential.ID_ZONA;
-
                             Ext.data.JsonP.request({
                                 url: serviceUrl + service,
                                 params: params,
@@ -969,25 +962,21 @@ var launchWindow = function (recordBase) {
                                         callback: function (records, operation, success) {
                                             if (success) {
                                                 thisForm.getComponent('e2f1s1').getComponent('ID_TIPO_SERVICIO').setValue(record.data.ID_TIPO_SERVICIO);
-
                                                 thisForm.getComponent('e2f1s1').getComponent('ID_SUBZONA').getStore().proxy.setExtraParam('query', '');
                                                 thisForm.getComponent('e2f1s1').getComponent('ID_SUBZONA').getStore().reload({
                                                     callback: function (records, operation, success) {
                                                         if (success) {
                                                             thisForm.getComponent('e2f1s1').getComponent('ID_SUBZONA').setValue(record.data.ID_SUBZONA);
-
                                                             thisForm.getComponent('e2f1s1').getComponent('ID_SERVICIO').getStore().proxy.setExtraParam('query', '');
                                                             thisForm.getComponent('e2f1s1').getComponent('ID_SERVICIO').getStore().reload({
                                                                 callback: function (records, operation, success) {
                                                                     if (success) {
                                                                         thisForm.getComponent('e2f1s1').getComponent('ID_SERVICIO').setValue(record.data.ID_SERVICIO);
-
                                                                         thisForm.getComponent('e2f1s1').getComponent('ID_PRESTADOR_SERVICIO').getStore().proxy.setExtraParam('query', '');
                                                                         thisForm.getComponent('e2f1s1').getComponent('ID_PRESTADOR_SERVICIO').getStore().reload({
                                                                             callback: function (records, operation, success) {
                                                                                 if (success) {
                                                                                     thisForm.getComponent('e2f1s1').getComponent('ID_PRESTADOR_SERVICIO').setValue(record.data.ID_PRESTADOR_SERVICIO);
-
                                                                                     thisForm.getComponent('e2f1s2').getComponent('ID_UNIDAD').getStore().proxy.setExtraParam('query', '');
                                                                                     thisForm.getComponent('e2f1s2').getComponent('ID_UNIDAD').getStore().reload({
                                                                                         callback: function (records, operation, success) {
@@ -1010,7 +999,6 @@ var launchWindow = function (recordBase) {
                                             }
                                         }
                                     });
-
                                     thisForm.down('toolbar #updateService').setVisible(true);
                                 }
                             }
@@ -1047,7 +1035,6 @@ var launchWindow = function (recordBase) {
                         var newOrder = Ext.isEmpty(recordBase);
                         var isAgree = !newOrder && parseInt(recordBase.data.ID_STATUS) >= 3;
                         var haveAccess = login.privilegios.f3;
-
                         if (newOrder) {
                             if (haveAccess) {
                                 //editar
@@ -1207,8 +1194,7 @@ var launchWindow = function (recordBase) {
                     expand: function (panel, eOpts) {
                         var newOrder = Ext.isEmpty(recordBase);
                         var isAgree = !newOrder && parseInt(recordBase.data.ID_STATUS) >= 4;
-                        var haveAccess = login.privilegios.f3;
-
+                        var haveAccess = login.privilegios.f4;
                         if (newOrder) {
                             if (haveAccess) {
                                 //editar
@@ -1247,7 +1233,7 @@ var launchWindow = function (recordBase) {
                         itemId: 'serviceOrderNotice',
                         store: Ext.create('Ext.data.Store', {
                             autoLoad: false,
-                            fields: ['ID_ORDEN_SERVICIO', 'PRECIO_UNITARIO', 'CANTIDAD'],
+                            fields: ['ID_SERVICIO_COTIZACION', 'NOMBRE_SERVICIO', 'NOMBRE', 'COTIZACION', 'VALIDA_DISPONIBILIDAD'],
                             proxy: {
                                 type: 'jsonp',
                                 url: serviceUrl + 'getAllCotizacionXOrden',
@@ -1258,9 +1244,17 @@ var launchWindow = function (recordBase) {
                             }
                         }),
                         columns: [
-                            {text: 'IdOrden', dataIndex: 'ID_ORDEN_SERVICIO'},
-                            {text: 'Unitario', dataIndex: 'PRECIO_UNITARIO'},
-                            {text: 'Cantidad', dataIndex: 'CANTIDAD'}
+                            {text: 'Cotización', dataIndex: 'ID_SERVICIO_COTIZACION', flex: 1},
+                            {text: 'Servicio', dataIndex: 'NOMBRE_SERVICIO', flex: 3},
+                            {text: 'Prestador', dataIndex: 'NOMBRE', flex: 1},
+                            {text: 'Cotización', dataIndex: 'COTIZACION', flex: 1, renderer: Ext.util.Format.usMoney},
+                            {text: 'Disponibilidad', dataIndex: 'VALIDA_DISPONIBILIDAD', renderer: function (value, metaData, record, rowIndex, colIndex, store, view) {
+                                    if (value === 0) {
+                                        return "NO";
+                                    } else {
+                                        return "SI";
+                                    }
+                                }}
                         ]
                     }
                 ],
@@ -1322,7 +1316,6 @@ var launchWindow = function (recordBase) {
                         var newOrder = Ext.isEmpty(recordBase);
                         var isAgree = !newOrder && parseInt(recordBase.data.ID_STATUS) >= 5;
                         var haveAccess = login.privilegios.f5;
-
                         if (newOrder) {
                             if (haveAccess) {
                                 //editar
@@ -1604,7 +1597,6 @@ var launchWindow = function (recordBase) {
                         var newOrder = Ext.isEmpty(recordBase);
                         var isAgree = !newOrder && parseInt(recordBase.data.ID_STATUS) >= 6;
                         var haveAccess = login.privilegios.f6;
-
                         if (newOrder) {
                             if (haveAccess) {
                                 //editar
@@ -1765,7 +1757,6 @@ var launchWindow = function (recordBase) {
                         var newOrder = Ext.isEmpty(recordBase);
                         var isAgree = !newOrder && parseInt(recordBase.data.ID_STATUS) >= 7;
                         var haveAccess = login.privilegios.f7;
-
                         if (newOrder) {
                             if (haveAccess) {
                                 //editar
@@ -1828,7 +1819,6 @@ var launchWindow = function (recordBase) {
         ]
 
     });
-
     var setStatusServiceOrder = function (idOrdenServicio, idStatus, callback) {
         Ext.data.JsonP.request({
             url: serviceUrl + 'setStatusOrdenServicio',
@@ -1851,7 +1841,6 @@ var launchWindow = function (recordBase) {
 
     thisWin.show();
 };
-
 var initComponent = function () {
     login.show();
 };
