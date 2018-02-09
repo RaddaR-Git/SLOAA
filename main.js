@@ -884,8 +884,8 @@ return response;
         var server;
         var SQLServerConnectionParameters = {
         user: 'sa',
-                password: 'Lufiri01011',
-                server: '10.15.17.158',
+                password: 'lufiri01011',
+                server: 'localhost',
                 database: 'SOA_db'
         };
 ////var connectionParameters1 = {

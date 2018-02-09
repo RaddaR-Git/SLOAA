@@ -1,3 +1,0 @@
-[2018-01-29T13:56:26.348] [ERROR] ECC - RID:[1517255786347]-[REQUEST]-[ERROR]:[Input parameter problem.]:[/firma1OrdenServicioGenerador]
-[2018-01-29T13:56:55.569] [ERROR] ECC - RID:[1517255815336]-[FREE-DML]-[END]:[FAIL]:[Incorrect syntax near 'FIRMA1_USERNAME1'.]
-[2018-01-29T13:56:55.570] [ERROR] ECC - RID:[1517255815336]-[REQUEST]-[ERROR]:[Incorrect syntax near 'FIRMA1_USERNAME1'.]:[/firma1OrdenServicioGenerador]

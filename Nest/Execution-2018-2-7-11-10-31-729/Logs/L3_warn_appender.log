@@ -1,4 +1,0 @@
-[2018-02-07T11:11:02.074] [ERROR] ECC - RID:[1518023462073]-[REQUEST]-[ERROR]:[Input parameter problem.]:[/getAllServicios]
-[2018-02-07T11:11:02.160] [ERROR] ECC - RID:[1518023462137]-[SELECT]-[END]:[FAIL]:[Incorrect syntax near the keyword 'AND'.]
-[2018-02-07T11:11:02.161] [ERROR] ECC - RID:[1518023462137]-[REQUEST]-[ERROR]:[Incorrect syntax near the keyword 'AND'.]:[/getAllProvedores]
-[2018-02-07T11:11:02.170] [ERROR] ECC - RID:[1518023462169]-[REQUEST]-[ERROR]:[Input parameter problem.]:[/getUnidadYPrecioUnitarioXServicio]

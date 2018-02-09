@@ -1,5 +1,0 @@
-[2018-01-30T10:02:09.956] [ERROR] ECC - RID:[1517328129956]-[REQUEST]-[ERROR]:[Input parameter problem.]:[/getAllCotizacionXOrden]
-[2018-01-30T10:02:19.773] [ERROR] ECC - RID:[1517328139773]-[REQUEST]-[ERROR]:[Input parameter problem.]:[/getAllCotizacionXOrden]
-[2018-01-30T10:02:26.165] [ERROR] ECC - RID:[1517328146164]-[REQUEST]-[ERROR]:[Input parameter problem.]:[/getAllOrdenServicio]
-[2018-01-30T10:04:29.584] [ERROR] ECC - RID:[1517328269583]-[REQUEST]-[ERROR]:[Input parameter problem.]:[/getAllCotizacionXOrden]
-[2018-01-30T10:04:37.145] [ERROR] ECC - RID:[1517328277145]-[REQUEST]-[ERROR]:[Input parameter problem.]:[/getAllOrdenServicio]

@@ -1,4 +1,0 @@
-[2018-02-01T09:44:57.332] [ERROR] ECC - RID:[1517499897213]-[SELECT]-[END]:[FAIL]:[The multi-part identifier "ORD.ID_STATUS" could not be bound.]
-[2018-02-01T09:44:57.333] [ERROR] ECC - RID:[1517499897213]-[REQUEST]-[ERROR]:[The multi-part identifier "ORD.ID_STATUS" could not be bound.]:[/defaultSelect]
-[2018-02-01T09:45:24.033] [ERROR] ECC - RID:[1517499924012]-[SELECT]-[END]:[FAIL]:[The multi-part identifier "ORD.ID_STATUS" could not be bound.]
-[2018-02-01T09:45:24.033] [ERROR] ECC - RID:[1517499924012]-[REQUEST]-[ERROR]:[The multi-part identifier "ORD.ID_STATUS" could not be bound.]:[/defaultSelect]
