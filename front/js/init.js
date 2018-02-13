@@ -1760,7 +1760,7 @@ var launchWindow = function (recordBase) {
                         if (newOrder) {
                             if (haveAccess) {
                                 //editar
-                                panel.getComponent('nextButton').setText('Generar Prefactura');
+                                panel.getComponent('nextButton').setText('Generar Orden de Servicio');
                                 panel.getComponent('nextButton').setGlyph('xf15b@FontAwesome');
                             } else {
                                 if (isAgree) {
