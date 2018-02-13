@@ -15,67 +15,39 @@ html
             table(cellspacing="5" width='100%')
                 tr
                     td(width='200') <img src="https://tramitesdigitales.sat.gob.mx/SIPRED.Monitor.Externo/images/logoH_col.svg" height="200" width="200"/>
-                    td(align="center") SERVICIO DE ADMINISTRACIÓN TRIBUTARIA <br> ADMINISTRACIÓN GENERAL DE RECURSOS Y SERVICIOS <br> ADMINISTRACIÓN CENTRAL DE DESTINO DE BIENES
-                
-    .container
-    div
-            table(cellspacing="5" width='100%')
-                tr
-                    td(align="center")<hr>
-                tr
-                    td(align="center") SERVICIO LOGISTICO PARA LA OPERACIÓN DE LA AUTORIDADES ADUANERAS, FISCALES Y ADMINISTRATIVAS 2017
-                tr
-                    td(align="center")<hr>
-  
-
-
-
-
-
-
+                    td(align="center") PREFACTURA SERVICIO LOGÍSTICO PARA LA OPERACIÓN DE LAS  AUTORIDADES ADUANERAS, <br> FISCALES Y ADMINISTRATIVAS 2018
                     
             -for (var orden in ordenes) {
             div
                 table(cellspacing="5" width='100%')
-                    tr
-                        td(align="center") ORDEN DE SERVICIO No.  #{ordenes[orden].idOrdenServicio[0]}&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; FECHA DE SOLICITUD DE SERVICIO  #{ordenes[orden].fechaSolicitud}
-                    tr
-                        td <hr>
-                    tr
-                        td UNIDAD ADMINISTRATIVA / AUTORIDAD :#{nombreAutoridad} 
-                    tr
-                        td  ORDEN DE SERVICIO:#{ordenes[orden].llaveSistema}
-                     tr
-                        td DOMICILIO: #{ordenes[orden].domicilio}
+                    tr(bgcolor="gray" style="color:white;")
+                        td(colspan=2 align="center") #{ordenes[orden].llaveSistema}
+                    tr(bgcolor="gray")
+                        td(bgcolor="#b2b2b2" width="150") Fecha
+                        td(bgcolor="white") #{ordenes[orden].fechaSolicitud}
+                    tr(bgcolor="gray")
+                        td(bgcolor="#b2b2b2") Domicilio
+                        td(bgcolor="white") #{ordenes[orden].domicilio}
 
-
-
-
-
-
-
-
-            div
-                table(cellspacing="5" width='100%')
-                   
+                    tr(bgcolor="gray")
+                        td(colspan=2 align="center" bgcolor="#b2b2b2" style="color:white;") Servicios;
                     tr
                         td(colspan=2)
 
                             table(cellspacing="2" width='100%')
-                               
-
-                                 -for (var servicio in ordenes[orden].servicios) {
-                                    tr(bgcolor="gray")
-                                        td(bgcolor="#464646" align="center" colspan=7 style="color:white;" ) #{ordenes[orden].servicios[servicio].TIPO}
-                                    tr(bgcolor="gray")
-                                        td(bgcolor="#cecece") Concepto y Descipcion
+                                tr(bgcolor="gray")
+                                        td(bgcolor="#cecece") Id Servicio
+                                        td(bgcolor="#cecece") Servicio
                                         td(bgcolor="#cecece") Unidad
                                         td(bgcolor="#cecece") Cantidad
                                         td(bgcolor="#cecece") Precio Unitario
                                         td(bgcolor="#cecece") Cotizacion
                                         td(bgcolor="#cecece") Deduccion
                                         td(bgcolor="#cecece") Total
+
+                                 -for (var servicio in ordenes[orden].servicios) {
                                     tr
+                                        td(bgcolor="#dbdbdb")  #{ordenes[orden].servicios[servicio].ID_SERVICIO_COTIZACION}
                                         td(bgcolor="#dbdbdb")  #{ordenes[orden].servicios[servicio].NOMBRE_SERVICIO}
                                         td(bgcolor="#dbdbdb")  #{ordenes[orden].servicios[servicio].UNIDAD}
                                         td(bgcolor="#dbdbdb")  #{ordenes[orden].servicios[servicio].CANTIDAD}
@@ -83,10 +55,9 @@ html
                                         td(bgcolor="#dbdbdb")  #{ordenes[orden].servicios[servicio].COTIZACION}
                                         td(bgcolor="#dbdbdb")  #{ordenes[orden].servicios[servicio].DEDUCCION}
                                         td  &nbsp;
-                                    tr
-                                        td(align="center" colspan=8 style="color:white;" )&nbsp; 
                                  -}
                                     tr
+                                        td  &nbsp;
                                         td  &nbsp;
                                         td  &nbsp;
                                         td  &nbsp;
@@ -108,15 +79,8 @@ html
     div &nbsp;
 
 
-        .container
-    div
-            table(cellspacing="5" width='100%')
-                tr
-                    td(align="center")<hr>
-                tr
-                    td(align="left") VALIDACIÓN DEL SERVICIO <br> SE RECIBE A ENTERA SATIFACCIÓN EL SERVICIO PROPORCIONADO POR EL PROVEEDOR, DE ACUERDO A LO REQUERIDO. SI|| NO|| <br> LOS ESTRIBADORES SE PRESENTARON CON GAFETE Y UNIFORME. SI|| NO||<br> EN CASO DE INCUMPLIMIENTO. INDIQUE LOS MOTIVOS Y DEDUCTIVAS A APLICAR.
-                tr
-                    td(align="center")<hr>
+    
+
     div &nbsp;
     div &nbsp;
     div &nbsp;
@@ -124,15 +88,12 @@ html
     .container
     div
             table(cellspacing="5" width='100%')
-                tr(align="center")
-                    td ______________________________________
-                    td ______________________________________          
-                    td ______________________________________
-                tr(align="center")
-                    td Verificación del (AORS o SRyS) 
-                    td Validación del Servicio (Área requierente o usuaria)             
-                    td Proveedor
-                
+                tr
+                    td(align="center") ______________________________________
+                tr
+                    td(align="center")          Firma de Autoridad
+
+
     footer
 <button onClick="window.print()" >Imprimir</button>    
 

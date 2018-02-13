@@ -1,2 +1,0 @@
-[2018-02-09T16:11:01.239] [ERROR] ECC - RID:[1518214261103]-[SELECT]-[END]:[FAIL]:[Incorrect syntax near '.'.]
-[2018-02-09T16:11:01.240] [ERROR] ECC - RID:[1518214261103]-[REQUEST]-[ERROR]:[Incorrect syntax near '.'.]:[/getAllCotizacionXOrden]
