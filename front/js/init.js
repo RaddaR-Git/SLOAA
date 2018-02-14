@@ -1263,7 +1263,7 @@ var launchWindow = function (recordBase) {
                         text: 'Generar Reporte',
                         glyph: 'xf15b@FontAwesome',
                         handler: function (button) {
-                            window.open(serviceUrl + 'getPrefacturaMensual?idAutoridad=' + login.credential.ID_AUTORIDAD + '&idOrden=&mensual=1');
+                            window.open(serviceUrl + 'getPrefacturaMensual?idAutoridad=' + login.credential.ID_AUTORIDAD + '&idOrden=' + thisWin.ordenServicio.ID_ORDEN_SERVICIO + '&mensual=1');
                         }
                     },
                     {
@@ -1767,19 +1767,15 @@ var launchWindow = function (recordBase) {
                                     panel.down('toolbar #nextButton').setText('Siguiente');
                                     panel.down('toolbar #nextButton').setGlyph('xf0a9@FontAwesome');
                                 } else {
-                                    panel.getComponent('nextButton').setText('Cerrar');
-                                    panel.getComponent('nextButton').setGlyph('xf00d@FontAwesome');
                                 }
                             }
                         } else {
                             if (haveAccess) {
+                                panel.getComponent('nextButton').setText('Generar Orden de Servicio');
+                                panel.getComponent('nextButton').setGlyph('xf15b@FontAwesome');
                                 if (isAgree) {
-                                    panel.down('toolbar #nextButton').setText('Siguiente');
-                                    panel.down('toolbar #nextButton').setGlyph('xf0a9@FontAwesome');
                                 } else {
                                     //editar
-                                    panel.getComponent('nextButton').setText('Generar Prefactura');
-                                    panel.getComponent('nextButton').setGlyph('xf15b@FontAwesome');
                                 }
                             } else {
                                 if (isAgree) {
@@ -1801,7 +1797,7 @@ var launchWindow = function (recordBase) {
                         glyph: 'xf15b@FontAwesome',
                         region: 'center',
                         next: function () {
-                            if (thisWin.getComponent('e7').getComponent('nextButton').getText() === 'Generar Prefactura') {
+                            if (thisWin.getComponent('e7').getComponent('nextButton').getText() === 'Generar Orden de Servicio') {
                                 window.open(serviceUrl + 'getPrefacturaMensual?idAutoridad=' + login.credential.ID_AUTORIDAD + '&idOrden=' + thisWin.ordenServicio.ID_ORDEN_SERVICIO + '&mensual=');
                             }
                             thisWin.close();
