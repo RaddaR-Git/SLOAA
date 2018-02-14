@@ -3297,7 +3297,7 @@ app.get('/getPrefacturaMensual', function (req, res) {
             .then(function (dp) {
                 mc.info('RID:[' + requestID + ']-[REQUEST]-[END]:[/getReport]');
 
-                if (dp.idOrden === '') {
+                if (dp.idOrden !== '') {
                     res.render("template1", {
                         tipoReporte: dp.tipoReporte,
                         nombreAutoridad: dp.nombreAutoridad,
