@@ -79,7 +79,15 @@ html
     div &nbsp;
 
 
-    
+    .container
+     div
+            table(cellspacing="5" width='100%')
+                        tr(bgcolor="gray")
+                            td(bgcolor="#cecece" width='20%') Usuario generador de prefactura:
+                            td(bgcolor="#dbdbdb" width='80%' style='word-wrap:break-word;max-width:150px;') #{userName}
+                        tr(bgcolor="gray")
+                            td(bgcolor="#cecece" width='20%') Firma:
+                            td(bgcolor="#dbdbdb" width='80%' style='word-wrap:break-word;max-width:150px;') #{eFirma}
 
     div &nbsp;
     div &nbsp;

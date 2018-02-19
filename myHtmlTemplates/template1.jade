@@ -94,13 +94,26 @@ html
                                         td(bgcolor="#dbdbdb")  #{ordenes[orden].cotizacion}
                                         td(bgcolor="#dbdbdb")  #{ordenes[orden].deducciones}
                                         td(bgcolor="#dbdbdb")  #{ordenes[orden].total}
-                      table(cellspacing="5" width='100%')
+                    table(cellspacing="5" width='100%')
                         tr(bgcolor="gray")
                             td(bgcolor="#cecece" width='20%') #{ordenes[orden].textoFirmaGenerador}:  #{ordenes[orden].firmaGeneradorNombre}
                             td(bgcolor="#dbdbdb" width='80%' style='word-wrap:break-word;max-width:150px;') #{ordenes[orden].firmaGenerador}
                         tr(bgcolor="gray")
                             td(bgcolor="#cecece" width='20%') #{ordenes[orden].textoFirmaRevisor}:  #{ordenes[orden].firmaRevisorNombre}
-                            td(bgcolor="#dbdbdb" width='80%' style='word-wrap:break-word;max-width:150px;') #{ordenes[orden].firmaRevisor}
+                            td(bgcolor="#dbdbdb" width='80%' style='word-wrap:break-word;max-width:150px;') #{ordenes[orden].firmaRevisor}  
+                    table(cellspacing="5" width='100%')
+                        tr
+                            td(align="center")<hr>
+                        tr
+                            td(align="left") VALIDACIÓN DEL SERVICIO
+                        tr
+                            td(align="left")SE RECIBE A ENTERA SATIFACCIÓN EL SERVICIO PROPORCIONADO POR EL PROVEEDOR, DE ACUERDO A LO REQUERIDO. #{ordenes[orden].cumplimiento}
+                        tr
+                            td(align="left")LOS ESTRIBADORES SE PRESENTARON CON GAFETE Y UNIFORME. #{ordenes[orden].identificado}
+                        tr
+                            td(align="left")EN CASO DE INCUMPLIMIENTO. INDIQUE LOS MOTIVOS Y DEDUCTIVAS A APLICAR.
+                        tr
+                            td(align="center")<hr>
         div &nbsp;
         -}
                        
@@ -109,14 +122,7 @@ html
 
 
         .container
-    div
-            table(cellspacing="5" width='100%')
-                tr
-                    td(align="center")<hr>
-                tr
-                    td(align="left") VALIDACIÓN DEL SERVICIO <br> SE RECIBE A ENTERA SATIFACCIÓN EL SERVICIO PROPORCIONADO POR EL PROVEEDOR, DE ACUERDO A LO REQUERIDO. SI|| NO|| <br> LOS ESTRIBADORES SE PRESENTARON CON GAFETE Y UNIFORME. SI|| NO||<br> EN CASO DE INCUMPLIMIENTO. INDIQUE LOS MOTIVOS Y DEDUCTIVAS A APLICAR.
-                tr
-                    td(align="center")<hr>
+    
     div &nbsp;
     div &nbsp;
     div &nbsp;

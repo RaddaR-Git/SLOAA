@@ -1405,6 +1405,7 @@ app.get('/createOrdenServicio', function (req, res) {
                     new FieldValidation('fechaSolicitud', ENC.STRING()),
                     new FieldValidation('idCredencial', ENC.STRING()),
                     new FieldValidation('domicilio', ENC.STRING()),
+                    new FieldValidation('justificacion', ENC.STRING()),
                     new FieldValidation('_dc', ENC.STRING()),
                     new FieldValidation('callback', ENC.STRING())
                 ]);
@@ -1412,6 +1413,7 @@ app.get('/createOrdenServicio', function (req, res) {
                 dp.fechaSolicitud = req.query.fechaSolicitud;
                 dp.idCredencial = req.query.idCredencial;
                 dp.domicilio = req.query.domicilio;
+                dp.justificacion = req.query.justificacion;
                 dp.headers = req.headers;
                 dp.ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
                 dp.metaFechaGeneracion = new Date().toISOString();
@@ -1510,6 +1512,7 @@ app.get('/createOrdenServicio', function (req, res) {
                         "      ,[ORD].[METAINFO_IP]\n" +
                         "      ,[ORD].[METAINFO_MAC_ADRR]\n" +
                         "      ,[ORD].[LLAVE_SISTEMA]\n" +
+                        "      ,[ORD].[JUSTIFICACION]\n" +
                         "	  )\n" +
                         "	  VALUES\n" +
                         "	  (\n" +
@@ -1521,7 +1524,8 @@ app.get('/createOrdenServicio', function (req, res) {
                         "		'" + dp.metaFechaGeneracion + "',\n" +
                         "		'" + dp.ip + "',\n" +
                         "		' ????????',\n" +
-                        "		'" + dp.key + "'\n" +
+                        "		'" + dp.key + "',\n" +
+                        "		'" + dp.justificacion + "'\n" +
                         "	  )";
                 return dp;
             })
@@ -1907,6 +1911,10 @@ app.get('/setDeduccionCotizacion', function (req, res) {
                     new FieldValidation('cancelacion', ENC.STRING()),
                     new FieldValidation('deduccion', ENC.STRING()),
                     new FieldValidation('deduccionJustificacion', ENC.STRING()),
+
+                    new FieldValidation('deduccionCumplimiento', ENC.STRING()),
+                    new FieldValidation('deduccionIdentificado', ENC.STRING()),
+
                     new FieldValidation('_dc', ENC.STRING()),
                     new FieldValidation('callback', ENC.STRING())
                 ]);
@@ -1917,11 +1925,15 @@ app.get('/setDeduccionCotizacion', function (req, res) {
                 dp.cancelacion = req.query.cancelacion;
                 dp.deduccion = req.query.deduccion;
                 dp.deduccionJustificacion = req.query.deduccionJustificacion;
+
+                dp.deduccionCumplimiento = req.query.deduccionCumplimiento;
+                dp.deduccionIdentificado = req.query.deduccionIdentificado;
+
                 dp.looked = 1;
                 return dp;
             })
             .then(function (dp) {
-                dp.dml = " UPDATE [dbo].[SLOAA_TR_SERVICIO_COTIZACION] SET   [DEDUCCION_CANTIDAD]=" + dp.deduccionCantidad + " ,[DEDUCCION_TIEMPO]=" + dp.deduccionTiempo + " ,[CANCELACION]=" + dp.cancelacion + "       ,[DEDUCCION]=" + dp.deduccion + ",[DEDUCCION_JUSTIFICACION]='" + dp.deduccionJustificacion + "',[PRECIO_SERVICIO_FINAL]= [COTIZACION]-" + dp.deduccion + "   \n" +
+                dp.dml = " UPDATE [dbo].[SLOAA_TR_SERVICIO_COTIZACION] SET   [DEDUCCION_CANTIDAD]=" + dp.deduccionCantidad + " ,[DEDUCCION_TIEMPO]=" + dp.deduccionTiempo + " ,[CANCELACION]=" + dp.cancelacion + "       ,[DEDUCCION]=" + dp.deduccion + ",[DEDUCCION_JUSTIFICACION]='" + dp.deduccionJustificacion + "',[PRECIO_SERVICIO_FINAL]= [COTIZACION]-" + dp.deduccion + ", [CUMPLIMIENTO]=" + dp.deduccionCumplimiento + ", [IDENTIFICADO]=" + dp.deduccionIdentificado + "   \n" +
                         " WHERE \n" +
                         " 1=1\n" +
                         " AND [ID_ORDEN_SERVICIO]=" + dp.idOrdenServicio + "\n" +
@@ -3160,12 +3172,16 @@ app.get('/getReport', function (req, res) {
                 inputValidation(response, req.query, [
                     new FieldValidation('idAutoridad', ENC.STRING()),
                     new FieldValidation('idOrden', ENC.STRING()),
-                    new FieldValidation('mensual', ENC.STRING())
+                    new FieldValidation('mensual', ENC.STRING()),
+                    new FieldValidation('userName', ENC.STRING()),
+                    new FieldValidation('eFirma', ENC.STRING())
                 ]);
                 dp.idAutoridad = req.query.idAutoridad;
                 dp.idOrden = req.query.idOrden;
                 dp.mensual = req.query.mensual;
                 dp.mailList = {};
+                dp.userName = req.query.userName;
+                dp.eFirma = req.query.eFirma;
                 return dp;
             })
             .then(function (dp) {
@@ -3247,7 +3263,7 @@ app.get('/getReport', function (req, res) {
                     currentOrden = dp.ordenes[currentRow.LLAVE_SISTEMA];
                     dp.nombreAutoridad = currentRow.NOMBRE_AUTORIDAD;
 
-                    dp.llaveOrdenMensual = "MX-SAT-TN-" + currentRow.SERVICIO + "-" + dp.fYear  + "-" +dp.fMonth ;
+                    dp.llaveOrdenMensual = "MX-SAT-TN-" + currentRow.SERVICIO + "-" + dp.fYear + "-" + dp.fMonth;
                     dp.llaveOrdenMensual = dp.llaveOrdenMensual.replace(/\|/g, "");
                     dp.llaveOrdenMensual = dp.llaveOrdenMensual.replace(/\s+/g, ' ');
 
@@ -3296,6 +3312,8 @@ app.get('/getReport', function (req, res) {
                             cotizacion: 0,
                             deducciones: 0,
                             total: 0,
+                            cumplimiento: "[   ]",
+                            identificado: "[   ]",
                             servicios: []
                         };
                         dp.ordenes[currentRow.LLAVE_SISTEMA] = currentOrden;
@@ -3311,6 +3329,15 @@ app.get('/getReport', function (req, res) {
                         currentOrden.deducciones = currentOrden.deducciones + deduccion;
                     }
                     currentOrden.total = currentOrden.cotizacion - currentOrden.deducciones;
+
+                    if (currentRow.CUMPLIMIENTO === 1) {
+                        currentOrden.cumplimiento = "[ X ]";
+                    }
+                    if (currentRow.IDENTIFICADO === 1) {
+                        currentOrden.identificado = "[ X ]";
+                    }
+
+
                 }
 
 
@@ -3334,7 +3361,9 @@ app.get('/getReport', function (req, res) {
                         llaveOrdenMensual: dp.llaveOrdenMensual,
                         ordenes: dp.ordenes,
                         servicios: dp.servicios,
-                        title: 'Prefactura'
+                        title: 'Prefactura',
+                        userName: dp.userName,
+                        eFirma: dp.eFirma
                     });
                 }
 
