@@ -341,7 +341,7 @@ var createViewport = function () {
                                             text: 'Generar Reporte',
                                             glyph: 'xf15b@FontAwesome',
                                             handler: function (button) {
-                                                window.open(serviceUrl + 'getPrefacturaMensual?idAutoridad=' + login.credential.ID_AUTORIDAD + '&idOrden=&mensual=1');
+                                                window.open(serviceUrl + 'getReport?idAutoridad=' + login.credential.ID_AUTORIDAD + '&idOrden=&mensual=1');
                                             }
                                         },
                                         {
@@ -1263,7 +1263,7 @@ var launchWindow = function (recordBase) {
                         text: 'Generar Reporte',
                         glyph: 'xf15b@FontAwesome',
                         handler: function (button) {
-                            window.open(serviceUrl + 'getPrefacturaMensual?idAutoridad=' + login.credential.ID_AUTORIDAD + '&idOrden=' + thisWin.ordenServicio.ID_ORDEN_SERVICIO + '&mensual=1');
+                            window.open(serviceUrl + 'getReport?idAutoridad=' + login.credential.ID_AUTORIDAD + '&idOrden=' + thisWin.ordenServicio.ID_ORDEN_SERVICIO + '&mensual=1');
                         }
                     },
                     {
@@ -1798,7 +1798,7 @@ var launchWindow = function (recordBase) {
                         region: 'center',
                         next: function () {
                             if (thisWin.getComponent('e7').getComponent('nextButton').getText() === 'Generar Orden de Servicio') {
-                                window.open(serviceUrl + 'getPrefacturaMensual?idAutoridad=' + login.credential.ID_AUTORIDAD + '&idOrden=' + thisWin.ordenServicio.ID_ORDEN_SERVICIO + '&mensual=');
+                                window.open(serviceUrl + 'getReport?idAutoridad=' + login.credential.ID_AUTORIDAD + '&idOrden=' + thisWin.ordenServicio.ID_ORDEN_SERVICIO + '&mensual=');
                             }
                             thisWin.close();
                         },

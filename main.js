@@ -884,8 +884,8 @@ var mcph = new ENCripto();
 var server;
 var SQLServerConnectionParameters = {
     user: 'sa',
-    password: 'Lufiri01011',
-    server: '10.15.17.158',
+    password: 'lufiri01011',
+    server: 'localhost',
     database: 'SOA_db'
 };
 ////var connectionParameters1 = {
@@ -3142,7 +3142,7 @@ app.get('/sendMailConfirmacionProvedor', function (req, res) {
 
 
 //<editor-fold defaultstate="collapsed" desc="getReport">
-app.get('/getPrefacturaMensual', function (req, res) {
+app.get('/getReport', function (req, res) {
     var requestID = new Date().getTime();
     var response = {};
     var dataPacket = {
@@ -3152,7 +3152,7 @@ app.get('/getPrefacturaMensual', function (req, res) {
     };
     mn.init(dataPacket)
             .then(function (dp) {
-                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/getPrefacturaMensual]');
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/getReport]');
                 return dp;
             })
             .then(function (dp) {
@@ -3169,6 +3169,19 @@ app.get('/getPrefacturaMensual', function (req, res) {
                 return dp;
             })
             .then(function (dp) {
+                var now = new Date();
+                var month = now.getMonth() + 1;
+                var year = now.getFullYear();
+                var fMonth = month - 1;
+                var fYear = year;
+                if (fMonth === 0) {
+                    fMonth = 12;
+                    fYear = fYear - 1;
+                }
+
+                dp.fMonth = fMonth;
+                dp.fYear = fYear;
+
                 dp.query = "SELECT \n" +
                         "	  [TS].[TIPO]\n" +
                         "	, [SERV].*\n" +
@@ -3177,6 +3190,7 @@ app.get('/getPrefacturaMensual', function (req, res) {
                         "	, [SS].* \n" +
                         "	, [CRED].* \n" +
                         "	, [AUTH].* \n" +
+                        //"       , "
                         "FROM [SLOAA_TR_SERVICIO_COTIZACION] [SERV]\n" +
                         "LEFT JOIN [SLOAA_TR_ORDEN_SERVICIO] [ORD] ON  [SERV].[ID_ORDEN_SERVICIO]=[ORD].[ID_ORDEN_SERVICIO]\n" +
                         "LEFT JOIN [SLOAA_TC_UNIDAD] [UNI] ON  [SERV].[ID_UNIDAD]=[UNI].[ID_UNIDAD]\n" +
@@ -3186,11 +3200,14 @@ app.get('/getPrefacturaMensual', function (req, res) {
                         "LEFT JOIN [SLOAA_TC_AUTORIDAD] [AUTH] ON  [AUTH].[ID_AUTORIDAD]=[CRED].[ID_AUTORIDAD]\n" +
                         "\n" +
                         "WHERE \n" +
-                        "1=1\n" +
-                        "AND [ORD].[ID_STATUS]=7 \n";
-                "AND [SERV].[CANCELACION]=1 \n";
+                        "1=1\n";
                 if (dp.mensual !== "") {
-                    dp.query = dp.query + " AND MONTH([ORD].[FECHA_SOLICITUD])=MONTH(GetDate()) \n";
+                    dp.query = dp.query + " AND [SERV].[CANCELACION]=0  \n";
+                    dp.query = dp.query + " AND [ORD].[ID_STATUS]=7 \n";
+                    //dp.query = dp.query + " AND MONTH([ORD].[FECHA_SOLICITUD])=MONTH(GetDate()) \n";
+                    //dp.query = dp.query + " AND YEAR([ORD].[FECHA_SOLICITUD])=YEAR(GetDate()) \n";
+                    dp.query = dp.query + " AND MONTH([ORD].[FECHA_SOLICITUD])=" + fMonth + " \n";
+                    dp.query = dp.query + " AND YEAR([ORD].[FECHA_SOLICITUD])=" + fYear + " \n";
                     dp.tipoReporte = "MENSUAL";
                 } else {
                     dp.tipoReporte = "";
@@ -3229,6 +3246,11 @@ app.get('/getPrefacturaMensual', function (req, res) {
                     currentRow = dp.servicios[currentKey];
                     currentOrden = dp.ordenes[currentRow.LLAVE_SISTEMA];
                     dp.nombreAutoridad = currentRow.NOMBRE_AUTORIDAD;
+
+                    dp.llaveOrdenMensual = "MX-SAT-TN-" + currentRow.SERVICIO + "-" + dp.fYear  + "-" +dp.fMonth ;
+                    dp.llaveOrdenMensual = dp.llaveOrdenMensual.replace(/\|/g, "");
+                    dp.llaveOrdenMensual = dp.llaveOrdenMensual.replace(/\s+/g, ' ');
+
                     if (typeof currentOrden === "undefined") {
 
                         var textoFirmaRevisor = '';
@@ -3240,22 +3262,22 @@ app.get('/getPrefacturaMensual', function (req, res) {
 
                         if (currentRow.FIRMA1_USER1 !== null && currentRow.FIRMA1_USER1 !== '') {
                             firmaGenerador = currentRow.FIRMA1_USER1;
-                            firmaGeneradorNombre = currentRow.FIRMA1_USERNAME1
+                            firmaGeneradorNombre = currentRow.FIRMA1_USERNAME1;
                             textoFirmaGenerador = "Firma inicial Generador ";
                         }
                         if (currentRow.FIRMA1_USER2 !== null && currentRow.FIRMA1_USER2 !== '') {
                             firmaRevisor = currentRow.FIRMA1_USER2;
-                            firmaRevisorNombre = currentRow.FIRMA1_USERNAME2
+                            firmaRevisorNombre = currentRow.FIRMA1_USERNAME2;
                             textoFirmaRevisor = "Firma inicial Revisor ";
                         }
                         if (currentRow.FIRMA2_USER1 !== null && currentRow.FIRMA2_USER1 !== '') {
                             firmaGenerador = currentRow.FIRMA2_USER1;
-                            firmaGeneradorNombre = currentRow.FIRMA2_USERNAME1
+                            firmaGeneradorNombre = currentRow.FIRMA2_USERNAME1;
                             textoFirmaGenerador = "Firma final Generador ";
                         }
                         if (currentRow.FIRMA2_USER2 !== null && currentRow.FIRMA2_USER2 !== '') {
                             firmaRevisor = currentRow.FIRMA2_USER2;
-                            firmaRevisorNombre = currentRow.FIRMA2_USERNAME2
+                            firmaRevisorNombre = currentRow.FIRMA2_USERNAME2;
                             textoFirmaRevisor = "Firma final Revisor ";
                         }
 
@@ -3303,15 +3325,16 @@ app.get('/getPrefacturaMensual', function (req, res) {
                         nombreAutoridad: dp.nombreAutoridad,
                         ordenes: dp.ordenes,
                         servicios: dp.servicios,
-                        title: 'Prefactura'
+                        title: 'Orden de Servicio'
                     });
                 } else {
                     res.render("template2", {
                         tipoReporte: dp.tipoReporte,
                         nombreAutoridad: dp.nombreAutoridad,
+                        llaveOrdenMensual: dp.llaveOrdenMensual,
                         ordenes: dp.ordenes,
                         servicios: dp.servicios,
-                        title: 'Orden de Servicio'
+                        title: 'Prefactura'
                     });
                 }
 
