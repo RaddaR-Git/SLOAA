@@ -1091,6 +1091,7 @@ app.get('/getAllOrdenServicio', function (req, res) {
                         "      ,[ORD].[METAINFO_MAC_ADRR]\n" +
                         "      ,[ORD].[LLAVE_SISTEMA]\n" +
                         "      ,[ORD].[CIERRE_TOTAL]\n" +
+                        "      ,[ORD].[JUSTIFICACION]\n" +
                         "	  \n" +
                         "	   ,[CRED].[ID_CREDENCIAL]\n" +
                         "      ,[CRED].[NOMBRE]\n" +
@@ -1217,6 +1218,7 @@ app.get('/getOrdenServicio', function (req, res) {
                         "      ,[ORD].[METAINFO_MAC_ADRR]\n" +
                         "      ,[ORD].[LLAVE_SISTEMA]\n" +
                         "      ,[ORD].[CIERRE_TOTAL]\n" +
+                        "      ,[ORD].[JUSTIFICACION]\n" +
                         "	  \n" +
                         "	   ,[CRED].[ID_CREDENCIAL]\n" +
                         "      ,[CRED].[NOMBRE]\n" +

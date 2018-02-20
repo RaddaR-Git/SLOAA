@@ -366,8 +366,8 @@ var createViewport = function () {
 var launchWindow = function (recordBase) {
     var thisWin = Ext.create('Ext.window.Window', {
         title: 'Orden de Servicio',
-        height: 650,
-        width: 800,
+        height: 700,
+        width: 830,
         modal: true,
         autoScroll: true,
         layout: 'accordion',
@@ -412,6 +412,7 @@ var launchWindow = function (recordBase) {
                         panel.getComponent('e1f1').getComponent('fechaSolicitud').setValue(recordBase.data.FECHA_SOLICITUD);
                         panel.getComponent('e1f1').getComponent('horaSolicitud').setValue(recordBase.data.FECHA_SOLICITUD);
                         panel.getComponent('e1f1').getComponent('domicilio').setValue(recordBase.data.DOMICILIO);
+                        panel.getComponent('e1f1').getComponent('justificacion').setValue(recordBase.data.JUSTIFICACION);
                         if (haveAccess) {
                             if (isAgree) {
                                 panel.down('toolbar #nextButton').setText('Siguiente');
@@ -473,7 +474,15 @@ var launchWindow = function (recordBase) {
                                 xtype: 'textfield',
                                 fieldLabel: 'Domicilio',
                                 itemId: 'domicilio',
-                                name: 'domicilio'
+                                name: 'domicilio',
+                                width: '100%'
+                            },
+                            {
+                                xtype: 'textareafield',
+                                fieldLabel: 'Justificación',
+                                itemId: 'justificacion',
+                                name: 'justificacion',
+                                width: '100%'
                             }
                         ]
                     }
@@ -1464,6 +1473,8 @@ var launchWindow = function (recordBase) {
                                         itemId: 'cancelacion',
                                         name: 'cancelacion',
                                         fieldLabel: 'Cancelación',
+                                        inputValue: '1',
+                                        uncheckedValue: '0',
                                         listeners: {
                                             change: function (check, newValue, oldValue, eOpts) {
                                                 if (newValue) {
@@ -1494,6 +1505,24 @@ var launchWindow = function (recordBase) {
                                 grow: true,
                                 flex: 2,
                                 width: '100%'
+                            },
+                            {
+                                xtype: 'checkboxfield',
+                                itemId: 'deduccionCumplimiento',
+                                name: 'deduccionCumplimiento',
+                                flex: 1,
+                                boxLabel: 'SE RECIBE A ENTERA SATIFACCIÓN EL SERVICIO PROPORCIONADO POR EL PROVEEDOR, DE ACUERDO A LO REQUERIDO.',
+                                inputValue: '1',
+                                uncheckedValue: '0'
+                            },
+                            {
+                                xtype: 'checkboxfield',
+                                itemId: 'deduccionIdentificado',
+                                name: 'deduccionIdentificado',
+                                flex: 1,
+                                boxLabel: 'LOS ESTRIBADORES SE PRESENTARON CON GAFETE Y UNIFORME.',
+                                inputValue: '1',
+                                uncheckedValue: '0'
                             }
                         ],
                         buttons: [
@@ -1506,7 +1535,6 @@ var launchWindow = function (recordBase) {
                                     var values = button.up('form').getValues();
                                     values.idOrdenServicio = thisWin.ordenServicio.ID_ORDEN_SERVICIO;
                                     values.idServicioCotizacion = button.up('form').up('panel').getComponent('deduccionesGrid').getSelection()[0].data.ID_SERVICIO_COTIZACION;
-                                    values.cancelacion = button.up('form').getComponent('totalSet').getComponent('cancelacion').getValue() ? 1 : 0;
                                     Ext.data.JsonP.request({
                                         url: serviceUrl + 'setDeduccionCotizacion',
                                         params: values,
