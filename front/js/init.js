@@ -1291,7 +1291,8 @@ var launchWindow = function (recordBase) {
                                 Ext.data.JsonP.request({
                                     url: serviceUrl + 'sendMailConfirmacionProvedor',
                                     params: {
-                                        idOrdenServicio: thisWin.ordenServicio.ID_ORDEN_SERVICIO
+                                        idOrdenServicio: thisWin.ordenServicio.ID_ORDEN_SERVICIO,
+                                        idcredencialSolicitante: login.credential.ID_CREDENCIAL
                                     },
                                     success: function (result) {
                                         if (result.success) {

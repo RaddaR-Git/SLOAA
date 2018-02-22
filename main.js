@@ -803,8 +803,8 @@ class ENCManagerMail extends ENCPrimal {
                     return;
                 }
                 input.mailSend = info;
-                resolve(input);
                 mc.debug('Mail enviado Exitosamente al correo:[' + input.to + ']');
+                resolve(input);
             });
         });
     }
@@ -884,7 +884,7 @@ var mcph = new ENCripto();
 var server;
 var SQLServerConnectionParameters = {
     user: 'sa',
-    password: 'lufiri01011',
+    password: 'Lufiri01011',
     server: 'localhost',
     database: 'SOA_db'
 };
@@ -2942,11 +2942,56 @@ app.get('/sendMailConfirmacionProvedor', function (req, res) {
 
                 inputValidation(response, req.query, [
                     new FieldValidation('idOrdenServicio', ENC.STRING()),
+                    new FieldValidation('idcredencialSolicitante', ENC.STRING()),
                     new FieldValidation('_dc', ENC.STRING()),
                     new FieldValidation('callback', ENC.STRING())
                 ]);
                 dp.idOrdenServicio = req.query.idOrdenServicio;
-                dp.mailList = {};
+                dp.idcredencialSolicitante = req.query.idcredencialSolicitante;
+                dp.provedorServicioList = {};
+                dp.mailProvedores = "";
+                dp.mailPromisses = [];
+
+
+                prom1 = function (inputObject) {
+                    return new Promise(function (resolve, reject) {
+                        console.log("1" + inputObject);
+                        resolve(inputObject);
+                        return;
+                    });
+                };
+                prom2 = function (inputObject) {
+                    console.log("2" + inputObject);
+                    return new Promise(function (resolve, reject) {
+                        resolve(inputObject);
+                        return;
+                    });
+                };
+                prom3 = function (inputObject) {
+                    console.log("3" + inputObject);
+                    return new Promise(function (resolve, reject) {
+                        resolve(inputObject);
+                        return;
+                    });
+                };
+
+                proms = [prom1, prom2, prom3];
+                Promise.all(proms);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 return dp;
             })
 
@@ -2955,11 +3000,12 @@ app.get('/sendMailConfirmacionProvedor', function (req, res) {
             .then(function (dp) {
                 dp.query = "SELECT\n" +
                         "\n" +
-                        "       [COT].[ID_SERVICIO_COTIZACION]\n" +
+                        "          [COT].[ID_SERVICIO_COTIZACION]\n" +
                         "	  \n" +
                         "	  ,[OS].[ID_ORDEN_SERVICIO]\n" +
                         "	  ,[OS].[DOMICILIO]\n" +
                         "	  ,[OS].[LLAVE_SISTEMA]\n" +
+                        "	  ,[OS].[FECHA_SOLICITUD]\n" +
                         "\n" +
                         "	  \n" +
                         "      ,[TS].[ID_TIPO_SERVICIO]\n" +
@@ -2975,7 +3021,7 @@ app.get('/sendMailConfirmacionProvedor', function (req, res) {
                         "      ,[SZON].[ID_SUBZONA]\n" +
                         "	  ,[SZON].[SUBZONA]\n" +
                         "\n" +
-                        "      ,[PS].[ID_PRESTADOR_SERVICIO]\n" +
+                        "         ,[PS].[ID_PRESTADOR_SERVICIO]\n" +
                         "	  ,[PS].[NOMBRE]\n" +
                         "	  ,[PS].[CORREO_ELECTRONICO]\n" +
                         "\n" +
@@ -2984,36 +3030,52 @@ app.get('/sendMailConfirmacionProvedor', function (req, res) {
                         "	 \n" +
                         "	  ,[COT].[CANTIDAD]\n" +
                         "	  ,[COT].[COTIZACION]\n" +
+                        "	 \n" +
+                        "	  ,[PSM].[EMAIL] MAILSENDER \n" +
+                        "	  ,[PSM].[RESPONSE] \n" +
+                        "	 \n" +
+                        "	  ,[CRED].[ID_CREDENCIAL]\n" +
+                        "	  ,[CRED].[USUARIO_NOMBRE]\n" +
+                        "	 \n" +
+                        "	  ,[AUTH].[ID_AUTORIDAD]\n" +
+                        "	  ,[AUTH].[NOMBRE_AUTORIDAD]\n" +
                         "\n" +
                         "  FROM [SLOAA_TR_SERVICIO_COTIZACION] [COT]\n" +
                         "  \n" +
                         "  \n" +
                         "	  LEFT JOIN  [SLOAA_TC_PRESTADOR_SERVICIOS] [PS] ON \n" +
-                        "	  [PS].[ID_PRESTADOR_SERVICIO]=[COT].[ID_PRESTADOR_SERVICIO] \n" +
-                        "      AND [PS].[ID_ZONA]=[COT].[ID_ZONA]\n" +
-                        "      AND [PS].[ID_SUBZONA]=[COT].[ID_SUBZONA]\n" +
+                        "	  [PS].[ID_PRESTADOR_SERVICIO]=[COT].[ID_PRESTADOR_SERVICIO]  AND [PS].[ID_ZONA]=[COT].[ID_ZONA] AND [PS].[ID_SUBZONA]=[COT].[ID_SUBZONA]\n" +
                         "\n" +
                         "	  LEFT JOIN  [SLOAA_TR_ORDEN_SERVICIO] [OS] ON \n" +
                         "	  [COT].[ID_ORDEN_SERVICIO]=[OS].[ID_ORDEN_SERVICIO]\n" +
+                        "\n" +
+                        "\n" +
+                        "	  LEFT JOIN  [SLOAA_TR_CREDENCIAL] [CRED] ON \n" +
+                        "     	  [OS].[ID_CREDENCIAL]=[CRED].[ID_CREDENCIAL]\n" +
+                        "\n" +
+                        "\n" +
+                        "	  LEFT JOIN  [SLOAA_TC_AUTORIDAD] [AUTH] ON \n" +
+                        "	  [CRED].[ID_AUTORIDAD]=[AUTH].[ID_AUTORIDAD]\n" +
+                        "\n" +
                         "\n" +
                         "	  LEFT JOIN [SLOAA_TC_TIPO_SERVICIO]  [TS] ON \n" +
                         "	  [COT].[ID_TIPO_SERVICIO]=[TS].[ID_TIPO_SERVICIO]\n" +
                         "\n" +
                         "	   LEFT JOIN [SLOAA_TC_SERVICIO]  [SERV] ON \n" +
-                        "	  [COT].[ID_TIPO_SERVICIO]=[SERV].[ID_TIPO_SERVICIO]\n" +
-                        "	  AND [COT].[ID_SERVICIO]=[SERV].[ID_SERVICIO]\n" +
+                        "	  [COT].[ID_TIPO_SERVICIO]=[SERV].[ID_TIPO_SERVICIO] AND [COT].[ID_SERVICIO]=[SERV].[ID_SERVICIO]\n" +
                         "\n" +
                         "\n" +
                         "	   LEFT JOIN  [SLOAA_TC_ZONA] [ZON] ON \n" +
                         "	  [COT].[ID_ZONA]=[ZON].[ID_ZONA]\n" +
                         "\n" +
                         "	  LEFT JOIN  [SLOAA_TC_SUBZONA] [SZON] ON \n" +
-                        "	  [COT].[ID_ZONA]=[SZON].[ID_ZONA]\n" +
-                        "	  AND [COT].[ID_SUBZONA]=[SZON].[ID_SUBZONA]\n" +
-                        "\n" +
+                        "	  [COT].[ID_ZONA]=[SZON].[ID_ZONA] AND [COT].[ID_SUBZONA]=[SZON].[ID_SUBZONA]\n" +
                         "\n" +
                         "	  LEFT JOIN  [SLOAA_TC_UNIDAD] [UNI] ON \n" +
                         "	  [COT].[ID_UNIDAD]=[UNI].[ID_UNIDAD]\n" +
+                        "\n" +
+                        "	  LEFT JOIN  [SLOAA_TR_PRESTADOR_SERVICIOS_MAILS] [PSM] ON  \n" +
+                        "	  [PSM].[ID_ZONA]=[PS].[ID_ZONA] AND [PSM].[ID_SUBZONA]=[PS].[ID_SUBZONA] AND [PSM].[ID_PRESTADOR_SERVICIO]=[PS].[ID_PRESTADOR_SERVICIO] \n" +
                         "\n" +
                         "  WHERE  1=1\n" +
                         "  \n" +
@@ -3027,11 +3089,18 @@ app.get('/sendMailConfirmacionProvedor', function (req, res) {
                     rows = dp.queryResult.rows;
                     for (var i = 0; i < rows.length; i++) {
                         currentRow = rows[i];
-                        currentMail = currentRow.CORREO_ELECTRONICO;
-                        currentMailList = dp.mailList;
-                        currentMailObject = currentMailList[currentMail];
-                        if (typeof currentMailObject === "undefined") {
-                            currentMailObject = {
+                        currentZona = currentRow.ID_ZONA;
+                        currentSubzona = currentRow.ID_SUBZONA;
+                        currentProvedorServicio = currentRow.ID_PRESTADOR_SERVICIO;
+
+                        currentProvedorServicioList = dp.provedorServicioList;
+                        currentProvedorServicioObject = currentProvedorServicioList[currentZona + "-" + currentSubzona + "-" + currentProvedorServicio];
+
+
+
+
+                        if (typeof currentProvedorServicioObject === "undefined") {
+                            currentProvedorServicioObject = {
                                 idCotizaciones: "",
                                 currentLlaveSistema: currentRow.LLAVE_SISTEMA,
                                 domicilio: currentRow.DOMICILIO,
@@ -3039,39 +3108,64 @@ app.get('/sendMailConfirmacionProvedor', function (req, res) {
                                 idOrdenServicio: currentRow.ID_ORDEN_SERVICIO,
                                 idTipoServicio: currentRow.ID_TIPO_SERVICIO,
                                 idServicio: currentRow.ID_SERVICIO,
-                                email: currentMail,
-                                servicios: []
+                                email: currentRow.CORREO_ELECTRONICO,
+                                usuarioNombre: currentRow.USUARIO_NOMBRE,
+                                fechaSolicitud: currentRow.FECHA_SOLICITUD,
+                                nombreAutoridad: currentRow.NOMBRE_AUTORIDAD,
+                                cotizado: 0,
+                                emailSenders: {},
+                                servicios: {}
                             };
-                            currentMailList[currentMail] = currentMailObject;
+                            currentProvedorServicioList[currentZona + "-" + currentSubzona + "-" + currentProvedorServicio] = currentProvedorServicioObject;
                         }
 
-                        currentServicio = {
-                            idServicioCotizacion: currentRow.ID_SERVICIO_COTIZACION,
-                            idOrdenServicio: currentRow.ID_ORDEN_SERVICIO,
-                            domicilio: currentRow.DOMICILIO,
-                            llaveSistema: currentRow.LLAVE_SISTEMA,
-                            idTipoServicio: currentRow.ID_TIPO_SERVICIO,
-                            tipo: currentRow.TIPO,
-                            idServicio: currentRow.ID_SERVICIO,
-                            nombreServicio: currentRow.NOMBRE_SERVICIO,
-                            idZona: currentRow.ID_ZONA,
-                            zona: currentRow.ZONA,
-                            idSubzona: currentRow.ID_SUBZONA,
-                            subzona: currentRow.SUBZONA,
-                            idPrestadorServicio: currentRow.ID_PRESTADOR_SERVICIO,
-                            nombre: currentRow.NOMBRE,
-                            correoElectronico: currentRow.CORREO_ELECTRONICO,
-                            idUnidad: currentRow.ID_UNIDAD,
-                            unidad: currentRow.UNIDAD,
-                            cantidad: currentRow.CANTIDAD,
-                            cotizacion: currentRow.COTIZACION
-                        };
-                        currentMailObject.servicios.push(currentServicio);
-                        if (currentMailObject.idCotizaciones.length === 0) {
-                            currentMailObject.idCotizaciones = currentMailObject.idCotizaciones + currentRow.ID_SERVICIO_COTIZACION + "";
-                        } else {
-                            currentMailObject.idCotizaciones = currentMailObject.idCotizaciones + "," + currentRow.ID_SERVICIO_COTIZACION;
+
+
+                        currentServicio = currentProvedorServicioObject.servicios[currentRow.ID_SERVICIO_COTIZACION];
+                        if (typeof currentServicio === "undefined") {
+                            currentServicio = {
+                                idServicioCotizacion: currentRow.ID_SERVICIO_COTIZACION,
+                                idOrdenServicio: currentRow.ID_ORDEN_SERVICIO,
+                                domicilio: currentRow.DOMICILIO,
+                                llaveSistema: currentRow.LLAVE_SISTEMA,
+                                idTipoServicio: currentRow.ID_TIPO_SERVICIO,
+                                tipo: currentRow.TIPO,
+                                idServicio: currentRow.ID_SERVICIO,
+                                nombreServicio: currentRow.NOMBRE_SERVICIO,
+                                idZona: currentRow.ID_ZONA,
+                                zona: currentRow.ZONA,
+                                idSubzona: currentRow.ID_SUBZONA,
+                                subzona: currentRow.SUBZONA,
+                                idPrestadorServicio: currentRow.ID_PRESTADOR_SERVICIO,
+                                nombre: currentRow.NOMBRE,
+                                correoElectronico: currentRow.CORREO_ELECTRONICO,
+                                idUnidad: currentRow.ID_UNIDAD,
+                                unidad: currentRow.UNIDAD,
+                                cantidad: currentRow.CANTIDAD,
+                                cotizacion: currentRow.COTIZACION
+                            };
+                            currentProvedorServicioObject.cotizado = currentProvedorServicioObject.cotizado + currentRow.COTIZACION;
+
+                            currentProvedorServicioObject.servicios[currentRow.ID_SERVICIO_COTIZACION] = currentServicio;
+                            if (currentProvedorServicioObject.idCotizaciones.length === 0) {
+                                currentProvedorServicioObject.idCotizaciones = currentProvedorServicioObject.idCotizaciones + currentRow.ID_SERVICIO_COTIZACION + "";
+                            } else {
+                                currentProvedorServicioObject.idCotizaciones = currentProvedorServicioObject.idCotizaciones + "," + currentRow.ID_SERVICIO_COTIZACION;
+                            }
                         }
+
+
+                        currentMailSender = currentProvedorServicioObject.emailSenders[currentRow.MAILSENDER];
+                        if (typeof currentMailSender === "undefined") {
+                            currentMailSender = {
+                                emailSender: currentRow.MAILSENDER,
+                                responseM: currentRow.RESPONSE
+                            };
+                            currentProvedorServicioObject.emailSenders[currentRow.MAILSENDER] = currentMailSender;
+                        }
+
+
+
                     }
                     response.success = true;
                 } else {
@@ -3080,11 +3174,9 @@ app.get('/sendMailConfirmacionProvedor', function (req, res) {
                 return dp;
             })
             //</editor-fold>
-
-
             .then(function (dp) {
-                for (var mailKey in dp.mailList) {
-                    currentMailObject = dp.mailList[mailKey];
+                for (var key in dp.provedorServicioList) {
+                    currentProvedorServicioObject = dp.provedorServicioList[key];
 //                    currentMailObject.idCotizaciones;
 //                    currentMailObject.currentMail;
 //                    currentMailObject.servicios;
@@ -3092,14 +3184,14 @@ app.get('/sendMailConfirmacionProvedor', function (req, res) {
                     data = "";
                     data = data + "<p><img src='https://tramitesdigitales.sat.gob.mx/SIPRED.Monitor.Externo/images/logoH_col.svg' height='200' width='200'/></p> ";
                     //data = data + "<p><a href='http://"+ip+":"+port+"/serviceConfirm?services=" + currentMailObject.idCotizaciones + "&idOrdenServicio="+currentMailObject.idOrdenServicio+"&idServicioCotizacion="+currentMailObject.idServicioCotizacion+"&idTipoServicio="+currentMailObject.idTipoServicio+"&idServicio="+currentMailObject.idServicio+"'    >Verifica tu disponibilidad</a></p>";
-                    data = data + "<div align='center' ><a href='http://" + ip + ":" + port + "/serviceConfirm?services=" + currentMailObject.idCotizaciones + "'    >Verifica tu disponibilidad haciendo click [AQUI]</a></div>";
+                    data = data + "<div align='center' ></div>";
                     data = data + "<br>&nbsp";
                     data = data + "<br>&nbsp";
                     data = data + "<br>&nbsp";
                     data = data + "<br>&nbsp";
                     data = data + "<table cellspacing=1 border=1 bgcolor='gray' color='white' width=100%>";
-                    data = data + "  <tr><td> Orden de servicio [" + currentMailObject.currentLlaveSistema + "] </td></tr>";
-                    data = data + "  <tr><td> Domicilio [" + currentMailObject.domicilio + "] </td></tr>";
+                    data = data + "  <tr><td> Orden de servicio [" + currentProvedorServicioObject.currentLlaveSistema + "] </td></tr>";
+                    data = data + "  <tr><td> Domicilio [" + currentProvedorServicioObject.domicilio + "] </td></tr>";
                     data = data + "</table>";
                     data = data + "<table cellspacing=1 border=1 bgcolor='#b5b5b5' width=100%>";
                     data = data + "  <tr>";
@@ -3109,8 +3201,8 @@ app.get('/sendMailConfirmacionProvedor', function (req, res) {
                     data = data + "      <td>Cantidad</td>";
                     data = data + "      <td>Cotizacion</td>";
                     data = data + "  </tr>";
-                    for (var serviceKey in currentMailObject.servicios) {
-                        currentServiceObject = currentMailObject.servicios[serviceKey];
+                    for (var serviceKey in currentProvedorServicioObject.servicios) {
+                        currentServiceObject = currentProvedorServicioObject.servicios[serviceKey];
                         data = data + "  <tr>";
                         data = data + "      <td>" + currentServiceObject.tipo + "</td>";
                         data = data + "      <td>" + currentServiceObject.nombreServicio + "</td>";
@@ -3119,31 +3211,226 @@ app.get('/sendMailConfirmacionProvedor', function (req, res) {
                         data = data + "      <td>" + currentServiceObject.cotizacion + "</td>";
                         data = data + "  </tr>";
                     }
-
-
                     data = data + "</table>";
-                    mc.info(data);
-                    dp2 = {};
-                    mn.init(dp2)
-                            .then(function (dp2) {
-                                dp2.mailParameters = mailParameters1;
-                                dp2.from = 'contacto@enclave.com.mx';
-                                dp2.to = mailKey;
-                                dp2.subject = 'Confirma Disponibilidad';
-                                dp2.text = ' defaultText';
-                                dp2.html = data;
-                                return dp2;
-                            })
-                            .then(mm.sendMail)
-                            .catch(function (err) {
-                                mc.error(err);
-                            });
+
+                    for (var emailSenderKey in currentProvedorServicioObject.emailSenders) {
+                        currentMailSender = currentProvedorServicioObject.emailSenders[emailSenderKey];
+                        mailto = new String(currentMailSender.emailSender);
+                        mc.debug("Envio  a correo tipo:[Validador] [" + currentMailSender.emailSender + "] verificacion :[" + currentMailSender.responseM + "]");
+
+
+                        if (currentMailSender.responseM === 1) {
+                            responseF = "<br>&nbsp<br>&nbsp<br>&nbsp<table><tr><td><a href='http://" + ip + ":" + port + "/serviceConfirm?services=" + currentProvedorServicioObject.idCotizaciones + "'    >Verifica tu disponibilidad haciendo click [AQUI]</a></td></tr></table>";
+                            mc.info(data + responseF);
+
+                            dpp = {};
+                            dpp.mailParameters = mailParameters1;
+                            dpp.from = 'contacto@enclave.com.mx';
+                            dpp.to = mailto + "";
+                            dpp.subject = 'Confirma Disponibilidad [Valida]';
+                            dpp.text = ' ';
+                            dpp.html = data + responseF;
+                            mailManater = new ENCManagerMail();
+                            mailManater.sendMail(dpp);
+
+
+                        } else {
+                            mc.info(data);
+                            
+                            dpp = {};
+                            dpp.mailParameters = mailParameters1;
+                            dpp.from = 'contacto@enclave.com.mx';
+                            dpp.to = mailto + "";
+                            dpp.subject = 'Enterado Disponibilidad';
+                            dpp.text = ' ';
+                            dpp.html = data;
+                            mailManater = new ENCManagerMail();
+                            mailManater.sendMail(dpp);
+
+                        }
+                    }
                 }
 
+                return dp;
+            })
 
+            .then(function (dp) {
+                dp.query = "SELECT \n" +
+                        "[CRED].[ID_CREDENCIAL] ID_CREDENCIAL,\n" +
+                        "[CRED].[EMAIL] EMAIL,\n" +
+                        "[CRED].[ID_CREDENCIAL_SUPERIOR] ID_CREDENCIAL_SUPERIOR,\n" +
+                        "[CRED_SUP].[EMAIL] EMAIL_SUPERIOR\n" +
+                        "FROM\n" +
+                        "[SLOAA_TR_CREDENCIAL] [CRED]\n" +
+                        "LEFT JOIN  [SLOAA_TR_CREDENCIAL] [CRED_SUP] ON [CRED].[ID_CREDENCIAL_SUPERIOR]=[CRED_SUP].[ID_CREDENCIAL]\n" +
+                        "WHERE\n" +
+                        "[CRED].[ID_CREDENCIAL]=" + dp.idcredencialSolicitante + " ";
+                return dp;
+            })
+            .then(msql.selectPromise)
+            .then(function (dp) {
+                dp.emailSolicitante = null;
+                dp.emailSolicitanteSuperior = null;
+                if (dp.queryResult.rows !== null) {
+                    rows = dp.queryResult.rows;
+                    for (var i = 0; i < rows.length; i++) {
+                        currentRow = rows[i];
+                        dp.emailSolicitante = currentRow.EMAIL;
+                        dp.emailSolicitanteSuperior = currentRow.EMAIL_SUPERIOR;
+
+                    }
+                }
+                return dp;
+            })
+            .then(function (dp) {
+                for (var key in dp.provedorServicioList) {
+                    currentProvedorServicioObject = dp.provedorServicioList[key];
+                    data2 = "";
+                    data2 = data2 + "<div align='center' ></div>";
+                    data2 = data2 + "<br>&nbsp";
+                    data2 = data2 + "<br>&nbsp";
+                    data2 = data2 + "<br>&nbsp";
+                    data2 = data2 + "<br>&nbsp";
+
+
+                    data2 = data2 + "<table cellspacing=1 width=100%>";
+                    data2 = data2 + "<tr>";
+                    data2 = data2 + "<td width=30%>";
+                    data2 = data2 + "<img src='https://tramitesdigitales.sat.gob.mx/SIPRED.Monitor.Externo/images/logoH_col.svg' height='200' width='200'/>"
+                    data2 = data2 + "</td>";
+                    data2 = data2 + "<td width=40%>";
+                    data2 = data2 + "SERVICIO DE ADMINISTRACIÓN TRIBUTARIA<BR> ADMINISTRACIÓN GENERAL DE RECURSOS Y SERVICIOS<BR> ADMINISTRACIÓN CENTRAL DE DESTINO DE BIENES<BR>";
+                    data2 = data2 + "</td>";
+                    data2 = data2 + "<td width=30%>";
+                    data2 = data2 + "</td>";
+                    data2 = data2 + "</tr>";
+                    data2 = data2 + "</table>";
+
+                    data2 = data2 + "<table cellspacing=1 width=100%>";
+                    data2 = data2 + "<tr>";
+                    data2 = data2 + "<td width=100%>";
+                    data2 = data2 + "SERVICIO LOGISTICO PARA LA OPERACIÓN DE LAS AUTORIDADES ADUANERAS, FISCALES Y ADMINISTRATIVAS 2018";
+                    data2 = data2 + "</td>";
+                    data2 = data2 + "</tr>";
+                    data2 = data2 + "</table>";
+
+                    data2 = data2 + "<br>&nbsp";
+                    data2 = data2 + "<br>&nbsp";
+
+
+                    data2 = data2 + "<div align='center'>";
+                    data2 = data2 + "<table cellspacing=1 border=1 bgcolor='gray' color='white' width=500>";
+                    data2 = data2 + "  <tr>";
+                    data2 = data2 + "  <td>";
+                    data2 = data2 + "SOLICITUD DE SERVICIO No.";
+                    data2 = data2 + "  </td>";
+                    data2 = data2 + "  <td>";
+                    data2 = data2 + currentProvedorServicioObject.currentLlaveSistema;
+                    data2 = data2 + "  </td>";
+                    data2 = data2 + "  </tr>";
+
+
+                    data2 = data2 + "  <tr>";
+                    data2 = data2 + "  <td bgcolor='#666666' width=50%>";
+                    data2 = data2 + "Nombre de la Unidad Administrativa que solicita el servicio:";
+                    data2 = data2 + "  </td>";
+                    data2 = data2 + "  <td bgcolor='#BBBBBB' width=50%>";
+                    data2 = data2 + currentProvedorServicioObject.nombreAutoridad;
+                    data2 = data2 + "  </td>";
+                    data2 = data2 + "  </tr>";
+
+
+                    data2 = data2 + "  <tr>";
+                    data2 = data2 + "  <td bgcolor='#666666' width=50%>";
+                    data2 = data2 + "Domicilio:";
+                    data2 = data2 + "  </td>";
+                    data2 = data2 + "  <td bgcolor='#BBBBBB' width=50%>";
+                    data2 = data2 + currentProvedorServicioObject.domicilio;
+                    data2 = data2 + "  </td>";
+                    data2 = data2 + "  </tr>";
+
+
+                    data2 = data2 + "  <tr>";
+                    data2 = data2 + "  <td bgcolor='#666666' width=50%>";
+                    data2 = data2 + "Fecha y Hora:";
+                    data2 = data2 + "  </td>";
+                    data2 = data2 + "  <td bgcolor='#BBBBBB' width=50%>";
+                    data2 = data2 + currentProvedorServicioObject.fechaSolicitud;
+                    data2 = data2 + "  </td>";
+                    data2 = data2 + "  </tr>";
+
+
+                    data2 = data2 + "  <tr>";
+                    data2 = data2 + "  <td bgcolor='#666666' width=50%>";
+                    data2 = data2 + "Precio del Servicio:";
+                    data2 = data2 + "  </td>";
+                    data2 = data2 + "  <td bgcolor='#BBBBBB' width=50%>";
+                    data2 = data2 + currentProvedorServicioObject.cotizado;
+                    data2 = data2 + "  </td>";
+                    data2 = data2 + "  </tr>";
+
+
+                    data2 = data2 + "  <tr>";
+                    data2 = data2 + "  <td bgcolor='#666666' width=50%>";
+                    data2 = data2 + "Persona designada para solicitar los servicios:";
+                    data2 = data2 + "  </td>";
+                    data2 = data2 + "  <td bgcolor='#BBBBBB' width=50%>";
+                    data2 = data2 + currentProvedorServicioObject.usuarioNombre;
+                    data2 = data2 + "  </td>";
+                    data2 = data2 + "  </tr>";
+
+
+                    data2 = data2 + "</table>";
+                    data2 = data2 + "</div>";
+
+
+
+                    if (dp.emailSolicitante !== null) {
+                        mc.debug("Envio a correo tipo:[SAT] [" + dp.emailSolicitante + "] Solicitante");
+                        mailto = "";
+                        mailto = dp.emailSolicitante;
+                        mc.info(data2);
+
+
+                        dpp = {};
+                        dpp.mailParameters = mailParameters1;
+                        dpp.from = 'contacto@enclave.com.mx';
+                        dpp.to = mailto;
+                        dpp.subject = 'Email SAT';
+                        dpp.text = ' ';
+                        dpp.html = data2;
+                        mailManater = new ENCManagerMail();
+                        mailManater.sendMail(dpp);
+
+
+                    }
+                    if (dp.emailSolicitanteSuperior !== null) {
+                        mc.debug("Envio  a correo tipo:[SAT] [" + dp.emailSolicitante + "] Solicitante Superior");
+                        mailto = "";
+                        mailto = dp.emailSolicitante;
+                        mc.info(data2);
+
+                        dpp = {};
+                        dpp.mailParameters = mailParameters1;
+                        dpp.from = 'contacto@enclave.com.mx';
+                        dpp.to = mailto;
+                        dpp.subject = 'Email SAT';
+                        dpp.text = ' ';
+                        dpp.html = data2;
+                        mailManater = new ENCManagerMail();
+                        mailManater.sendMail(dpp);
+                    }
+
+
+                }
+                return dp;
+            })
+            .then(function (dp) {
+                return dp;
             })
             .then(function (dp) {
                 mc.info('RID:[' + requestID + ']-[REQUEST]-[END]:[/sendMailConfirmacionProvedor]');
+                console.log(dp);
                 res.jsonp(response);
             })
             .catch(function (err) {

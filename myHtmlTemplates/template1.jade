@@ -95,13 +95,6 @@ html
                                         td(bgcolor="#dbdbdb")  #{ordenes[orden].deducciones}
                                         td(bgcolor="#dbdbdb")  #{ordenes[orden].total}
                     table(cellspacing="5" width='100%')
-                        tr(bgcolor="gray")
-                            td(bgcolor="#cecece" width='20%') #{ordenes[orden].textoFirmaGenerador}:  #{ordenes[orden].firmaGeneradorNombre}
-                            td(bgcolor="#dbdbdb" width='80%' style='word-wrap:break-word;max-width:150px;') #{ordenes[orden].firmaGenerador}
-                        tr(bgcolor="gray")
-                            td(bgcolor="#cecece" width='20%') #{ordenes[orden].textoFirmaRevisor}:  #{ordenes[orden].firmaRevisorNombre}
-                            td(bgcolor="#dbdbdb" width='80%' style='word-wrap:break-word;max-width:150px;') #{ordenes[orden].firmaRevisor}  
-                    table(cellspacing="5" width='100%')
                         tr
                             td(align="center")<hr>
                         tr
@@ -114,6 +107,15 @@ html
                             td(align="left")EN CASO DE INCUMPLIMIENTO. INDIQUE LOS MOTIVOS Y DEDUCTIVAS A APLICAR.
                         tr
                             td(align="center")<hr>
+
+                    table(cellspacing="5" width='100%')
+                        tr(bgcolor="gray")
+                            td(bgcolor="#cecece" width='20%') #{ordenes[orden].textoFirmaGenerador}:  #{ordenes[orden].firmaGeneradorNombre}
+                            td(bgcolor="#dbdbdb" width='80%' style='word-wrap:break-word;max-width:150px;') #{ordenes[orden].firmaGenerador}
+                        tr(bgcolor="gray")
+                            td(bgcolor="#cecece" width='20%') #{ordenes[orden].textoFirmaRevisor}:  #{ordenes[orden].firmaRevisorNombre}
+                            td(bgcolor="#dbdbdb" width='80%' style='word-wrap:break-word;max-width:150px;') #{ordenes[orden].firmaRevisor}  
+                    
         div &nbsp;
         -}
                        
