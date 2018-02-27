@@ -1,4 +1,3 @@
-
 //<editor-fold defaultstate="collapsed" desc="ENC CORE">
 //<editor-fold defaultstate="collapsed" desc="INNER">
 //------------------------------------------------------------------------------
@@ -885,7 +884,7 @@ var server;
 var SQLServerConnectionParameters = {
     user: 'sa',
     password: 'Lufiri01011',
-    server: 'localhost',
+    server: '192.168.56.102',
     database: 'SOA_db'
 };
 ////var connectionParameters1 = {
@@ -968,8 +967,6 @@ app.post('/defaultSelect', function (req, res) {
 
 
 
-
-
 //<editor-fold defaultstate="collapsed" desc="login">
 app.get('/login', function (req, res) {
     var requestID = new Date().getTime();
@@ -999,6 +996,7 @@ app.get('/login', function (req, res) {
             .then(function (dp) {
                 dp.query = "SELECT [CRED].[ID_CREDENCIAL]\n" +
                         "      ,[CRED].[NOMBRE]\n" +
+                        "      ,[CRED].[CARGO]\n" +
                         "      ,[CRED].[USUARIO_NOMBRE]\n" +
                         "      ,[CRED].[ID_AUTORIDAD]\n" +
                         "	  ,[AUTH].[NOMBRE_AUTORIDAD]\n" +
@@ -1913,10 +1911,8 @@ app.get('/setDeduccionCotizacion', function (req, res) {
                     new FieldValidation('cancelacion', ENC.STRING()),
                     new FieldValidation('deduccion', ENC.STRING()),
                     new FieldValidation('deduccionJustificacion', ENC.STRING()),
-
                     new FieldValidation('deduccionCumplimiento', ENC.STRING()),
                     new FieldValidation('deduccionIdentificado', ENC.STRING()),
-
                     new FieldValidation('_dc', ENC.STRING()),
                     new FieldValidation('callback', ENC.STRING())
                 ]);
@@ -1927,10 +1923,8 @@ app.get('/setDeduccionCotizacion', function (req, res) {
                 dp.cancelacion = req.query.cancelacion;
                 dp.deduccion = req.query.deduccion;
                 dp.deduccionJustificacion = req.query.deduccionJustificacion;
-
                 dp.deduccionCumplimiento = req.query.deduccionCumplimiento;
                 dp.deduccionIdentificado = req.query.deduccionIdentificado;
-
                 dp.looked = 1;
                 return dp;
             })
@@ -2951,8 +2945,6 @@ app.get('/sendMailConfirmacionProvedor', function (req, res) {
                 dp.provedorServicioList = {};
                 dp.mailProvedores = "";
                 dp.mailPromisses = [];
-
-
                 prom1 = function (inputObject) {
                     return new Promise(function (resolve, reject) {
                         console.log("1" + inputObject);
@@ -2974,24 +2966,8 @@ app.get('/sendMailConfirmacionProvedor', function (req, res) {
                         return;
                     });
                 };
-
                 proms = [prom1, prom2, prom3];
                 Promise.all(proms);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                 return dp;
             })
 
@@ -3092,13 +3068,8 @@ app.get('/sendMailConfirmacionProvedor', function (req, res) {
                         currentZona = currentRow.ID_ZONA;
                         currentSubzona = currentRow.ID_SUBZONA;
                         currentProvedorServicio = currentRow.ID_PRESTADOR_SERVICIO;
-
                         currentProvedorServicioList = dp.provedorServicioList;
                         currentProvedorServicioObject = currentProvedorServicioList[currentZona + "-" + currentSubzona + "-" + currentProvedorServicio];
-
-
-
-
                         if (typeof currentProvedorServicioObject === "undefined") {
                             currentProvedorServicioObject = {
                                 idCotizaciones: "",
@@ -3145,7 +3116,6 @@ app.get('/sendMailConfirmacionProvedor', function (req, res) {
                                 cotizacion: currentRow.COTIZACION
                             };
                             currentProvedorServicioObject.cotizado = currentProvedorServicioObject.cotizado + currentRow.COTIZACION;
-
                             currentProvedorServicioObject.servicios[currentRow.ID_SERVICIO_COTIZACION] = currentServicio;
                             if (currentProvedorServicioObject.idCotizaciones.length === 0) {
                                 currentProvedorServicioObject.idCotizaciones = currentProvedorServicioObject.idCotizaciones + currentRow.ID_SERVICIO_COTIZACION + "";
@@ -3212,17 +3182,13 @@ app.get('/sendMailConfirmacionProvedor', function (req, res) {
                         data = data + "  </tr>";
                     }
                     data = data + "</table>";
-
                     for (var emailSenderKey in currentProvedorServicioObject.emailSenders) {
                         currentMailSender = currentProvedorServicioObject.emailSenders[emailSenderKey];
                         mailto = new String(currentMailSender.emailSender);
                         mc.debug("Envio  a correo tipo:[Validador] [" + currentMailSender.emailSender + "] verificacion :[" + currentMailSender.responseM + "]");
-
-
                         if (currentMailSender.responseM === 1) {
                             responseF = "<br>&nbsp<br>&nbsp<br>&nbsp<table><tr><td><a href='http://" + ip + ":" + port + "/serviceConfirm?services=" + currentProvedorServicioObject.idCotizaciones + "'    >Verifica tu disponibilidad haciendo click [AQUI]</a></td></tr></table>";
                             mc.info(data + responseF);
-
                             dpp = {};
                             dpp.mailParameters = mailParameters1;
                             dpp.from = 'contacto@enclave.com.mx';
@@ -3232,11 +3198,8 @@ app.get('/sendMailConfirmacionProvedor', function (req, res) {
                             dpp.html = data + responseF;
                             mailManater = new ENCManagerMail();
                             mailManater.sendMail(dpp);
-
-
                         } else {
                             mc.info(data);
-                            
                             dpp = {};
                             dpp.mailParameters = mailParameters1;
                             dpp.from = 'contacto@enclave.com.mx';
@@ -3246,7 +3209,6 @@ app.get('/sendMailConfirmacionProvedor', function (req, res) {
                             dpp.html = data;
                             mailManater = new ENCManagerMail();
                             mailManater.sendMail(dpp);
-
                         }
                     }
                 }
@@ -3277,7 +3239,6 @@ app.get('/sendMailConfirmacionProvedor', function (req, res) {
                         currentRow = rows[i];
                         dp.emailSolicitante = currentRow.EMAIL;
                         dp.emailSolicitanteSuperior = currentRow.EMAIL_SUPERIOR;
-
                     }
                 }
                 return dp;
@@ -3291,8 +3252,6 @@ app.get('/sendMailConfirmacionProvedor', function (req, res) {
                     data2 = data2 + "<br>&nbsp";
                     data2 = data2 + "<br>&nbsp";
                     data2 = data2 + "<br>&nbsp";
-
-
                     data2 = data2 + "<table cellspacing=1 width=100%>";
                     data2 = data2 + "<tr>";
                     data2 = data2 + "<td width=30%>";
@@ -3305,7 +3264,6 @@ app.get('/sendMailConfirmacionProvedor', function (req, res) {
                     data2 = data2 + "</td>";
                     data2 = data2 + "</tr>";
                     data2 = data2 + "</table>";
-
                     data2 = data2 + "<table cellspacing=1 width=100%>";
                     data2 = data2 + "<tr>";
                     data2 = data2 + "<td width=100%>";
@@ -3313,11 +3271,8 @@ app.get('/sendMailConfirmacionProvedor', function (req, res) {
                     data2 = data2 + "</td>";
                     data2 = data2 + "</tr>";
                     data2 = data2 + "</table>";
-
                     data2 = data2 + "<br>&nbsp";
                     data2 = data2 + "<br>&nbsp";
-
-
                     data2 = data2 + "<div align='center'>";
                     data2 = data2 + "<table cellspacing=1 border=1 bgcolor='gray' color='white' width=500>";
                     data2 = data2 + "  <tr>";
@@ -3328,8 +3283,6 @@ app.get('/sendMailConfirmacionProvedor', function (req, res) {
                     data2 = data2 + currentProvedorServicioObject.currentLlaveSistema;
                     data2 = data2 + "  </td>";
                     data2 = data2 + "  </tr>";
-
-
                     data2 = data2 + "  <tr>";
                     data2 = data2 + "  <td bgcolor='#666666' width=50%>";
                     data2 = data2 + "Nombre de la Unidad Administrativa que solicita el servicio:";
@@ -3338,8 +3291,6 @@ app.get('/sendMailConfirmacionProvedor', function (req, res) {
                     data2 = data2 + currentProvedorServicioObject.nombreAutoridad;
                     data2 = data2 + "  </td>";
                     data2 = data2 + "  </tr>";
-
-
                     data2 = data2 + "  <tr>";
                     data2 = data2 + "  <td bgcolor='#666666' width=50%>";
                     data2 = data2 + "Domicilio:";
@@ -3348,8 +3299,6 @@ app.get('/sendMailConfirmacionProvedor', function (req, res) {
                     data2 = data2 + currentProvedorServicioObject.domicilio;
                     data2 = data2 + "  </td>";
                     data2 = data2 + "  </tr>";
-
-
                     data2 = data2 + "  <tr>";
                     data2 = data2 + "  <td bgcolor='#666666' width=50%>";
                     data2 = data2 + "Fecha y Hora:";
@@ -3358,8 +3307,6 @@ app.get('/sendMailConfirmacionProvedor', function (req, res) {
                     data2 = data2 + currentProvedorServicioObject.fechaSolicitud;
                     data2 = data2 + "  </td>";
                     data2 = data2 + "  </tr>";
-
-
                     data2 = data2 + "  <tr>";
                     data2 = data2 + "  <td bgcolor='#666666' width=50%>";
                     data2 = data2 + "Precio del Servicio:";
@@ -3368,8 +3315,6 @@ app.get('/sendMailConfirmacionProvedor', function (req, res) {
                     data2 = data2 + currentProvedorServicioObject.cotizado;
                     data2 = data2 + "  </td>";
                     data2 = data2 + "  </tr>";
-
-
                     data2 = data2 + "  <tr>";
                     data2 = data2 + "  <td bgcolor='#666666' width=50%>";
                     data2 = data2 + "Persona designada para solicitar los servicios:";
@@ -3378,20 +3323,13 @@ app.get('/sendMailConfirmacionProvedor', function (req, res) {
                     data2 = data2 + currentProvedorServicioObject.usuarioNombre;
                     data2 = data2 + "  </td>";
                     data2 = data2 + "  </tr>";
-
-
                     data2 = data2 + "</table>";
                     data2 = data2 + "</div>";
-
-
-
                     if (dp.emailSolicitante !== null) {
                         mc.debug("Envio a correo tipo:[SAT] [" + dp.emailSolicitante + "] Solicitante");
                         mailto = "";
                         mailto = dp.emailSolicitante;
                         mc.info(data2);
-
-
                         dpp = {};
                         dpp.mailParameters = mailParameters1;
                         dpp.from = 'contacto@enclave.com.mx';
@@ -3401,15 +3339,12 @@ app.get('/sendMailConfirmacionProvedor', function (req, res) {
                         dpp.html = data2;
                         mailManater = new ENCManagerMail();
                         mailManater.sendMail(dpp);
-
-
                     }
                     if (dp.emailSolicitanteSuperior !== null) {
                         mc.debug("Envio  a correo tipo:[SAT] [" + dp.emailSolicitante + "] Solicitante Superior");
                         mailto = "";
                         mailto = dp.emailSolicitante;
                         mc.info(data2);
-
                         dpp = {};
                         dpp.mailParameters = mailParameters1;
                         dpp.from = 'contacto@enclave.com.mx';
@@ -3486,7 +3421,6 @@ app.get('/getReport', function (req, res) {
 
                 dp.fMonth = fMonth;
                 dp.fYear = fYear;
-
                 dp.query = "SELECT \n" +
                         "	  [TS].[TIPO]\n" +
                         "	, [SERV].*\n" +
@@ -3551,11 +3485,9 @@ app.get('/getReport', function (req, res) {
                     currentRow = dp.servicios[currentKey];
                     currentOrden = dp.ordenes[currentRow.LLAVE_SISTEMA];
                     dp.nombreAutoridad = currentRow.NOMBRE_AUTORIDAD;
-
                     dp.llaveOrdenMensual = "MX-SAT-TN-" + currentRow.SERVICIO + "-" + dp.fYear + "-" + dp.fMonth;
                     dp.llaveOrdenMensual = dp.llaveOrdenMensual.replace(/\|/g, "");
                     dp.llaveOrdenMensual = dp.llaveOrdenMensual.replace(/\s+/g, ' ');
-
                     if (typeof currentOrden === "undefined") {
 
                         var textoFirmaRevisor = '';
@@ -3564,7 +3496,6 @@ app.get('/getReport', function (req, res) {
                         var firmaRevisor = '';
                         var firmaGeneradorNombre = '';
                         var firmaRevisorNombre = '';
-
                         if (currentRow.FIRMA1_USER1 !== null && currentRow.FIRMA1_USER1 !== '') {
                             firmaGenerador = currentRow.FIRMA1_USER1;
                             firmaGeneradorNombre = currentRow.FIRMA1_USERNAME1;
@@ -3618,7 +3549,6 @@ app.get('/getReport', function (req, res) {
                         currentOrden.deducciones = currentOrden.deducciones + deduccion;
                     }
                     currentOrden.total = currentOrden.cotizacion - currentOrden.deducciones;
-
                     if (currentRow.CUMPLIMIENTO === 1) {
                         currentOrden.cumplimiento = "[ X ]";
                     }
@@ -3634,7 +3564,6 @@ app.get('/getReport', function (req, res) {
             })
             .then(function (dp) {
                 mc.info('RID:[' + requestID + ']-[REQUEST]-[END]:[/getReport]');
-
                 if (dp.idOrden !== '') {
                     res.render("template1", {
                         tipoReporte: dp.tipoReporte,
@@ -3672,6 +3601,55 @@ app.get('/getReport', function (req, res) {
 //</editor-fold>
 
 
+
+
+//<editor-fold defaultstate="collapsed" desc="getCurDate">
+app.get('/getCurDate', function (req, res) {
+    var requestID = new Date().getTime();
+    var response = {};
+    var dataPacket = {
+        requestID: requestID,
+        connectionParameters: SQLServerConnectionParameters,
+        looked: 0
+    };
+    mn.init(dataPacket)
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/getCurDate]');
+                return dp;
+            })
+            .then(function (dp) {
+                inputValidation(response, req.query, [
+                    new FieldValidation('_dc', ENC.STRING()),
+                    new FieldValidation('callback', ENC.STRING())
+                ]);
+                response.success = false;
+                return dp;
+            })
+            .then(function (dp) {
+
+                var now = new Date();
+                response.curDay = now.getDay();
+                response.curMonth = now.getMonth() + 1;
+                response.curYear = now.getFullYear();
+                response.avalible = false;
+                if (response.curDay <= 10) {
+                    response.avalible = true;
+                }
+                response.leftDay = 10 - response.curDay;
+                response.success = true;
+                return dp;
+            })
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[END]:[/getCurDate]');
+                res.jsonp(response);
+            })
+            .catch(function (err) {
+                mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/getCurDate]');
+                response.error = err.message;
+                res.jsonp(response);
+            });
+});
+//</editor-fold>
 
 app.set('port', (process.env.PORT || 3000));
 var server = app.listen(app.get('port'), function () {

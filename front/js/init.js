@@ -62,7 +62,7 @@ var login = Ext.create('Ext.window.Window', {
 });
 var createViewport = function () {
     Ext.onReady(function () {
-        Ext.create('Ext.container.Viewport', {
+        var viewPort = Ext.create('Ext.container.Viewport', {
             layout: 'fit',
             items: [
                 {
@@ -298,6 +298,17 @@ var createViewport = function () {
                                             fields: ['ID_STATUS', 'NOMBRE_STATUS'],
                                             data: data
                                         }));
+
+                                        //Validar generación de reporte
+                                        Ext.data.JsonP.request({
+                                            url: serviceUrl + 'getCurDate',
+                                            success: function (result) {
+                                                var available = result.success && result.avalible;
+                                                viewPort.down('toolbar #update').setDisabled(!available);
+                                                viewPort.down('toolbar #leftDays').setValue(available ? '<span style="color:gray;">(' + result.leftDay + ' días restantes)</span>' : '');
+                                            }
+                                        });
+
                                     }},
                                 sorters: []
                             }),
@@ -338,18 +349,25 @@ var createViewport = function () {
                                             }
                                         },
                                         {
+                                            text: 'Actualizar',
+                                            glyph: 'xf021@FontAwesome',
+                                            handler: function (button) {
+                                                Ext.getCmp('serviceOrdersGrid').getStore().reload();
+                                            }
+                                        },
+                                        {
                                             text: 'Generar Reporte',
+                                            itemId: 'update',
+//                                            disabled: true,
                                             glyph: 'xf15b@FontAwesome',
                                             handler: function (button) {
                                                 window.open(serviceUrl + 'getReport?idAutoridad=' + login.credential.ID_AUTORIDAD + '&idOrden=&mensual=1');
                                             }
                                         },
                                         {
-                                            text: 'Actualizar',
-                                            glyph: 'xf021@FontAwesome',
-                                            handler: function (button) {
-                                                Ext.getCmp('serviceOrdersGrid').getStore().reload();
-                                            }
+                                            xtype: 'displayfield',
+                                            itemId: 'leftDays',
+                                            labelWidth: 150
                                         }
                                     ]
                                 }

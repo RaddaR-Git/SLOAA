@@ -42,14 +42,14 @@ var fielSign = function (form, firmaStep) {
                                     idOrdenServicio: form.up('window').ordenServicio.ID_ORDEN_SERVICIO,
                                 }
                                 params['firma' + firmaStep + 'UserId1'] = firma;
-                                params['firma' + firmaStep + 'UserName1'] = login.credential.USUARIO_NOMBRE;
+                                params['firma' + firmaStep + 'UserName1'] = login.credential.USUARIO_NOMBRE + '|' + login.credential.CARGO;
                             } else {
                                 url += 'firma' + firmaStep + 'OrdenServicioSupervisor';
                                 params = {
                                     idOrdenServicio: form.up('window').ordenServicio.ID_ORDEN_SERVICIO,
                                 }
                                 params['firma' + firmaStep + 'UserId2'] = firma;
-                                params['firma' + firmaStep + 'UserName2'] = login.credential.USUARIO_NOMBRE;
+                                params['firma' + firmaStep + 'UserName2'] = login.credential.USUARIO_NOMBRE + '|' + login.credential.CARGO;
                             }
 
 
