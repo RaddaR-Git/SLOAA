@@ -361,7 +361,7 @@ var createViewport = function () {
 //                                            disabled: true,
                                             glyph: 'xf15b@FontAwesome',
                                             handler: function (button) {
-                                                window.open(serviceUrl + 'getReport?idAutoridad=' + login.credential.ID_AUTORIDAD + '&idOrden=&mensual=1');
+                                                signWindow(button);
                                             }
                                         },
                                         {
@@ -381,6 +381,67 @@ var createViewport = function () {
         //alert("init");
     });
 };
+
+var signWindow = function (button) {
+    Ext.create('Ext.window.Window', {
+        title: 'Firma',
+        animateTarget: button,
+        height: 200,
+        width: 300,
+        layout: 'center',
+        items: [
+            {
+                xtype: 'form',
+                itemId: 'sf1',
+                bodyPadding: 15,
+                items: [
+                    {
+                        xtype: 'label',
+                        text: 'Firma Digital'
+                    },
+                    {
+                        xtype: 'filefield',
+                        itemId: 'cer',
+                        fieldLabel: '.cer',
+                        accept: '.cer'
+                    },
+                    {
+                        xtype: 'filefield',
+                        itemId: 'key',
+                        fieldLabel: '.key',
+                        accept: '.key'
+                    },
+                    {
+                        xtype: 'textfield',
+                        itemId: 'password',
+                        fieldLabel: 'Contraseña',
+                        emptyText: 'contraseña',
+                        inputType: 'password',
+                        allowBlank: false,
+                        listeners: {
+                            specialkey: function (field, e) {
+                                if (e.getKey() == e.ENTER) {
+                                    fielSign(field.up('form'), 3);
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        ],
+        buttons: [
+            {
+                text: 'Firmar',
+                glyph: 'xf084@FontAwesome',
+                itemId: 'signButtonConfirmaciones',
+                handler: function (button) {
+                    fielSign(button.up('window').down('#sf1'), 3);
+                }
+            }
+        ]
+    }).show();
+};
+
 var launchWindow = function (recordBase) {
     var thisWin = Ext.create('Ext.window.Window', {
         title: 'Orden de Servicio',
@@ -1290,7 +1351,7 @@ var launchWindow = function (recordBase) {
                         text: 'Generar Reporte',
                         glyph: 'xf15b@FontAwesome',
                         handler: function (button) {
-                            window.open(serviceUrl + 'getReport?idAutoridad=' + login.credential.ID_AUTORIDAD + '&idOrden=' + thisWin.ordenServicio.ID_ORDEN_SERVICIO + '&mensual=1');
+                            window.open(serviceUrl + 'getReport?idAutoridad=' + login.credential.ID_AUTORIDAD + '&idOrden=' + thisWin.ordenServicio.ID_ORDEN_SERVICIO + '&userName=' + login.credential.USUARIO_NOMBRE + '|' + login.credential.CARGO + '&eFirma=' + '&mensual=');
                         }
                     },
                     {
@@ -1845,7 +1906,7 @@ var launchWindow = function (recordBase) {
                         region: 'center',
                         next: function () {
                             if (thisWin.getComponent('e7').getComponent('nextButton').getText() === 'Generar Orden de Servicio') {
-                                window.open(serviceUrl + 'getReport?idAutoridad=' + login.credential.ID_AUTORIDAD + '&idOrden=' + thisWin.ordenServicio.ID_ORDEN_SERVICIO + '&mensual=');
+                                window.open(serviceUrl + 'getReport?idAutoridad=' + login.credential.ID_AUTORIDAD + '&idOrden=' + thisWin.ordenServicio.ID_ORDEN_SERVICIO + '&userName=' + login.credential.USUARIO_NOMBRE + '|' + login.credential.CARGO + '&eFirma=' + '&mensual=');
                             }
                             thisWin.close();
                         },

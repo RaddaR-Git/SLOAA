@@ -27,59 +27,64 @@ var fielSign = function (form, firmaStep) {
                         var cert = new PKI.SAT.Certificado(certificado);
                         var certificadoVigente = cert.isVigente();
                         if (certificadoVigente) {
-                            var validateMask = new Ext.LoadMask({
-                                msg: 'Validando Firma...',
-                                target: form
-                            });
-                            validateMask.show();
-                            var serviceOrdersConfirm = form.up('panel').getComponent(firmaStep === 1 ? 'serviceOrdersConfirm' : 'serviceOrders');
-                            var url = '';
-                            var params = new Object();
-
-                            if (Ext.isEmpty(serviceOrdersConfirm.getStore().getData().items) || Ext.isEmpty(serviceOrdersConfirm.getStore().getData().items[0].data['FIRMA' + firmaStep + '_USERNAME1'])) {
-                                url += 'firma' + firmaStep + 'OrdenServicioGenerador';
-                                params = {
-                                    idOrdenServicio: form.up('window').ordenServicio.ID_ORDEN_SERVICIO,
-                                }
-                                params['firma' + firmaStep + 'UserId1'] = firma;
-                                params['firma' + firmaStep + 'UserName1'] = login.credential.USUARIO_NOMBRE + '|' + login.credential.CARGO;
+                            if (firmaStep === 3) {
+                                form.up('window').close();
+                                window.open(serviceUrl + 'getReport?idAutoridad=' + login.credential.ID_AUTORIDAD + '&idOrden=' + '&userName=' + login.credential.USUARIO_NOMBRE + '|' + login.credential.CARGO + '&eFirma=' + firma + '&mensual=1');
                             } else {
-                                url += 'firma' + firmaStep + 'OrdenServicioSupervisor';
-                                params = {
-                                    idOrdenServicio: form.up('window').ordenServicio.ID_ORDEN_SERVICIO,
-                                }
-                                params['firma' + firmaStep + 'UserId2'] = firma;
-                                params['firma' + firmaStep + 'UserName2'] = login.credential.USUARIO_NOMBRE + '|' + login.credential.CARGO;
-                            }
+                                var validateMask = new Ext.LoadMask({
+                                    msg: 'Validando Firma...',
+                                    target: form
+                                });
+                                validateMask.show();
+                                var serviceOrdersConfirm = form.up('panel').getComponent(firmaStep === 1 ? 'serviceOrdersConfirm' : 'serviceOrders');
+                                var url = '';
+                                var params = new Object();
 
-
-                            Ext.data.JsonP.request({
-                                url: serviceUrl + url,
-                                params: params,
-                                success: function (result) {
-                                    validateMask.destroy();
-                                    if (result.success) {
-                                        serviceOrdersConfirm.getStore().proxy.setExtraParams({
-                                            idOrdenServicio: form.up('window').ordenServicio.ID_ORDEN_SERVICIO,
-                                            idCredencial: login.credential.ID_CREDENCIAL,
-                                            idRol: login.credential.idRol,
-                                            idAutoridad: login.credential.idAutoridad
-                                        });
-                                        serviceOrdersConfirm.getStore().reload();
-                                        if (firmaStep === 1) {
-                                            form.up('window').getComponent('e4').getComponent('serviceOrderNotice').getStore().proxy.setExtraParams({
-                                                idOrdenServicio: form.up('window').ordenServicio.ID_ORDEN_SERVICIO
-                                            });
-                                        }
-                                    } else {
-                                        Ext.Msg.alert('Error', 'La firma no coincide.');
+                                if (Ext.isEmpty(serviceOrdersConfirm.getStore().getData().items) || Ext.isEmpty(serviceOrdersConfirm.getStore().getData().items[0].data['FIRMA' + firmaStep + '_USERNAME1'])) {
+                                    url += 'firma' + firmaStep + 'OrdenServicioGenerador';
+                                    params = {
+                                        idOrdenServicio: form.up('window').ordenServicio.ID_ORDEN_SERVICIO,
                                     }
-                                },
-                                failure: function (result) {
-                                    validateMask.destroy();
-                                    Ext.Msg.alert('Failed', result.msg);
+                                    params['firma' + firmaStep + 'UserId1'] = firma;
+                                    params['firma' + firmaStep + 'UserName1'] = login.credential.USUARIO_NOMBRE + '|' + login.credential.CARGO;
+                                } else {
+                                    url += 'firma' + firmaStep + 'OrdenServicioSupervisor';
+                                    params = {
+                                        idOrdenServicio: form.up('window').ordenServicio.ID_ORDEN_SERVICIO,
+                                    }
+                                    params['firma' + firmaStep + 'UserId2'] = firma;
+                                    params['firma' + firmaStep + 'UserName2'] = login.credential.USUARIO_NOMBRE + '|' + login.credential.CARGO;
                                 }
-                            });
+
+
+                                Ext.data.JsonP.request({
+                                    url: serviceUrl + url,
+                                    params: params,
+                                    success: function (result) {
+                                        validateMask.destroy();
+                                        if (result.success) {
+                                            serviceOrdersConfirm.getStore().proxy.setExtraParams({
+                                                idOrdenServicio: form.up('window').ordenServicio.ID_ORDEN_SERVICIO,
+                                                idCredencial: login.credential.ID_CREDENCIAL,
+                                                idRol: login.credential.idRol,
+                                                idAutoridad: login.credential.idAutoridad
+                                            });
+                                            serviceOrdersConfirm.getStore().reload();
+                                            if (firmaStep === 1) {
+                                                form.up('window').getComponent('e4').getComponent('serviceOrderNotice').getStore().proxy.setExtraParams({
+                                                    idOrdenServicio: form.up('window').ordenServicio.ID_ORDEN_SERVICIO
+                                                });
+                                            }
+                                        } else {
+                                            Ext.Msg.alert('Error', 'La firma no coincide.');
+                                        }
+                                    },
+                                    failure: function (result) {
+                                        validateMask.destroy();
+                                        Ext.Msg.alert('Failed', result.msg);
+                                    }
+                                });
+                            }
                         } else {
                             Ext.Msg.alert('Error', 'El certificado no es vigente');
                         }
