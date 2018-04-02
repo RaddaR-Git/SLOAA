@@ -1115,7 +1115,7 @@ var launchWindow = function (recordBase) {
             {
                 xtype: 'panel',
                 itemId: 'e3',
-                title: '[3] Confirmaciones',
+                title: '[3] Confirmación',
                 layout: 'border',
                 hidden: true,
                 listeners: {
@@ -1219,7 +1219,7 @@ var launchWindow = function (recordBase) {
                         region: 'center',
                         store: Ext.create('Ext.data.Store', {
                             autoLoad: false,
-                            fields: ['FIRMA1_USERNAME1', 'FIRMA1_USERNAME2'],
+                            fields: ['FIRMA1_USERNAME1'],
                             proxy: {
                                 type: 'jsonp',
                                 url: serviceUrl + 'getSigns',
@@ -1231,14 +1231,13 @@ var launchWindow = function (recordBase) {
                             listeners: {
                                 load: function (store, records, successful, operation, eOpts) {
                                     //configura privilegios
-                                    if (!Ext.isEmpty(records) && !Ext.isEmpty(records[0].data.FIRMA1_USERNAME1) && !Ext.isEmpty(records[0].data.FIRMA1_USERNAME2)) {
+                                    if (!Ext.isEmpty(records) && !Ext.isEmpty(records[0].data.FIRMA1_USERNAME1)) {
 //                                        Ext.ComponentQuery.query('toolbar #signButtonConfirmaciones', thisWin.getComponent('e3').getComponent('e3f1'))[0].setDisabled(true);
                                         thisWin.getComponent('e3').getComponent('e3f1').setVisible(false);
                                         thisWin.getComponent('e3').down('toolbar #nextButton').setVisible(true);
                                     } else {
                                         var visible = false;
-                                        if (Ext.isEmpty(records) || (login.privilegios.f3.gen && Ext.isEmpty(records[0].data.FIRMA1_USERNAME1) ||
-                                                login.privilegios.f3.rev && Ext.isEmpty(records[0].data.FIRMA1_USERNAME2))) {
+                                        if (Ext.isEmpty(records) || (login.privilegios.f3.gen && Ext.isEmpty(records[0].data.FIRMA1_USERNAME1))) {
                                             visible = true;
                                         }
                                         thisWin.getComponent('e3').getComponent('e3f1').setVisible(visible);
@@ -1247,8 +1246,7 @@ var launchWindow = function (recordBase) {
                             }
                         }),
                         columns: [
-                            {text: 'Firma1', dataIndex: 'FIRMA1_USERNAME1', flex: 1},
-                            {text: 'Firma2', dataIndex: 'FIRMA1_USERNAME2', flex: 1}
+                            {text: 'Firma1', dataIndex: 'FIRMA1_USERNAME1', flex: 1}
                         ]
                     }
                 ],

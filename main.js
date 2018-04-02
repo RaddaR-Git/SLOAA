@@ -1328,7 +1328,7 @@ app.get('/getSigns', function (req, res) {
             })
             .then(function (dp) {
                 dp.query = "SELECT  \n" +
-                        "[ORD].[FIRMA1_USERNAME1],[ORD].[FIRMA1_USERNAME2],[ORD].[FIRMA2_USERNAME1],[ORD].[FIRMA2_USERNAME2]" +
+                        "[ORD].[FIRMA1_USERNAME1],[ORD].[FIRMA1_USERNAME2]" +
                         "  FROM \n" +
                         "  [SLOAA_TR_ORDEN_SERVICIO] [ORD]\n" +
                         " LEFT JOIN [SLOAA_TR_CREDENCIAL] [CRED] ON  [CRED].[ID_CREDENCIAL]=[ORD].[ID_CREDENCIAL]\n" +
