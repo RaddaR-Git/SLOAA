@@ -1,0 +1,148 @@
+-var dateObj = new Date();
+-var month = dateObj.getUTCMonth() + 1; //months from 1-12
+-var day = dateObj.getUTCDate();
+-var year = dateObj.getUTCFullYear();
+doctype
+html
+  head
+    title #{title} Reporte
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body
+    .container
+    p #{year + "/" + month + "/" + day}     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  #{nombreAutoridad} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #{tipoReporte}
+    .container
+    div
+            table(cellspacing="5" width='100%')
+                tr
+                    td(width='200') <img src="https://tramitesdigitales.sat.gob.mx/SIPRED.Monitor.Externo/images/logoH_col.svg" height="200" width="200"/>
+                    td(align="center") SERVICIO DE ADMINISTRACIÓN TRIBUTARIA <br> ADMINISTRACIÓN GENERAL DE RECURSOS Y SERVICIOS <br> ADMINISTRACIÓN CENTRAL DE DESTINO DE BIENES
+                
+    .container
+    div
+            table(cellspacing="5" width='100%')
+                tr
+                    td(align="center")<hr>
+                tr
+                    td(align="center") SERVICIO LOGISTICO PARA LA OPERACIÓN DE LA AUTORIDADES ADUANERAS, FISCALES Y ADMINISTRATIVAS 2017
+                tr
+                    td(align="center")<hr>
+  
+
+
+
+
+
+
+                    
+            -for (var orden in ordenes) {
+            div
+                table(cellspacing="5" width='100%')
+                    tr
+                        td(align="center") ORDEN DE SERVICIO No.  #{ordenes[orden].idOrdenServicio[0]}&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; FECHA DE SOLICITUD DE SERVICIO  #{ordenes[orden].fechaSolicitud}
+                    tr
+                        td <hr>
+                    tr
+                        td UNIDAD ADMINISTRATIVA / AUTORIDAD :#{nombreAutoridad} 
+                    tr
+                        td  ORDEN DE SERVICIO:#{ordenes[orden].llaveSistema}
+                     tr
+                        td DOMICILIO: #{ordenes[orden].domicilio}
+
+
+
+
+
+
+
+
+            div
+                table(cellspacing="5" width='100%')
+                   
+                    tr
+                        td(colspan=2)
+
+                            table(cellspacing="2" width='100%')
+                               
+
+                                 -for (var servicio in ordenes[orden].servicios) {
+                                    tr(bgcolor="gray")
+                                        td(bgcolor="#464646" align="center" colspan=7 style="color:white;" ) #{ordenes[orden].servicios[servicio].TIPO}
+                                    tr(bgcolor="gray")
+                                        td(bgcolor="#cecece") Concepto y Descipcion
+                                        td(bgcolor="#cecece") Unidad
+                                        td(bgcolor="#cecece") Cantidad
+                                        td(bgcolor="#cecece") Precio Unitario
+                                        td(bgcolor="#cecece") Cotizacion
+                                        td(bgcolor="#cecece") Deduccion
+                                        td(bgcolor="#cecece") Total
+                                    tr
+                                        td(bgcolor="#dbdbdb")  #{ordenes[orden].servicios[servicio].NOMBRE_SERVICIO}
+                                        td(bgcolor="#dbdbdb")  #{ordenes[orden].servicios[servicio].UNIDAD}
+                                        td(bgcolor="#dbdbdb")  #{ordenes[orden].servicios[servicio].CANTIDAD}
+                                        td(bgcolor="#dbdbdb")  #{ordenes[orden].servicios[servicio].PRECIO_UNITARIO}
+                                        td(bgcolor="#dbdbdb")  #{ordenes[orden].servicios[servicio].COTIZACION}
+                                        td(bgcolor="#dbdbdb")  #{ordenes[orden].servicios[servicio].DEDUCCION}
+                                        td  &nbsp;
+                                    tr
+                                        td(align="center" colspan=8 style="color:white;" )&nbsp; 
+                                 -}
+                                    tr
+                                        td  &nbsp;
+                                        td  &nbsp;
+                                        td  &nbsp;
+                                        td  &nbsp;
+                                        td(bgcolor="#dbdbdb")  #{ordenes[orden].cotizacion}
+                                        td(bgcolor="#dbdbdb")  #{ordenes[orden].deducciones}
+                                        td(bgcolor="#dbdbdb")  #{ordenes[orden].total}
+                    table(cellspacing="5" width='100%')
+                        tr
+                            td(align="center") <hr>
+                        tr
+                            td(align="left") VALIDACIÓN DEL SERVICIO
+                        tr
+                            td(align="left") SE RECIBE A ENTERA SATIFACCIÓN EL SERVICIO PROPORCIONADO POR EL PROVEEDOR, DE ACUERDO A LO REQUERIDO. #{ordenes[orden].cumplimiento}
+                        tr
+                            td(align="left") LOS ESTRIBADORES SE PRESENTARON CON GAFETE Y UNIFORME. #{ordenes[orden].identificado}
+                        tr
+                            td(align="left") EN CASO DE INCUMPLIMIENTO. INDIQUE LOS MOTIVOS Y DEDUCTIVAS A APLICAR.
+                        tr
+                            td(align="left") #{ordenes[orden].deduccionJustificacionAll}
+                            
+                        tr
+                            td(align="center")<hr>
+
+                    table(cellspacing="5" width='100%')
+                        tr(bgcolor="gray")
+                            td(bgcolor="#cecece" width='20%') #{ordenes[orden].textoFirmaGenerador}:  #{ordenes[orden].firmaGeneradorNombre}
+                            td(bgcolor="#dbdbdb" width='80%' style='word-wrap:break-word;max-width:150px;') #{ordenes[orden].firmaGenerador}
+                        tr(bgcolor="gray")
+                            td(bgcolor="#cecece" width='20%') #{ordenes[orden].textoFirmaRevisor}:  #{ordenes[orden].firmaRevisorNombre}
+                            td(bgcolor="#dbdbdb" width='80%' style='word-wrap:break-word;max-width:150px;') #{ordenes[orden].firmaRevisor}  
+                    
+        div &nbsp;
+        -}
+                       
+                           
+    div &nbsp;
+
+
+        .container
+    
+    div &nbsp;
+    div &nbsp;
+    div &nbsp;
+    div &nbsp;
+    .container
+    div
+            table(cellspacing="5" width='100%')
+                tr(align="center")       
+                    td ______________________________________
+                tr(align="center")        
+                    td Proveedor
+                
+    footer
+<button onClick="window.print()" >Imprimir</button>    
+
+
+
+

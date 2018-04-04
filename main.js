@@ -884,7 +884,7 @@ var server;
 var SQLServerConnectionParameters = {
     user: 'sa',
     password: 'Lufiri01011',
-    server: '192.168.56.102',
+    server: '10.15.17.158',
     database: 'SOA_db'
 };
 ////var connectionParameters1 = {
@@ -3534,20 +3534,25 @@ app.get('/getReport', function (req, res) {
                             total: 0,
                             cumplimiento: "[   ]",
                             identificado: "[   ]",
-                            servicios: []
+                            servicios: [],
+                            deduccionJustificacionAll: "",
+                            deduccionJustificacionAllCount: 0
                         };
                         dp.ordenes[currentRow.LLAVE_SISTEMA] = currentOrden;
                     }
 
                     currentOrden.servicios.push(dp.servicios[currentKey]);
+                    
                     cotizacion = Number(currentRow.COTIZACION);
                     deduccion = Number(currentRow.DEDUCCION);
+
                     if (!isNaN(cotizacion)) {
                         currentOrden.cotizacion = currentOrden.cotizacion + cotizacion;
                     }
                     if (!isNaN(deduccion)) {
                         currentOrden.deducciones = currentOrden.deducciones + deduccion;
                     }
+
                     currentOrden.total = currentOrden.cotizacion - currentOrden.deducciones;
                     if (currentRow.CUMPLIMIENTO === 1) {
                         currentOrden.cumplimiento = "[ X ]";
@@ -3556,7 +3561,12 @@ app.get('/getReport', function (req, res) {
                         currentOrden.identificado = "[ X ]";
                     }
 
-
+                    nombreServicio = currentRow.NOMBRE_SERVICIO;
+                    deduccionJustificacion = currentRow.DEDUCCION_JUSTIFICACION;
+                    if (deduccionJustificacion !== null&&deduccionJustificacion !== "") {
+                        currentOrden.deduccionJustificacionAllCount++;
+                        currentOrden.deduccionJustificacionAll = currentOrden.deduccionJustificacionAll + " " + currentOrden.deduccionJustificacionAllCount + ")" + nombreServicio + " : " + deduccionJustificacion + "  / Monto deducido: " + deduccion + "      ";
+                    }
                 }
 
 
@@ -3565,7 +3575,7 @@ app.get('/getReport', function (req, res) {
             .then(function (dp) {
                 mc.info('RID:[' + requestID + ']-[REQUEST]-[END]:[/getReport]');
                 if (dp.idOrden !== '') {
-                    res.render("template1", {
+                    res.render("ordenServicio", {
                         tipoReporte: dp.tipoReporte,
                         nombreAutoridad: dp.nombreAutoridad,
                         ordenes: dp.ordenes,
@@ -3573,7 +3583,7 @@ app.get('/getReport', function (req, res) {
                         title: 'Orden de Servicio'
                     });
                 } else {
-                    res.render("template2", {
+                    res.render("prefactura", {
                         tipoReporte: dp.tipoReporte,
                         nombreAutoridad: dp.nombreAutoridad,
                         llaveOrdenMensual: dp.llaveOrdenMensual,
