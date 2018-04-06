@@ -30,6 +30,15 @@ var login = Ext.create('Ext.window.Window', {
                 }],
             buttons: [
                 {
+                    text: 'Registrarse',
+                    hidden: true,
+                    itemId: 'registry',
+                    handler: function (button) {
+                        createRegistry(button);
+                    }
+                },
+                '->',
+                {
                     text: 'Ingresar',
                     itemId: 'login',
                     handler: function (button) {
@@ -60,6 +69,119 @@ var login = Ext.create('Ext.window.Window', {
         }
     ]
 });
+
+var createRegistry = function (button) {
+    Ext.create('Ext.window.Window', {
+        title: 'Registro',
+        animateTarget: button,
+        width: 500,
+        height: 400,
+        layout: 'form',
+        bodyPadding: 5,
+        items: [
+            {
+                xtype: 'fieldset',
+                title: 'Información de Usuario',
+                defaultType: 'textfield',
+                defaults: {
+                    anchor: '99%'
+                },
+                items: [
+                    {
+                        allowBlank: false,
+                        fieldLabel: 'Usuario',
+                        emptyText: 'nombre.apellido',
+                        name: 'user',
+                        regex: new RegExp('[a-z]+\\.[a-z]+'),
+                        regexText: 'Forma correcta >> [nombre.apellido]'
+                    },
+                    {
+                        allowBlank: false,
+                        fieldLabel: 'Contraseña',
+                        emptyText: 'contraseña',
+                        name: 'pass',
+                        inputType: 'password',
+                        minLength: 8
+                    }
+                ]
+            },
+            {
+                xtype: 'fieldset',
+                title: 'Información de Contacto',
+                defaultType: 'textfield',
+                defaults: {
+                    anchor: '99%'
+                },
+                items: [
+                    {
+                        allowBlank: false,
+                        fieldLabel: 'Nombre Completo',
+                        emptyText: 'Nombre(s) Paterno Materno',
+                        name: 'name',
+                        validator: function (value) {
+                            var result = 'Forma correcta >> [Nombre(s) Paterno Materno]';
+                            var values = value.split(' ');
+                            var reg = /[A-Z][a-z]+/;
+                            if (values.length >= 3) {
+                                if (values.every(function (item) {
+                                    return reg.test(item);
+                                })) {
+                                    result = true;
+                                }
+                            }
+                            return result;
+                        }
+                    },
+                    {
+                        allowBlank: false,
+                        fieldLabel: 'Teléfono',
+                        emptyText: '12345678',
+                        name: 'phone',
+                        maxLength: 10
+                    },
+                    {
+                        allowBlank: false,
+                        fieldLabel: 'Extensión',
+                        emptyText: '123',
+                        name: 'ext',
+                        maxLength: 5
+                    },
+                    {
+                        allowBlank: false,
+                        fieldLabel: 'Celular',
+                        emptyText: '5512345678',
+                        name: 'cell',
+                        maxLength: 10
+                    },
+                    {
+                        allowBlank: false,
+                        fieldLabel: 'Correo',
+                        emptyText: 'correo@dominio',
+                        name: 'mail',
+                        vtype: 'email'
+                    }
+                ]
+            }
+        ],
+        listeners: {
+            show: function () {
+                login.close();
+            },
+            close: function () {
+                login.show();
+            }
+        },
+        buttons: [
+            {
+                text: 'Solicitar Registro',
+                handler: function (button) {
+                    x=button;
+//                    button.up('window').destroy();
+                }
+            }
+        ]
+    }).show();
+};
 var createViewport = function () {
     Ext.onReady(function () {
         var viewPort = Ext.create('Ext.container.Viewport', {
