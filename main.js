@@ -884,7 +884,7 @@ var server;
 var SQLServerConnectionParameters = {
     user: 'sa',
     password: 'Lufiri01011',
-    server: '10.15.17.158',
+    server: '192.168.56.102',
     database: 'SOA_db'
 };
 ////var connectionParameters1 = {
@@ -1328,7 +1328,7 @@ app.get('/getSigns', function (req, res) {
             })
             .then(function (dp) {
                 dp.query = "SELECT  \n" +
-                        "[ORD].[FIRMA1_USERNAME1],[ORD].[FIRMA1_USERNAME2]" +
+                        "[ORD].[FIRMA1_USERNAME1],[ORD].[FIRMA1_USERNAME2],[ORD].[FIRMA2_USERNAME1],[ORD].[FIRMA2_USERNAME2]" +
                         "  FROM \n" +
                         "  [SLOAA_TR_ORDEN_SERVICIO] [ORD]\n" +
                         " LEFT JOIN [SLOAA_TR_CREDENCIAL] [CRED] ON  [CRED].[ID_CREDENCIAL]=[ORD].[ID_CREDENCIAL]\n" +
@@ -3542,7 +3542,7 @@ app.get('/getReport', function (req, res) {
                     }
 
                     currentOrden.servicios.push(dp.servicios[currentKey]);
-                    
+
                     cotizacion = Number(currentRow.COTIZACION);
                     deduccion = Number(currentRow.DEDUCCION);
 
@@ -3563,7 +3563,7 @@ app.get('/getReport', function (req, res) {
 
                     nombreServicio = currentRow.NOMBRE_SERVICIO;
                     deduccionJustificacion = currentRow.DEDUCCION_JUSTIFICACION;
-                    if (deduccionJustificacion !== null&&deduccionJustificacion !== "") {
+                    if (deduccionJustificacion !== null && deduccionJustificacion !== "") {
                         currentOrden.deduccionJustificacionAllCount++;
                         currentOrden.deduccionJustificacionAll = currentOrden.deduccionJustificacionAll + " " + currentOrden.deduccionJustificacionAllCount + ")" + nombreServicio + " : " + deduccionJustificacion + "  / Monto deducido: " + deduccion + "      ";
                     }

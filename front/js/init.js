@@ -1,4 +1,5 @@
 var serviceUrl = 'http://localhost:3000/'
+
 var login = Ext.create('Ext.window.Window', {
     title: 'Ingreso',
     closeAction: 'method-hide',
@@ -31,7 +32,6 @@ var login = Ext.create('Ext.window.Window', {
             buttons: [
                 {
                     text: 'Registrarse',
-                    hidden: true,
                     itemId: 'registry',
                     handler: function (button) {
                         createRegistry(button);
@@ -56,7 +56,7 @@ var login = Ext.create('Ext.window.Window', {
                                 }
                             },
                             failure: function (result) {
-                                Ext.Msg.alert('Failed', result.msg);
+                                Ext.Msg.alert('Error', result.msg);
                             }
                         });
                     }
@@ -75,90 +75,122 @@ var createRegistry = function (button) {
         title: 'Registro',
         animateTarget: button,
         width: 500,
-        height: 400,
+//        height: 400,
+        height: 410,
         layout: 'form',
-        bodyPadding: 5,
         items: [
             {
-                xtype: 'fieldset',
-                title: 'Información de Usuario',
-                defaultType: 'textfield',
-                defaults: {
-                    anchor: '99%'
+                xtype: 'form',
+                bodyPadding: 5,
+                defaults:{
+                  listeners: {
+                      specialkey: function(field, e){
+                          if (e.getKey() == e.ENTER) {
+                                console.log('listo');
+                          }
+                      }
+                  }
                 },
                 items: [
                     {
-                        allowBlank: false,
-                        fieldLabel: 'Usuario',
-                        emptyText: 'nombre.apellido',
-                        name: 'user',
-                        regex: new RegExp('[a-z]+\\.[a-z]+'),
-                        regexText: 'Forma correcta >> [nombre.apellido]'
-                    },
-                    {
-                        allowBlank: false,
-                        fieldLabel: 'Contraseña',
-                        emptyText: 'contraseña',
-                        name: 'pass',
-                        inputType: 'password',
-                        minLength: 8
-                    }
-                ]
-            },
-            {
-                xtype: 'fieldset',
-                title: 'Información de Contacto',
-                defaultType: 'textfield',
-                defaults: {
-                    anchor: '99%'
-                },
-                items: [
-                    {
-                        allowBlank: false,
-                        fieldLabel: 'Nombre Completo',
-                        emptyText: 'Nombre(s) Paterno Materno',
-                        name: 'name',
-                        validator: function (value) {
-                            var result = 'Forma correcta >> [Nombre(s) Paterno Materno]';
-                            var values = value.split(' ');
-                            var reg = /[A-Z][a-z]+/;
-                            if (values.length >= 3) {
-                                if (values.every(function (item) {
-                                    return reg.test(item);
-                                })) {
-                                    result = true;
-                                }
+                        xtype: 'fieldset',
+                        itemId: 'userInfo',
+                        title: 'Información de Usuario',
+                        defaultType: 'textfield',
+                        defaults: {
+                            anchor: '99%'
+                        },
+                        items: [
+                            {
+                                allowBlank: false,
+                                fieldLabel: 'Usuario',
+                                emptyText: 'nombre.apellido',
+                                name: 'user',
+                                regex: new RegExp('[a-z]+\\.[a-z]+'),
+                                regexText: 'Forma correcta >> [nombre.apellido]',
+                                value: button.up('window').down('form').child('textfield[name=user]').getValue()
+                            },
+                            {
+                                allowBlank: false,
+                                fieldLabel: 'Contraseña',
+                                emptyText: 'contraseña',
+                                name: 'pass',
+                                inputType: 'password',
+                                minLength: 8,
+                                value: button.up('window').down('form').child('textfield[name=password]').getValue()
                             }
-                            return result;
-                        }
+                        ]
                     },
                     {
-                        allowBlank: false,
-                        fieldLabel: 'Teléfono',
-                        emptyText: '12345678',
-                        name: 'phone',
-                        maxLength: 10
+                        xtype: 'fieldset',
+                        itemId: 'contactInfo',
+                        title: 'Información de Contacto',
+                        defaultType: 'textfield',
+                        defaults: {
+                            anchor: '99%'
+                        },
+                        items: [
+                            {
+                                allowBlank: false,
+                                fieldLabel: 'Nombre Completo',
+                                emptyText: 'Nombre(s) Paterno Materno',
+                                name: 'name',
+                                validator: function (value) {
+                                    var result = 'Forma correcta >> [Nombre(s) Paterno Materno]';
+                                    var values = value.split(' ');
+                                    var reg = /[A-Z][a-z]+/;
+                                    if (values.length >= 3) {
+                                        if (values.every(function (item) {
+                                            return reg.test(item);
+                                        })) {
+                                            result = true;
+                                        }
+                                    }
+                                    return result;
+                                }
+                            },
+                            {
+                                allowBlank: false,
+                                fieldLabel: 'Teléfono',
+                                emptyText: '12345678',
+                                name: 'phone',
+                                maxLength: 10,
+                                minLength: 8
+                            },
+                            {
+                                allowBlank: false,
+                                fieldLabel: 'Extensión',
+                                emptyText: '123',
+                                name: 'ext',
+                                maxLength: 5,
+                                minLength: 1
+                            },
+                            {
+                                allowBlank: false,
+                                fieldLabel: 'Celular',
+                                emptyText: '5512345678',
+                                name: 'cell',
+                                maxLength: 10,
+                                minLength: 8
+                            },
+                            {
+                                allowBlank: false,
+                                fieldLabel: 'Correo',
+                                emptyText: 'correo@dominio.com',
+                                name: 'mail',
+                                vtype: 'email'
+                            }
+                        ]
                     },
                     {
-                        allowBlank: false,
-                        fieldLabel: 'Extensión',
-                        emptyText: '123',
-                        name: 'ext',
-                        maxLength: 5
-                    },
-                    {
-                        allowBlank: false,
-                        fieldLabel: 'Celular',
-                        emptyText: '5512345678',
-                        name: 'cell',
-                        maxLength: 10
-                    },
-                    {
-                        allowBlank: false,
-                        fieldLabel: 'Correo',
-                        emptyText: 'correo@dominio',
-                        name: 'mail',
-                        vtype: 'email'
+                        xtype: 'displayfield',
+                        itemId: 'errorInfo',
+                        name: 'errorInfo',
+                        labelWidth: false,
+                        labelStyle: 'width: auto;',
+                        fieldStyle: 'color: red;font-size: small',
+                        fieldLabel: '',
+                        value: ''
                     }
                 ]
             }
@@ -174,14 +206,34 @@ var createRegistry = function (button) {
         buttons: [
             {
                 text: 'Solicitar Registro',
+                itemId: 'register',
                 handler: function (button) {
-                    x=button;
-//                    button.up('window').destroy();
+                    x = button.up('window');
+                    var thisForm = button.up('window').down('form');
+                    var error = thisForm.child('#errorInfo');
+                    if (thisForm.isValid()) {
+                        error.setFieldLabel('');
+                        error.setValue('');
+                        Ext.Msg.alert(':)', 'Ay wey!!');
+                    } else {
+                        var field = thisForm.getForm().getFields().items.find(function (item) {
+                            if (!Ext.isEmpty(item.activeErrors)) {
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        });
+                        error.setFieldLabel(field.fieldLabel);
+                        error.setValue(field.activeErrors[0]);
+                        field.focus();
+//                        Ext.Msg.alert('Error en registro', 'Favor de revisar los campos marcados en rojo.');
+                    }
                 }
             }
         ]
     }).show();
 };
+
 var createViewport = function () {
     Ext.onReady(function () {
         var viewPort = Ext.create('Ext.container.Viewport', {
@@ -720,7 +772,7 @@ var launchWindow = function (recordBase) {
                                         }
                                     },
                                     failure: function (result) {
-                                        Ext.Msg.alert('Failed', result.msg);
+                                        Ext.Msg.alert('Error', result.msg);
                                     }
                                 });
                             }
@@ -1101,7 +1153,7 @@ var launchWindow = function (recordBase) {
                                     }
                                 },
                                 failure: function (result) {
-                                    Ext.Msg.alert('Failed', result.msg);
+                                    Ext.Msg.alert('Error', result.msg);
                                 }
                             });
                         },
@@ -1506,7 +1558,7 @@ var launchWindow = function (recordBase) {
                                         }
                                     },
                                     failure: function (result) {
-                                        Ext.Msg.alert('Failed', result.msg);
+                                        Ext.Msg.alert('Error', result.msg);
                                     }
                                 });
                             }
@@ -1747,7 +1799,7 @@ var launchWindow = function (recordBase) {
                                             }
                                         },
                                         failure: function (result) {
-                                            Ext.Msg.alert('Failed', result.msg);
+                                            Ext.Msg.alert('Error', result.msg);
                                         }
                                     });
                                 }
@@ -2058,13 +2110,14 @@ var launchWindow = function (recordBase) {
                 }
             },
             failure: function (result) {
-                Ext.Msg.alert('Failed', result.msg);
+                Ext.Msg.alert('Error', result.msg);
             }
         });
     }
 
     thisWin.show();
 };
+
 var initComponent = function () {
     login.show();
 };
