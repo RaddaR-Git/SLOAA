@@ -1,0 +1,225 @@
+/- 
+    To change this license header, choose License Headers in Project Properties.
+    To change this template file, choose Tools | Templates
+    and open the template in the editor.
+     
+
+html
+  head
+    title #{title} Reporte
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body
+    .container
+    p #{year + "/" + month + "/" + day}     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  #{nombreAutoridad} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #{tipoReporte}
+    .container
+    div
+        table(cellspacing="5" width='100%')
+            tr
+                td(align="right") <img src="https://tramitesdigitales.sat.gob.mx/SIPRED.Monitor.Externo/images/logoH_col.svg" height="200" width="200"/>
+            tr
+                td(align="center")
+                    p ADMINISTRACION GENERAL DE RECURSOS Y SERVICIOS
+                    p ADMINISTRACION CENTRAL DE DESTINO DE BIENES
+                    p ADMINISTRACION DE DESTINO DE BIENES "2"
+                    p SERVICIO LOGISTICO PARA LA OPERACION DE LAS AUTORIDADES ADUANERAS FISCALES Y ADMINISTRATIVAS 2017 - 2019
+    div &nbsp;
+    div &nbsp;
+    div &nbsp;
+    div &nbsp;            
+    .container
+        table(border="0" cellspacing="5" width='100%')
+            tr
+                td(align="center" valign="top")
+                    table(border=1 cellspacing="5" width='80%')
+                        tr
+                            td(align="center" colspan="3") Datos Provedor
+                        tr
+                            td(align="center" colspan="3") Nombre o Razon Social
+                        tr
+                            td(align="center" colspan="3") (0)###########
+                        tr
+                            td(align="center" colspan="3") &nbsp;
+                        tr
+                            td(align="center" colspan="3") Domicilio
+                        tr
+                            td(align="center" colspan="2") (1)###########
+                            td(align="center" colspan="1") (2)###########
+                        tr
+                            td(align="center" colspan="2") Calle
+                            td(align="center" colspan="1") Numero
+                        tr
+                            td(align="center" colspan="3") (3)###########
+                        tr
+                            td(align="center" colspan="3") Colonia
+                        tr
+                            td(align="center" colspan="1") (4)###########
+                            td(align="center" colspan="1") (5)###########
+                            td(align="center" colspan="1") (6)###########
+                        tr
+                            td(align="center" colspan="1") Municipio o Delegacion
+                            td(align="center" colspan="1") CP
+                            td(align="center" colspan="1") Entidad Federativa
+                        tr
+                            td(align="center" colspan="3") &nbsp;
+                        tr
+                            td(align="center" colspan="2") (7)###########
+                            td(align="center" colspan="1") (8)###########
+                        tr
+                            td(align="center" colspan="2") Registro Federal de Contribuyentes
+                            td(align="center" colspan="1") Telefono
+
+                td(align="center" valign="top")
+                    table(border=1 cellspacing="5" width='80%')
+                        tr
+                            td(align="center" colspan="3") Datos de Reporte
+                        tr
+                            td(align="center" colspan="1") Contrato
+                            td(align="center" colspan="2") (9)###########
+                        tr
+                            td(align="center" colspan="1") Partida Unica
+                            td(align="center" colspan="1") (10)###########
+                            td(align="center" colspan="1") (11)###########
+                        tr
+                            td(align="center" colspan="3") Periodo de prestación  de servicio
+                        tr
+                            td(align="center" colspan="1") Del
+                            td(align="center" colspan="2") (12)###########
+                        tr
+                            td(align="center" colspan="1") Al
+                            td(align="center" colspan="2") (13)###########
+                        tr
+                            td(align="center" colspan="3") Observaciones
+                        tr
+                            td(align="center" colspan="3") 
+                                br
+                                br
+                                br
+                                br
+                                br
+                                br
+                td(align="center")
+                    table(border=1 cellspacing="5" width='80%')
+                        tr
+                            td(align="center") Nombre,Cargo y Firma de los responsables.
+                        tr
+                            td(align="center")
+                                br
+                                br
+                                br
+                                br
+                                p ______________________________
+                        tr
+                            td(align="center") Representante unico de (14)###########
+                        tr
+                            td(align="center")
+                                br
+                                br
+                                br
+                                br
+                                p ______________________________
+                        tr
+                            td(align="center") Administrador de Destino de bienes
+
+    .container
+            br
+            br
+            table(border="1" cellspacing="5" width='100%')
+                //tr
+                //    td(colspan="22") &nbsp;
+                tr
+                    td(rowspan="4") No. de Prefactura
+                    td(colspan="2") Fecha de Servicios solicitados
+                    td(rowspan="4") Unidad Administrativa Requiriente
+                    td(rowspan="1" colspan="13") Maniobras
+                    td(rowspan="1" colspan="4") Fletes
+                    td(rowspan="4") Costo por Factura
+                tr
+                    td(rowspan="3") Del
+                    td(rowspan="3") Al
+                    td(colspan="3") Servicio de Transporte Personal
+                    td(colspan="4") Servicio de Maniobras
+                    td(colspan="3" rowspan="2") Servicio de Montacarga, patin y basculas
+                    td(rowspan="2") Servicio de enpaquetado, paletizado y emplaye
+                    td(rowspan="3") Deductivas
+                    td(rowspan="3") Importe parcial sin IVA
+                    td(colspan="2") Transporte de Bienes
+                    td(rowspan="3") Deductivas
+                    td(rowspan="3") Importe parcial sin IVA
+                tr
+                    td(colspan="3") Cantidad
+                    td(colspan="2") Estribador
+                    td(colspan="2") Tecnico especializado
+                    td(colspan="2") Cantidad
+                    
+                tr
+                    td() Hora
+                    td() KM
+                    td() Dia
+                    td() Hora
+                    td() Jornada
+                    td() Hora
+                    td() Jornada
+                    td() Renta Diaria
+                    td() Renta Semanal
+                    td() Renta Menstrual
+                    td() Servicio
+                    td() Hora
+                    td() KM
+                tr
+                    td() (15)##
+                    td() (16)##
+                    td() (17)##
+                    td() (18)##
+                    td() (19)##
+                    td() (20)##
+                    td() (21)##
+                    td() (22)##
+                    td() (23)##
+                    td() (24)##
+                    td() (25)##
+                    td() (26)##
+                    td() (27)##
+                    td() (28)##
+                    td() (29)##
+                    td() (30)##
+                    td() (31)##
+                    td() (32)##
+                    td() (33)##
+                    td() (34)##
+                    td() (34)##
+                    td() (35)##
+                tr
+                    td(colspan="4") 
+                    td(colspan="3") (36)##
+                    td(colspan="4") (37)##
+                    td(colspan="3") (38)##
+                    td() (39)##
+                    td() (40)##
+                    td()
+                    td(colspan="2") (41)##
+                    td() (43)##
+                    td() Subtotal antes de Deductiva
+                    td() (44)##
+                tr
+                    td(colspan="20" rowspan ="5")
+                    td() Deductiva
+                    td() (45)##
+                tr
+                    td() Subtotal Despues
+                    td() (46)##
+                tr
+                    td() IVA
+                    td() (47)##
+                tr
+                    td() Retencion 4%
+                    td() (48)##
+                tr
+                    td() Gran Total Neto
+                    td() (49)##
+    .container
+    div &nbsp;
+    div &nbsp;
+    div &nbsp;
+    div &nbsp;
+    footer
+    <button onClick="window.print()" >Imprimir</button>    

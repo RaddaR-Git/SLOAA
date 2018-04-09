@@ -1,0 +1,196 @@
+//- 
+    To change this license header, choose License Headers in Project Properties.
+    To change this template file, choose Tools | Templates
+    and open the template in the editor.
+doctype
+html
+  head
+    title #{title} Reporte
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body
+  
+    -for (var reporte in reportes) {
+    -reporteEnCurso = reportes[reporte];
+    -ordenesServicio = reporteEnCurso.ordenesServicio;
+    
+    -totBruto = reporteEnCurso.totCotizado - reporteEnCurso.totDeduccion;
+    -totBrutoIva = totBruto * reporteEnCurso.iva;
+    -totBrutoRet4 = totBruto * 0.04;
+
+    .container
+    div
+        table(cellspacing="5" width='100%')
+            tr
+                td(align="right") <img src="https://tramitesdigitales.sat.gob.mx/SIPRED.Monitor.Externo/images/logoH_col.svg" height="200" width="200"/>
+            tr
+                td(align="center")
+                    p ADMINISTRACION GENERAL DE RECURSOS Y SERVICIOS
+                    p ADMINISTRACION CENTRAL DE DESTINO DE BIENES
+                    p ADMINISTRACION DE DESTINO DE BIENES "2"
+                    p SERVICIO LOGISTICO PARA LA OPERACION DE LAS AUTORIDADES ADUANERAS FISCALES Y ADMINISTRATIVAS 2017 - 2019
+    div &nbsp;
+    div &nbsp;
+    div &nbsp;
+    div &nbsp;            
+    .container
+        table(border="0" cellspacing="5" width='100%' style="font-size:8px;")
+            tr
+                td(align="center" valign="top")
+                    table(border=1 cellspacing="5" width='80%')
+                        tr
+                            td(align="center" colspan="3") Datos Provedor
+                        tr
+                            td(align="center" colspan="3") Nombre o Razon Social
+                        tr
+                            td(align="center" colspan="3") #{reporteEnCurso.razonSocial}
+                        tr
+                            td(align="center" colspan="3") &nbsp;
+                        tr
+                            td(align="center" colspan="3") Domicilio
+                        tr
+                            td(align="center" colspan="2") #{reporteEnCurso.calle}
+                            td(align="center" colspan="1") #{reporteEnCurso.numero}
+                        tr
+                            td(align="center" colspan="2") Calle
+                            td(align="center" colspan="1") Numero
+                        tr
+                            td(align="center" colspan="3") #{reporteEnCurso.colonia}
+                        tr
+                            td(align="center" colspan="3") Colonia
+                        tr
+                            td(align="center" colspan="1")  #{reporteEnCurso.municipio}
+                            td(align="center" colspan="1")  #{reporteEnCurso.cp}
+                            td(align="center" colspan="1")  #{reporteEnCurso.entidadFederativa}
+                        tr
+                            td(align="center" colspan="1") Municipio o Delegacion
+                            td(align="center" colspan="1") CP
+                            td(align="center" colspan="1") Entidad Federativa
+                        tr
+                            td(align="center" colspan="3") &nbsp;
+                        tr
+                            td(align="center" colspan="2") #{reporteEnCurso.rfc}
+                            td(align="center" colspan="1")  #{reporteEnCurso.telefono}
+                        tr
+                            td(align="center" colspan="2") Registro Federal de Contribuyentes
+                            td(align="center" colspan="1") Telefono
+
+                td(align="center" valign="top")
+                    table(border=1 cellspacing="5" width='80%')
+                        tr
+                            td(align="center" colspan="3") Datos de Reporte
+                        tr
+                            td(align="center" colspan="1") Contrato
+                            td(align="center" colspan="2")  #{reporteEnCurso.contrato}
+                        tr
+                            td(align="center" colspan="1") Partida Unica
+                            td(align="center" colspan="1")  #{reporteEnCurso.idPartida}
+                            td(align="center" colspan="1")  #{reporteEnCurso.partida}
+                        tr
+                            td(align="center" colspan="3") Periodo de prestación  de servicio
+                        tr
+                            td(align="center" colspan="1") Del
+                            td(align="center" colspan="2")  #{reporteEnCurso.fAInicialFormat} 
+                        tr
+                            td(align="center" colspan="1") Al
+                            td(align="center" colspan="2")  #{reporteEnCurso.fAFinalFormat}
+                        tr
+                            td(align="center" colspan="3") Observaciones
+                        tr
+                            td(align="center" colspan="3") 
+                                br
+                                br
+                                br
+                                br
+                                br
+                                br
+                td(align="center")
+                    table(border=1 cellspacing="5" width='80%')
+                        tr
+                            td(align="center") Nombre,Cargo y Firma de los responsables.
+                        tr
+                            td(align="center")
+                                br
+                                br
+                                br
+                                br
+                                p ______________________________
+                        tr
+                            td(align="center") Representante unico de #{reporteEnCurso.razonSocial}
+                        tr
+                            td(align="center")
+                                br
+                                br
+                                br
+                                br
+                                p ______________________________
+                        tr
+                            td(align="center") Administrador de Destino de bienes "2"
+
+ 
+    .container
+            br
+            br
+            table(border="1" width="100%" style="font-size:8px;")
+                tr
+                    td(rowspan="2") No. de Prefactura
+                    td(colspan="2") Fecha de Servicios solicitados
+                    td(rowspan="2") Unidad Administrativa Requiriente
+                    td(rowspan="2") Tipo de Servicio
+                    td(rowspan="2") Cantidad
+                    td(rowspan="2") Unidad
+                    td(rowspan="2") Cotizacion
+                    td(rowspan="2") Deduccion
+                    td(rowspan="2") Importe parcial sin IVA
+                    td(rowspan="2") Costo por Factura
+                tr
+                    td Del
+                    td Al
+                -for (var ordenServicio in ordenesServicio) {
+                -ordenServicioEnCurso = ordenesServicio[ordenServicio];
+                -servicios = ordenServicioEnCurso.servicios;
+                -for (var servicio in servicios) {
+                -servicioEnCurso = servicios[servicio];
+                tr
+                    td #{servicioEnCurso.llaveOrdenMensual}
+                    td #{servicioEnCurso.fechaSolicitudDeFormat}
+                    td #{servicioEnCurso.fechaSolicitudHastaFormat}
+                    td #{servicioEnCurso.nombreDeAutoridad}
+                    td #{servicioEnCurso.nombreServicio}
+                    td #{servicioEnCurso.unidad}
+                    td #{servicioEnCurso.cantidad}
+                    td #{servicioEnCurso.cotizacion}
+                    td #{servicioEnCurso.deduccion}
+                    td #{servicioEnCurso.totSIva}
+                    td #{servicioEnCurso.totSIva}
+                -}
+                -}
+                tr
+                    td(colspan="9" rowspan="6")
+                    td Subtotal antes de deductiva
+                    td #{reporteEnCurso.totCotizado}
+                tr
+                    td Deductiva
+                    td #{reporteEnCurso.totDeduccion}
+                tr
+                    td Subtotal Despues
+                    td #{totBruto}
+                tr
+                    td IVA
+                    td #{totBrutoIva}
+                tr
+                    td RETENCION 4%
+                    td #{totBrutoRet4}
+                tr
+                    td GRAN TOTAL NETO
+                    td #{(totBruto + totBrutoIva) - totBrutoRet4}
+                   
+    .container
+    div &nbsp;
+    div &nbsp;
+    div &nbsp;
+    div &nbsp;
+    
+
+    -}
+    footer
+<button onClick="window.print()" >Imprimir</button>    
