@@ -4316,7 +4316,7 @@ app.get('/getConsolidado', function (req, res) {
                 dp.fMonth = fMonth;
                 dp.fYear = fYear;
                 dp.query = "" +
-                         "SELECT \n" +
+                        "SELECT \n" +
                         "	[OS].[ID_ORDEN_SERVICIO],\n" +
                         "	[OS].[FECHA_SOLICITUD],\n" +
                         "	\n" +
@@ -4363,8 +4363,10 @@ app.get('/getConsolidado', function (req, res) {
                         "	[PAR].[PARTIDA],\n" +
                         
                         "       [PROY].[ID_PROYECTO],\n"+
-                        "	[PROY].[PROYECTO]\n" +
+                        "	[PROY].[PROYECTO],\n" +
                         
+                        "       [ACU].[ID_ACUERDO],\n"+
+                        "	[ACU].[ACUERDO]\n" +
                         "\n" +
                         "\n" +
                         "FROM  [SLOAA_TR_SERVICIO_COTIZACION] [COT]\n" +
@@ -4379,6 +4381,7 @@ app.get('/getConsolidado', function (req, res) {
                         "LEFT JOIN [SLOAA_TC_CONTRATO] [CONT] ON  [PS].[ID_CONTRATO]=[CONT].[ID_CONTRATO]\n" +
                         "LEFT JOIN [SLOAA_TC_PARTIDA] [PAR] ON  [PS].[ID_PARTIDA]=[PAR].[ID_PARTIDA]\n" +
                         "LEFT JOIN [SLOAA_TC_PROYECTO] [PROY] ON  [PS].[ID_PROYECTO]=[PROY].[ID_PROYECTO]\n" +
+                        "LEFT JOIN [SLOAA_TC_ACUERDO] [ACU] ON  [PS].[ID_ACUERDO]=[ACU].[ID_ACUERDO]\n" +
                         "\n" +
                         "WHERE \n" +
                         "1=1\n";
