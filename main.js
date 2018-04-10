@@ -816,7 +816,6 @@ class ENCManagerMail extends ENCPrimal {
 //</editor-fold>
 //</editor-fold>
 
-
 //<editor-fold defaultstate="collapsed" desc="COMMON FUNCTIONS">
 var inputValidation = function (response, request, fieldValidation) {
     ENC.validateType('response', response, ENC.OBJECT());
@@ -841,7 +840,6 @@ var replaceAll = function (str, find, replace) {
     return temp;
 };
 //</editor-fold>
-
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -921,8 +919,6 @@ var mailParameters1 = {
 
 //</editor-fold>
 
-
-
 //<editor-fold defaultstate="collapsed" desc="defaultSelect">
 app.post('/defaultSelect', function (req, res) {
     var requestID = new Date().getTime();
@@ -960,7 +956,6 @@ app.post('/defaultSelect', function (req, res) {
             });
 });
 //</editor-fold>
-
 
 //<editor-fold defaultstate="collapsed" desc="login">
 app.get('/login', function (req, res) {
@@ -1035,7 +1030,6 @@ app.get('/login', function (req, res) {
             });
 });
 //</editor-fold>
-
 
 //<editor-fold defaultstate="collapsed" desc="getAllOrdenServicio">
 app.get('/getAllOrdenServicio', function (req, res) {
@@ -1160,7 +1154,6 @@ app.get('/getAllOrdenServicio', function (req, res) {
             });
 });
 //</editor-fold>
-
 
 //<editor-fold defaultstate="collapsed" desc="getOrdenServicio">
 app.get('/getOrdenServicio', function (req, res) {
@@ -1287,7 +1280,6 @@ app.get('/getOrdenServicio', function (req, res) {
 });
 //</editor-fold>
 
-
 //<editor-fold defaultstate="collapsed" desc="getSigns">
 app.get('/getSigns', function (req, res) {
     var requestID = new Date().getTime();
@@ -1377,7 +1369,6 @@ app.get('/getSigns', function (req, res) {
             });
 });
 //</editor-fold>
-
 
 //<editor-fold defaultstate="collapsed" desc="createOrdenServicio">
 app.get('/createOrdenServicio', function (req, res) {
@@ -1589,7 +1580,6 @@ app.get('/createOrdenServicio', function (req, res) {
 });
 //</editor-fold>
 
-
 //<editor-fold defaultstate="collapsed" desc="addServicio">
 app.get('/addCotizacion', function (req, res) {
     var requestID = new Date().getTime();
@@ -1724,7 +1714,6 @@ app.get('/addCotizacion', function (req, res) {
 });
 //</editor-fold>
 
-
 //<editor-fold defaultstate="collapsed" desc="updateServicio">
 app.get('/updateServicio', function (req, res) {
     var requestID = new Date().getTime();
@@ -1825,7 +1814,6 @@ app.get('/updateServicio', function (req, res) {
 });
 //</editor-fold>
 
-
 //<editor-fold defaultstate="collapsed" desc="getAllServicioFromOrden">
 app.get('/getAllCotizacionXOrden', function (req, res) {
     var requestID = new Date().getTime();
@@ -1880,7 +1868,6 @@ app.get('/getAllCotizacionXOrden', function (req, res) {
             });
 });
 //</editor-fold>
-
 
 //<editor-fold defaultstate="collapsed" desc="setDeduccionCotizacion">
 app.get('/setDeduccionCotizacion', function (req, res) {
@@ -1959,7 +1946,6 @@ app.get('/setDeduccionCotizacion', function (req, res) {
 });
 //</editor-fold>
 
-
 //<editor-fold defaultstate="collapsed" desc="removeCotizacion">
 app.get('/removeCotizacion', function (req, res) {
     var requestID = new Date().getTime();
@@ -2021,7 +2007,6 @@ app.get('/removeCotizacion', function (req, res) {
 });
 //</editor-fold>
 
-
 //<editor-fold defaultstate="collapsed" desc="getAllSubZona">
 app.get('/getAllSubZona', function (req, res) {
     var requestID = new Date().getTime();
@@ -2077,7 +2062,6 @@ app.get('/getAllSubZona', function (req, res) {
             });
 });
 //</editor-fold>
-
 
 //<editor-fold defaultstate="collapsed" desc="getAllTipoServicio">
 app.get('/getAllTipoServicio', function (req, res) {
@@ -2148,7 +2132,6 @@ app.get('/getAllTipoServicio', function (req, res) {
             });
 });
 //</editor-fold>
-
 
 //<editor-fold defaultstate="collapsed" desc="getAllServicios">
 app.get('/getAllServicios', function (req, res) {
@@ -2225,7 +2208,6 @@ app.get('/getAllServicios', function (req, res) {
             });
 });
 //</editor-fold>
-
 
 //<editor-fold defaultstate="collapsed" desc="getAllProvedores">
 app.get('/getAllProvedores', function (req, res) {
@@ -2307,7 +2289,6 @@ app.get('/getAllProvedores', function (req, res) {
 });
 //</editor-fold>
 
-
 //<editor-fold defaultstate="collapsed" desc="getUnidadYPrecioUnitarioXServicio">
 app.get('/getUnidadYPrecioUnitarioXServicio', function (req, res) {
     var requestID = new Date().getTime();
@@ -2376,7 +2357,6 @@ app.get('/getUnidadYPrecioUnitarioXServicio', function (req, res) {
             });
 });
 //</editor-fold>
-
 
 //<editor-fold defaultstate="collapsed" desc="firma1OrdenServicioGenerador">
 app.get('/firma1OrdenServicioGenerador', function (req, res) {
@@ -2663,7 +2643,6 @@ app.get('/firma2OrdenServicioSupervisor', function (req, res) {
 });
 //</editor-fold>
 
-
 //<editor-fold defaultstate="collapsed" desc="closeOrdenServicio">
 app.get('/closeOrdenServicio', function (req, res) {
     var requestID = new Date().getTime();
@@ -2761,7 +2740,6 @@ app.get('/closeOrdenServicio', function (req, res) {
 });
 //</editor-fold>
 
-
 //<editor-fold defaultstate="collapsed" desc="setStatusOrdenServicio">
 app.get('/setStatusOrdenServicio', function (req, res) {
     var requestID = new Date().getTime();
@@ -2830,7 +2808,6 @@ app.get('/setStatusOrdenServicio', function (req, res) {
             });
 });
 //</editor-fold>
-
 
 //<editor-fold defaultstate="collapsed" desc="serviceConfirm">
 app.get('/serviceConfirm', function (req, res) {
@@ -2913,6 +2890,7 @@ app.get('/serviceConfirm', function (req, res) {
 
 var ip = '10.15.17.158';
 var port = '3000';
+
 //<editor-fold defaultstate="collapsed" desc="sendMailConfirmacionProvedor">
 app.get('/sendMailConfirmacionProvedor', function (req, res) {
     var requestID = new Date().getTime();
@@ -3370,7 +3348,6 @@ app.get('/sendMailConfirmacionProvedor', function (req, res) {
             });
 });
 //</editor-fold>
-
 
 //<editor-fold defaultstate="collapsed" desc="getReport">
 app.get('/getReport', function (req, res) {
@@ -3881,11 +3858,6 @@ var roundToTwo = function (num) {
 };
 //</editor-fold>
 
-
-
-
-
-
 //<editor-fold defaultstate="collapsed" desc="getFactura">
 app.get('/getFactura', function (req, res) {
     var requestID = new Date().getTime();
@@ -3971,16 +3943,13 @@ app.get('/getFactura', function (req, res) {
                         "	[PS].[TELEFONO],\n" +
                         "\n" +
                         "\n" +
-                         "	[CONT].[ID_CONTRATO],\n" +
+                        "	[CONT].[ID_CONTRATO],\n" +
                         "	[CONT].[CONTRATO],\n" +
-                        
                         "	[PAR].[ID_PARTIDA],\n" +
                         "	[PAR].[PARTIDA],\n" +
-                        
-                        "       [PROY].[ID_PROYECTO],\n"+
+                        "       [PROY].[ID_PROYECTO],\n" +
                         "	[PROY].[PROYECTO],\n" +
-                        
-                        "       [ACU].[ID_ACUERDO],\n"+
+                        "       [ACU].[ID_ACUERDO],\n" +
                         "	[ACU].[ACUERDO]\n" +
                         "\n" +
                         "\n" +
@@ -3992,12 +3961,10 @@ app.get('/getFactura', function (req, res) {
                         "LEFT JOIN [SLOAA_TC_TIPO_SERVICIO] [TSERV] ON [TSERV].[ID_TIPO_SERVICIO]=[COT].[ID_TIPO_SERVICIO]\n" +
                         "LEFT JOIN [SLOAA_TC_SERVICIO]  [SERV] ON  [SERV].[ID_TIPO_SERVICIO]=[COT].[ID_TIPO_SERVICIO] AND [SERV].[ID_SERVICIO]=[COT].[ID_SERVICIO]\n" +
                         "LEFT JOIN [SLOAA_TC_PRESTADOR_SERVICIOS] [PS] ON [COT].[ID_PRESTADOR_SERVICIO]=[PS].[ID_PRESTADOR_SERVICIO] AND [COT].[ID_ZONA]=[PS].[ID_ZONA] AND [COT].[ID_SUBZONA]=[PS].[ID_SUBZONA]\n " +
-                        
                         "LEFT JOIN [SLOAA_TC_CONTRATO] [CONT] ON  [PS].[ID_CONTRATO]=[CONT].[ID_CONTRATO]\n" +
                         "LEFT JOIN [SLOAA_TC_PARTIDA] [PAR] ON  [PS].[ID_PARTIDA]=[PAR].[ID_PARTIDA]\n" +
                         "LEFT JOIN [SLOAA_TC_PROYECTO] [PROY] ON  [PS].[ID_PROYECTO]=[PROY].[ID_PROYECTO]\n" +
                         "LEFT JOIN [SLOAA_TC_ACUERDO] [ACU] ON  [PS].[ID_ACUERDO]=[ACU].[ID_ACUERDO]\n" +
-                        
                         "\n" +
                         "WHERE \n" +
                         "1=1\n";
@@ -4335,16 +4302,13 @@ app.get('/getConsolidado', function (req, res) {
                         "	[PS].[TELEFONO],\n" +
                         "\n" +
                         "\n" +
-                         "	[CONT].[ID_CONTRATO],\n" +
+                        "	[CONT].[ID_CONTRATO],\n" +
                         "	[CONT].[CONTRATO],\n" +
-                        
                         "	[PAR].[ID_PARTIDA],\n" +
                         "	[PAR].[PARTIDA],\n" +
-                        
-                        "       [PROY].[ID_PROYECTO],\n"+
+                        "       [PROY].[ID_PROYECTO],\n" +
                         "	[PROY].[PROYECTO],\n" +
-                        
-                        "       [ACU].[ID_ACUERDO],\n"+
+                        "       [ACU].[ID_ACUERDO],\n" +
                         "	[ACU].[ACUERDO]\n" +
                         "\n" +
                         "\n" +
@@ -4356,7 +4320,6 @@ app.get('/getConsolidado', function (req, res) {
                         "LEFT JOIN [SLOAA_TC_TIPO_SERVICIO] [TSERV] ON [TSERV].[ID_TIPO_SERVICIO]=[COT].[ID_TIPO_SERVICIO]\n" +
                         "LEFT JOIN [SLOAA_TC_SERVICIO]  [SERV] ON  [SERV].[ID_TIPO_SERVICIO]=[COT].[ID_TIPO_SERVICIO] AND [SERV].[ID_SERVICIO]=[COT].[ID_SERVICIO]\n" +
                         "LEFT JOIN [SLOAA_TC_PRESTADOR_SERVICIOS] [PS] ON [COT].[ID_PRESTADOR_SERVICIO]=[PS].[ID_PRESTADOR_SERVICIO] AND [COT].[ID_ZONA]=[PS].[ID_ZONA] AND [COT].[ID_SUBZONA]=[PS].[ID_SUBZONA]\n " +
-                        
                         "LEFT JOIN [SLOAA_TC_CONTRATO] [CONT] ON  [PS].[ID_CONTRATO]=[CONT].[ID_CONTRATO]\n" +
                         "LEFT JOIN [SLOAA_TC_PARTIDA] [PAR] ON  [PS].[ID_PARTIDA]=[PAR].[ID_PARTIDA]\n" +
                         "LEFT JOIN [SLOAA_TC_PROYECTO] [PROY] ON  [PS].[ID_PROYECTO]=[PROY].[ID_PROYECTO]\n" +
@@ -4742,7 +4705,6 @@ app.get('/getAllAuthorities', function (req, res) {
 });
 //</editor-fold>
 
-
 //<editor-fold defaultstate="collapsed" desc="getAllRoles">
 app.get('/getAllRoles', function (req, res) {
     var requestID = new Date().getTime();
@@ -4796,26 +4758,6 @@ app.get('/getAllRoles', function (req, res) {
             });
 });
 //</editor-fold>
-
-app.set('port', (process.env.PORT || 3000));
-var server = app.listen(app.get('port'), function () {
-    mc.info('[BACKEND]-[WEBSERVICES] init on port:[' + app.get('port') + ']');
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //<editor-fold defaultstate="collapsed" desc="Numero a Texto">
 var numeroALetras = (function () {
@@ -5045,11 +4987,6 @@ var roundToTwo = function (num) {
 };
 //</editor-fold>
 
-
-
-
-
-
 //<editor-fold defaultstate="collapsed" desc="getFactura">
 app.get('/getFactura', function (req, res) {
     var requestID = new Date().getTime();
@@ -5135,16 +5072,13 @@ app.get('/getFactura', function (req, res) {
                         "	[PS].[TELEFONO],\n" +
                         "\n" +
                         "\n" +
-                         "	[CONT].[ID_CONTRATO],\n" +
+                        "	[CONT].[ID_CONTRATO],\n" +
                         "	[CONT].[CONTRATO],\n" +
-                        
                         "	[PAR].[ID_PARTIDA],\n" +
                         "	[PAR].[PARTIDA],\n" +
-                        
-                        "       [PROY].[ID_PROYECTO],\n"+
+                        "       [PROY].[ID_PROYECTO],\n" +
                         "	[PROY].[PROYECTO],\n" +
-                        
-                        "       [ACU].[ID_ACUERDO],\n"+
+                        "       [ACU].[ID_ACUERDO],\n" +
                         "	[ACU].[ACUERDO]\n" +
                         "\n" +
                         "\n" +
@@ -5156,12 +5090,10 @@ app.get('/getFactura', function (req, res) {
                         "LEFT JOIN [SLOAA_TC_TIPO_SERVICIO] [TSERV] ON [TSERV].[ID_TIPO_SERVICIO]=[COT].[ID_TIPO_SERVICIO]\n" +
                         "LEFT JOIN [SLOAA_TC_SERVICIO]  [SERV] ON  [SERV].[ID_TIPO_SERVICIO]=[COT].[ID_TIPO_SERVICIO] AND [SERV].[ID_SERVICIO]=[COT].[ID_SERVICIO]\n" +
                         "LEFT JOIN [SLOAA_TC_PRESTADOR_SERVICIOS] [PS] ON [COT].[ID_PRESTADOR_SERVICIO]=[PS].[ID_PRESTADOR_SERVICIO] AND [COT].[ID_ZONA]=[PS].[ID_ZONA] AND [COT].[ID_SUBZONA]=[PS].[ID_SUBZONA]\n " +
-                        
                         "LEFT JOIN [SLOAA_TC_CONTRATO] [CONT] ON  [PS].[ID_CONTRATO]=[CONT].[ID_CONTRATO]\n" +
                         "LEFT JOIN [SLOAA_TC_PARTIDA] [PAR] ON  [PS].[ID_PARTIDA]=[PAR].[ID_PARTIDA]\n" +
                         "LEFT JOIN [SLOAA_TC_PROYECTO] [PROY] ON  [PS].[ID_PROYECTO]=[PROY].[ID_PROYECTO]\n" +
                         "LEFT JOIN [SLOAA_TC_ACUERDO] [ACU] ON  [PS].[ID_ACUERDO]=[ACU].[ID_ACUERDO]\n" +
-                        
                         "\n" +
                         "WHERE \n" +
                         "1=1\n";
@@ -5499,16 +5431,13 @@ app.get('/getConsolidado', function (req, res) {
                         "	[PS].[TELEFONO],\n" +
                         "\n" +
                         "\n" +
-                         "	[CONT].[ID_CONTRATO],\n" +
+                        "	[CONT].[ID_CONTRATO],\n" +
                         "	[CONT].[CONTRATO],\n" +
-                        
                         "	[PAR].[ID_PARTIDA],\n" +
                         "	[PAR].[PARTIDA],\n" +
-                        
-                        "       [PROY].[ID_PROYECTO],\n"+
+                        "       [PROY].[ID_PROYECTO],\n" +
                         "	[PROY].[PROYECTO],\n" +
-                        
-                        "       [ACU].[ID_ACUERDO],\n"+
+                        "       [ACU].[ID_ACUERDO],\n" +
                         "	[ACU].[ACUERDO]\n" +
                         "\n" +
                         "\n" +
@@ -5520,7 +5449,6 @@ app.get('/getConsolidado', function (req, res) {
                         "LEFT JOIN [SLOAA_TC_TIPO_SERVICIO] [TSERV] ON [TSERV].[ID_TIPO_SERVICIO]=[COT].[ID_TIPO_SERVICIO]\n" +
                         "LEFT JOIN [SLOAA_TC_SERVICIO]  [SERV] ON  [SERV].[ID_TIPO_SERVICIO]=[COT].[ID_TIPO_SERVICIO] AND [SERV].[ID_SERVICIO]=[COT].[ID_SERVICIO]\n" +
                         "LEFT JOIN [SLOAA_TC_PRESTADOR_SERVICIOS] [PS] ON [COT].[ID_PRESTADOR_SERVICIO]=[PS].[ID_PRESTADOR_SERVICIO] AND [COT].[ID_ZONA]=[PS].[ID_ZONA] AND [COT].[ID_SUBZONA]=[PS].[ID_SUBZONA]\n " +
-                        
                         "LEFT JOIN [SLOAA_TC_CONTRATO] [CONT] ON  [PS].[ID_CONTRATO]=[CONT].[ID_CONTRATO]\n" +
                         "LEFT JOIN [SLOAA_TC_PARTIDA] [PAR] ON  [PS].[ID_PARTIDA]=[PAR].[ID_PARTIDA]\n" +
                         "LEFT JOIN [SLOAA_TC_PROYECTO] [PROY] ON  [PS].[ID_PROYECTO]=[PROY].[ID_PROYECTO]\n" +
@@ -5711,8 +5639,7 @@ app.get('/getConsolidado', function (req, res) {
 });
 //</editor-fold>
 
-
-
-
-
-
+app.set('port', (process.env.PORT || 3000));
+var server = app.listen(app.get('port'), function () {
+    mc.info('[BACKEND]-[WEBSERVICES] init on port:[' + app.get('port') + ']');
+});
