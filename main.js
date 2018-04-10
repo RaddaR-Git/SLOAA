@@ -844,8 +844,6 @@ var replaceAll = function (str, find, replace) {
 //</editor-fold>
 
 
-
-
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 //----------------------------[WEB SERVICES]------------------------------------
@@ -883,7 +881,7 @@ var mcph = new ENCripto();
 var server;
 var SQLServerConnectionParameters = {
     user: 'sa',
-    password: 'lufiri01011',
+    password: 'Lufiri01011',
     server: 'localhost',
     database: 'SOA_db'
 };
@@ -3884,7 +3882,6 @@ var numeroALetras = (function () {
 //    centPlural: 'centavos MN',
 //    centSingular: 'centavo MN'
 //}));
-
 //</editor-fold>
 
 //<editor-fold defaultstate="collapsed" desc="SumaDias">
@@ -3898,20 +3895,15 @@ sumarDias = function (fecha, dias) {
     return newDate;
 };
 //</editor-fold>
-//<editor-fold defaultstate="collapsed" desc="comment">
+
+//<editor-fold defaultstate="collapsed" desc="Redondea a 2 Decimales">
 var roundToTwo = function (num) {
     return +(Math.round(num + "e+2") + "e-2");
 };
 //</editor-fold>
 
 
-// Modo de uso: 500,34 USD
-console.log(numeroALetras(542.34, {
-    plural: 'pesos',
-    singular: 'peso',
-    centPlural: 'centavos MN',
-    centSingular: 'centavo MN'
-}));
+
 
 
 
@@ -3998,10 +3990,19 @@ app.get('/getFactura', function (req, res) {
                         "	[PS].[ENTIDAD_FEDERATIVA],\n" +
                         "	[PS].[RFC],\n" +
                         "	[PS].[TELEFONO],\n" +
-                        "	[PS].[ID_CONTRATO],\n" +
-                        "	[PS].[CONTRATO],\n" +
-                        "	[PS].[ID_PARTIDA],\n" +
-                        "	[PS].[PARTIDA]\n" +
+                        "\n" +
+                        "\n" +
+                         "	[CONT].[ID_CONTRATO],\n" +
+                        "	[CONT].[CONTRATO],\n" +
+                        
+                        "	[PAR].[ID_PARTIDA],\n" +
+                        "	[PAR].[PARTIDA],\n" +
+                        
+                        "       [PROY].[ID_PROYECTO],\n"+
+                        "	[PROY].[PROYECTO],\n" +
+                        
+                        "       [ACU].[ID_ACUERDO],\n"+
+                        "	[ACU].[ACUERDO]\n" +
                         "\n" +
                         "\n" +
                         "FROM  [SLOAA_TR_SERVICIO_COTIZACION] [COT]\n" +
@@ -4012,6 +4013,12 @@ app.get('/getFactura', function (req, res) {
                         "LEFT JOIN [SLOAA_TC_TIPO_SERVICIO] [TSERV] ON [TSERV].[ID_TIPO_SERVICIO]=[COT].[ID_TIPO_SERVICIO]\n" +
                         "LEFT JOIN [SLOAA_TC_SERVICIO]  [SERV] ON  [SERV].[ID_TIPO_SERVICIO]=[COT].[ID_TIPO_SERVICIO] AND [SERV].[ID_SERVICIO]=[COT].[ID_SERVICIO]\n" +
                         "LEFT JOIN [SLOAA_TC_PRESTADOR_SERVICIOS] [PS] ON [COT].[ID_PRESTADOR_SERVICIO]=[PS].[ID_PRESTADOR_SERVICIO] AND [COT].[ID_ZONA]=[PS].[ID_ZONA] AND [COT].[ID_SUBZONA]=[PS].[ID_SUBZONA]\n " +
+                        
+                        "LEFT JOIN [SLOAA_TC_CONTRATO] [CONT] ON  [PS].[ID_CONTRATO]=[CONT].[ID_CONTRATO]\n" +
+                        "LEFT JOIN [SLOAA_TC_PARTIDA] [PAR] ON  [PS].[ID_PARTIDA]=[PAR].[ID_PARTIDA]\n" +
+                        "LEFT JOIN [SLOAA_TC_PROYECTO] [PROY] ON  [PS].[ID_PROYECTO]=[PROY].[ID_PROYECTO]\n" +
+                        "LEFT JOIN [SLOAA_TC_ACUERDO] [ACU] ON  [PS].[ID_ACUERDO]=[ACU].[ID_ACUERDO]\n" +
+                        
                         "\n" +
                         "WHERE \n" +
                         "1=1\n";
@@ -4071,6 +4078,8 @@ app.get('/getFactura', function (req, res) {
                     if (typeof autoridadActual === "undefined") {
                         autoridadActual = {
                             idPrestadorServicio: currentRow.ID_PRESTADOR_SERVICIO,
+                            idProyecto: currentRow.ID_PROYECTO,
+                            idAcuerdo: currentRow.ID_ACUERDO,
                             idSubzona: currentRow.ID_SUBZONA,
                             idZona: currentRow.ID_ZONA,
                             razonSocial: currentRow.RAZON_SOCIAL,
@@ -4185,7 +4194,7 @@ app.get('/getFactura', function (req, res) {
                             totalFinalIvaTexto: "",
                             totalFinalRetencion4Texto: "",
                             totalResultadoTexto: "",
-                            fechaSolicitud: dp.fMonth+"/"+ dp.fYear
+                            fechaSolicitud: dp.fMonth + "/" + dp.fYear
                         };
                     }
                     autoridadActual.serviciosAgrupados[idTipoServicio] = servicioActual;
@@ -4208,17 +4217,17 @@ app.get('/getFactura', function (req, res) {
                 for (var reporte in reportes) {
                     var reporteEnCurso = reportes[reporte];
                     var serviciosAgrupados = reporteEnCurso.serviciosAgrupados;
-                    reporteEnCurso.ejercido=0;
-                    reporteEnCurso.ejercidoTexto="";
+                    reporteEnCurso.ejercido = 0;
+                    reporteEnCurso.ejercidoTexto = "";
                     for (var servicioAgrupado in serviciosAgrupados) {
                         var servicioAgrupadoEnCurso = serviciosAgrupados[servicioAgrupado];
                         servicioAgrupadoEnCurso.totalFinal = servicioAgrupadoEnCurso.totCotizado - servicioAgrupadoEnCurso.totDeduccion;
                         servicioAgrupadoEnCurso.totalFinalIva = servicioAgrupadoEnCurso.totalFinal * 0.15;
                         servicioAgrupadoEnCurso.totalFinalRetencion4 = servicioAgrupadoEnCurso.totalFinal * 0.04;
                         servicioAgrupadoEnCurso.totalResultado = (servicioAgrupadoEnCurso.totalFinal + servicioAgrupadoEnCurso.totalFinalIva) - servicioAgrupadoEnCurso.totalFinalRetencion4;
-                        
-                        reporteEnCurso.ejercido=reporteEnCurso.ejercido+servicioAgrupadoEnCurso.totalResultado;
-                        
+
+                        reporteEnCurso.ejercido = reporteEnCurso.ejercido + servicioAgrupadoEnCurso.totalResultado;
+
                         servicioAgrupadoEnCurso.totalFinal = roundToTwo(servicioAgrupadoEnCurso.totalFinal);
                         servicioAgrupadoEnCurso.totalFinalIva = roundToTwo(servicioAgrupadoEnCurso.totalFinalIva);
                         servicioAgrupadoEnCurso.totalFinalRetencion4 = roundToTwo(servicioAgrupadoEnCurso.totalFinalRetencion4);
@@ -4229,8 +4238,8 @@ app.get('/getFactura', function (req, res) {
                         servicioAgrupadoEnCurso.totalFinalRetencion4Texto = numeroALetras(servicioAgrupadoEnCurso.totalFinalRetencion4, config);
                         servicioAgrupadoEnCurso.totalResultadoTexto = numeroALetras(servicioAgrupadoEnCurso.totalResultado, config);
                     }
-                    reporteEnCurso.ejercido=roundToTwo(reporteEnCurso.ejercido);
-                    reporteEnCurso.ejercidoTexto=numeroALetras(reporteEnCurso.ejercido,config);
+                    reporteEnCurso.ejercido = roundToTwo(reporteEnCurso.ejercido);
+                    reporteEnCurso.ejercidoTexto = numeroALetras(reporteEnCurso.ejercido, config);
                 }
 
                 dp.reportes = reportes;
@@ -4307,7 +4316,7 @@ app.get('/getConsolidado', function (req, res) {
                 dp.fMonth = fMonth;
                 dp.fYear = fYear;
                 dp.query = "" +
-                        "SELECT \n" +
+                         "SELECT \n" +
                         "	[OS].[ID_ORDEN_SERVICIO],\n" +
                         "	[OS].[FECHA_SOLICITUD],\n" +
                         "	\n" +
@@ -4345,10 +4354,17 @@ app.get('/getConsolidado', function (req, res) {
                         "	[PS].[ENTIDAD_FEDERATIVA],\n" +
                         "	[PS].[RFC],\n" +
                         "	[PS].[TELEFONO],\n" +
-                        "	[PS].[ID_CONTRATO],\n" +
-                        "	[PS].[CONTRATO],\n" +
-                        "	[PS].[ID_PARTIDA],\n" +
-                        "	[PS].[PARTIDA]\n" +
+                        "\n" +
+                        "\n" +
+                         "	[CONT].[ID_CONTRATO],\n" +
+                        "	[CONT].[CONTRATO],\n" +
+                        
+                        "	[PAR].[ID_PARTIDA],\n" +
+                        "	[PAR].[PARTIDA],\n" +
+                        
+                        "       [PROY].[ID_PROYECTO],\n"+
+                        "	[PROY].[PROYECTO]\n" +
+                        
                         "\n" +
                         "\n" +
                         "FROM  [SLOAA_TR_SERVICIO_COTIZACION] [COT]\n" +
@@ -4359,6 +4375,10 @@ app.get('/getConsolidado', function (req, res) {
                         "LEFT JOIN [SLOAA_TC_TIPO_SERVICIO] [TSERV] ON [TSERV].[ID_TIPO_SERVICIO]=[COT].[ID_TIPO_SERVICIO]\n" +
                         "LEFT JOIN [SLOAA_TC_SERVICIO]  [SERV] ON  [SERV].[ID_TIPO_SERVICIO]=[COT].[ID_TIPO_SERVICIO] AND [SERV].[ID_SERVICIO]=[COT].[ID_SERVICIO]\n" +
                         "LEFT JOIN [SLOAA_TC_PRESTADOR_SERVICIOS] [PS] ON [COT].[ID_PRESTADOR_SERVICIO]=[PS].[ID_PRESTADOR_SERVICIO] AND [COT].[ID_ZONA]=[PS].[ID_ZONA] AND [COT].[ID_SUBZONA]=[PS].[ID_SUBZONA]\n " +
+                        
+                        "LEFT JOIN [SLOAA_TC_CONTRATO] [CONT] ON  [PS].[ID_CONTRATO]=[CONT].[ID_CONTRATO]\n" +
+                        "LEFT JOIN [SLOAA_TC_PARTIDA] [PAR] ON  [PS].[ID_PARTIDA]=[PAR].[ID_PARTIDA]\n" +
+                        "LEFT JOIN [SLOAA_TC_PROYECTO] [PROY] ON  [PS].[ID_PROYECTO]=[PROY].[ID_PROYECTO]\n" +
                         "\n" +
                         "WHERE \n" +
                         "1=1\n";
