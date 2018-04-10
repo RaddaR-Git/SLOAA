@@ -884,7 +884,7 @@ var server;
 var SQLServerConnectionParameters = {
     user: 'sa',
     password: 'lufiri01011',
-    server: '192.168.100.4',
+    server: 'localhost',
     database: 'SOA_db'
 };
 ////var connectionParameters1 = {
@@ -3668,178 +3668,6 @@ var server = app.listen(app.get('port'), function () {
 
 
 
-//<editor-fold defaultstate="collapsed" desc="getFactura">
-app.get('/getFactura', function (req, res) {
-    var requestID = new Date().getTime();
-    var response = {};
-    var dataPacket = {
-        requestID: requestID,
-        connectionParameters: SQLServerConnectionParameters,
-        looked: 0
-    };
-    mn.init(dataPacket)
-            .then(function (dp) {
-                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/getFactura]');
-                return dp;
-            })
-            .then(function (dp) {
-
-                inputValidation(response, req.query, [
-                    new FieldValidation('idAutoridad', ENC.STRING())
-                ]);
-                dp.idAutoridad = req.query.idAutoridad;
-
-                return dp;
-            })
-            .then(function (dp) {
-                var now = new Date();
-                var month = now.getMonth() + 1;
-                var year = now.getFullYear();
-                var fMonth = month - 1;
-                var fYear = year;
-                if (fMonth === 0) {
-                    fMonth = 12;
-                    fYear = fYear - 1;
-                }
-                dp.fMonth = fMonth;
-                dp.fYear = fYear;
-                dp.query = "" +
-                        "SELECT \n" +
-                        "	[OS].[ID_ORDEN_SERVICIO],\n" +
-                        "	[OS].FECHA_SOLICITUD,\n" +
-                        "	\n" +
-                        "\n" +
-                        "	[TSERV].[ID_TIPO_SERVICIO],\n" +
-                        "	[TSERV].[TIPO],\n" +
-                        "\n" +
-                        "	[SERV].[ID_SERVICIO],\n" +
-                        "	[SERV].[NOMBRE_SERVICIO],\n" +
-                        "\n" +
-                        "	[COT].[ID_SERVICIO_COTIZACION],\n" +
-                        "	[COT].[ID_UNIDAD],\n" +
-                        "	[UNI].[UNIDAD],\n" +
-                        "	[COT].[CANTIDAD],\n" +
-                        "	[COT].[PRECIO_UNITARIO],\n" +
-                        "	[COT].[COTIZACION],\n" +
-                        "	[COT].[DEDUCCION],\n" +
-                        "	\n" +
-                        "	[CRED].[ID_CREDENCIAL],\n" +
-                        "\n" +
-                        "	[AUTH].[ID_AUTORIDAD],\n" +
-                        "	[AUTH].[NOMBRE_AUTORIDAD]\n" +
-                        "\n" +
-                        "FROM  [SLOAA_TR_SERVICIO_COTIZACION] [COT]\n" +
-                        "LEFT JOIN [SLOAA_TR_ORDEN_SERVICIO] [OS] ON [OS].[ID_ORDEN_SERVICIO]=[COT].[ID_ORDEN_SERVICIO]\n" +
-                        "LEFT JOIN [SLOAA_TR_CREDENCIAL] [CRED] ON [CRED].[ID_CREDENCIAL]=[OS].[ID_CREDENCIAL]\n" +
-                        "LEFT JOIN [SLOAA_TC_AUTORIDAD] [AUTH] ON [AUTH].[ID_AUTORIDAD]=[CRED].[ID_AUTORIDAD]\n" +
-                        "LEFT JOIN  [SLOAA_TC_UNIDAD] [UNI] ON [UNI].[ID_UNIDAD]=[COT].[ID_UNIDAD]\n" +
-                        "LEFT JOIN [SLOAA_TC_TIPO_SERVICIO] [TSERV] ON [TSERV].[ID_TIPO_SERVICIO]=[COT].[ID_TIPO_SERVICIO]\n" +
-                        "LEFT JOIN [SLOAA_TC_SERVICIO]  [SERV] ON  [SERV].[ID_TIPO_SERVICIO]=[COT].[ID_TIPO_SERVICIO] AND [SERV].[ID_SERVICIO]=[COT].[ID_SERVICIO]\n" +
-                        "\n" +
-                        "WHERE \n" +
-                        "1=1\n";
-
-
-                dp.query = dp.query + " AND [COT].[CANCELACION]=0  \n";
-                dp.query = dp.query + " AND [OS].[ID_STATUS]=7 \n";
-                //dp.query = dp.query + " AND MONTH([ORD].[FECHA_SOLICITUD])=MONTH(GetDate()) \n";
-                //dp.query = dp.query + " AND YEAR([ORD].[FECHA_SOLICITUD])=YEAR(GetDate()) \n";
-                dp.query = dp.query + " AND MONTH([OS].[FECHA_SOLICITUD])=" + fMonth + " \n";
-                dp.query = dp.query + " AND YEAR([OS].[FECHA_SOLICITUD])=" + fYear + " \n";
-
-                if (dp.idAutoridad !== "") {
-                    dp.query = dp.query + " AND [AUTH].[ID_AUTORIDAD]=" + dp.idAutoridad + " \n";
-                }
-                //dp.query = dp.query + " AND [AUTH].[ID_AUTORIDAD]=" + dp.idAutoridad + " \n";
-
-                return dp;
-            })
-            .then(msql.selectPromise)
-            .then(function (dp) {
-                //response = dp.queryResult;
-                if (dp.queryResult.rows !== null) {
-                    dp.servicios = dp.queryResult.rows;
-                    dp.success = true;
-                } else {
-                    throw new Error("Error de parametros");
-                }
-                return dp;
-            })
-            .then(function (dp) {
-
-                var reportes = [];
-                for (var currentKey in dp.servicios) {
-                    var currentRow = dp.servicios[currentKey];
-                    var idAutoridad = currentRow.ID_AUTORIDAD;
-                    var idServicioServicio = currentRow.ID_AUTORIDAD;
-                    var idServicioCotizacion = currentRow.ID_SERVICIO_COTIZACION;
-                    var idOrdenServicio = currentRow.ID_ORDEN_SERVICIO;
-
-                    var autoridadActual;
-                    var odenServicioActual;
-                    autoridadActual = reportes[idAutoridad];
-                    if (typeof autoridadActual === "undefined") {
-                        autoridadActual = {
-                            ordenesServicio: [],
-
-                        };
-                        reportes[idAutoridad] = autoridadActual;
-                    }
-                    //autoridadActual.servicios[idServicioCotizacion] = currentRow;
-
-
-                    odenServicioActual = autoridadActual[idOrdenServicio];
-                    if (typeof odenServicioActual === "undefined") {
-                        odenServicioActual = {
-                            servicios: [],
-                            totCotizado: 0,
-                            totDeduccion: 0
-                        };
-                        autoridadActual[idOrdenServicio] = odenServicioActual;
-                    }
-                    odenServicioActual.servicios[idServicioCotizacion] = currentRow;
-
-
-                    var cotizacion = Number(currentRow.COTIZACION);
-                    var deduccion = Number(currentRow.DEDUCCION);
-
-
-                    if (!isNaN(cotizacion)) {
-                        odenServicioActual.totCotizado = odenServicioActual.totCotizado + cotizacion;
-                    }
-                    if (!isNaN(deduccion)) {
-                        odenServicioActual.totDeduccion = odenServicioActual.totDeduccion + deduccion;
-                    }
-                }
-
-                dp.reportes = reportes;
-                return dp;
-            })
-            .then(function (dp) {
-                return dp;
-            })
-            .then(function (dp) {
-                return dp;
-            })
-            .then(function (dp) {
-                res.render("factura", {
-                    reportes: dp.reportes,
-                    title: 'Reporte1'
-                });
-                return dp;
-            })
-            .catch(function (err) {
-                mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/getFactura]');
-                response.error = err.message;
-                res.render("error", {
-                    error: err.message,
-                    title: 'getRepo1'
-                });
-                //res.render("view1");
-                //res.jsonp(response);
-            });
-});
-//</editor-fold>
 
 
 
@@ -4070,6 +3898,11 @@ sumarDias = function (fecha, dias) {
     return newDate;
 };
 //</editor-fold>
+//<editor-fold defaultstate="collapsed" desc="comment">
+var roundToTwo = function (num) {
+    return +(Math.round(num + "e+2") + "e-2");
+};
+//</editor-fold>
 
 
 // Modo de uso: 500,34 USD
@@ -4082,11 +3915,8 @@ console.log(numeroALetras(542.34, {
 
 
 
-
-
-//<editor-fold defaultstate="collapsed" desc="getConsolidado">
-var iva = 0.16;
-app.get('/getConsolidado', function (req, res) {
+//<editor-fold defaultstate="collapsed" desc="getFactura">
+app.get('/getFactura', function (req, res) {
     var requestID = new Date().getTime();
     var response = {};
     var dataPacket = {
@@ -4096,12 +3926,25 @@ app.get('/getConsolidado', function (req, res) {
     };
     mn.init(dataPacket)
             .then(function (dp) {
-                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/getConsolidado]');
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/getFactura]');
                 return dp;
             })
             .then(function (dp) {
                 inputValidation(response, req.query, [
+                    new FieldValidation('idAutoridad', ENC.STRING()),
+                    new FieldValidation('firma', ENC.STRING()),
+                    new FieldValidation('firmaNombre', ENC.STRING()),
+                    new FieldValidation('factura', ENC.STRING()),
+                    new FieldValidation('noIdPedido', ENC.STRING()),
+                    new FieldValidation('noIdRecepcion', ENC.STRING())
                 ]);
+                dp.firma = req.query.firma;
+                dp.firmaNombre = req.query.firmaNombre;
+                dp.idAutoridad = req.query.idAutoridad;
+                dp.factura = req.query.factura;
+                dp.noIdPedido = req.query.noIdPedido;
+                dp.noIdRecepcion = req.query.noIdRecepcion;
+
                 return dp;
             })
             .then(function (dp) {
@@ -4159,10 +4002,353 @@ app.get('/getConsolidado', function (req, res) {
                         "	[PS].[CONTRATO],\n" +
                         "	[PS].[ID_PARTIDA],\n" +
                         "	[PS].[PARTIDA]\n" +
+                        "\n" +
+                        "\n" +
+                        "FROM  [SLOAA_TR_SERVICIO_COTIZACION] [COT]\n" +
+                        "LEFT JOIN [SLOAA_TR_ORDEN_SERVICIO] [OS] ON [OS].[ID_ORDEN_SERVICIO]=[COT].[ID_ORDEN_SERVICIO]\n" +
+                        "LEFT JOIN [SLOAA_TR_CREDENCIAL] [CRED] ON [CRED].[ID_CREDENCIAL]=[OS].[ID_CREDENCIAL]\n" +
+                        "LEFT JOIN [SLOAA_TC_AUTORIDAD] [AUTH] ON [AUTH].[ID_AUTORIDAD]=[CRED].[ID_AUTORIDAD]\n" +
+                        "LEFT JOIN  [SLOAA_TC_UNIDAD] [UNI] ON [UNI].[ID_UNIDAD]=[COT].[ID_UNIDAD]\n" +
+                        "LEFT JOIN [SLOAA_TC_TIPO_SERVICIO] [TSERV] ON [TSERV].[ID_TIPO_SERVICIO]=[COT].[ID_TIPO_SERVICIO]\n" +
+                        "LEFT JOIN [SLOAA_TC_SERVICIO]  [SERV] ON  [SERV].[ID_TIPO_SERVICIO]=[COT].[ID_TIPO_SERVICIO] AND [SERV].[ID_SERVICIO]=[COT].[ID_SERVICIO]\n" +
+                        "LEFT JOIN [SLOAA_TC_PRESTADOR_SERVICIOS] [PS] ON [COT].[ID_PRESTADOR_SERVICIO]=[PS].[ID_PRESTADOR_SERVICIO] AND [COT].[ID_ZONA]=[PS].[ID_ZONA] AND [COT].[ID_SUBZONA]=[PS].[ID_SUBZONA]\n " +
+                        "\n" +
+                        "WHERE \n" +
+                        "1=1\n";
+
+
+                dp.query = dp.query + " AND [COT].[CANCELACION]=0  \n";
+                dp.query = dp.query + " AND [OS].[ID_STATUS]=7 \n";
+                //dp.query = dp.query + " AND MONTH([ORD].[FECHA_SOLICITUD])=MONTH(GetDate()) \n";
+                //dp.query = dp.query + " AND YEAR([ORD].[FECHA_SOLICITUD])=YEAR(GetDate()) \n";
+                dp.query = dp.query + " AND MONTH([OS].[FECHA_SOLICITUD])=" + fMonth + " \n";
+                dp.query = dp.query + " AND YEAR([OS].[FECHA_SOLICITUD])=" + fYear + " \n";
+
+                if (dp.idAutoridad !== "") {
+                    dp.query = dp.query + " AND [AUTH].[ID_AUTORIDAD]=" + dp.idAutoridad + " \n";
+                }
+
+                return dp;
+            })
+            .then(msql.selectPromise)
+            .then(function (dp) {
+                //response = dp.queryResult;
+                if (dp.queryResult.rows !== null) {
+                    dp.servicios = dp.queryResult.rows;
+                    dp.success = true;
+                } else {
+                    throw new Error("Error de parametros");
+                }
+                return dp;
+            })
+            .then(function (dp) {
+
+                var reportes = {
+                };
+                for (var currentKey in dp.servicios) {
+                    var currentRow = dp.servicios[currentKey];
+                    var idAutoridad = currentRow.ID_AUTORIDAD;
+                    var nombreDeAutoridad = currentRow.NOMBRE_AUTORIDAD;
+                    var idServicioServicio = currentRow.ID_AUTORIDAD;
+                    var idTipoServicio = currentRow.ID_TIPO_SERVICIO;
+
+                    var idServicioCotizacion = currentRow.ID_SERVICIO_COTIZACION;
+                    var idOrdenServicio = currentRow.ID_ORDEN_SERVICIO;
+                    var nombreServicio = currentRow.NOMBRE_SERVICIO;
+                    var cantidad = Number(currentRow.CANTIDAD);
+                    var unidad = currentRow.UNIDAD;
+                    var cotizacion = Number(currentRow.COTIZACION);
+                    var deduccion = Number(currentRow.DEDUCCION);
+
+
+
+
+
+                    var autoridadActual;
+                    var odenServicioActual;
+                    var servicioActual;
+                    autoridadActual = reportes[idAutoridad];
+                    if (typeof autoridadActual === "undefined") {
+                        autoridadActual = {
+                            idPrestadorServicio: currentRow.ID_PRESTADOR_SERVICIO,
+                            idSubzona: currentRow.ID_SUBZONA,
+                            idZona: currentRow.ID_ZONA,
+                            razonSocial: currentRow.RAZON_SOCIAL,
+                            calle: currentRow.CALLE,
+                            numero: currentRow.NUMERO,
+                            colonia: currentRow.COLONIA,
+                            municipio: currentRow.MUNICIPIO,
+                            cp: currentRow.CP,
+                            entidadFederativa: currentRow.ENTIDAD_FEDERATIVA,
+                            rfc: currentRow.RFC,
+                            telefono: currentRow.TELEFONO,
+                            idContrato: currentRow.ID_CONTRATO,
+                            contrato: currentRow.CONTRATO,
+                            idPartida: currentRow.ID_PARTIDA,
+                            partida: currentRow.PARTIDA,
+                            ordenesServicio: {},
+                            totCotizado: 0,
+                            totDeduccion: 0,
+                            iva: iva,
+
+                            fAInicial: null,
+                            fAFinal: null,
+
+                            fAInicialFormat: null,
+                            fAFinalFormat: null,
+                            serviciosAgrupados: {}
+                        };
+                        reportes[idAutoridad] = autoridadActual;
+                    }
+
+
+
+
+
+                    odenServicioActual = autoridadActual.ordenesServicio[idOrdenServicio];
+                    if (typeof odenServicioActual === "undefined") {
+                        odenServicioActual = {
+                            servicios: {}
+                        };
+                        autoridadActual.ordenesServicio[idOrdenServicio] = odenServicioActual;
+                    }
+                    odenServicioActual.servicios[idServicioCotizacion] = currentRow;
+
+                    var llaveOrdenMensual = "MX-SAT-TN-" + currentRow.SERVICIO + "-" + dp.fYear + "-" + dp.fMonth;
+                    llaveOrdenMensual = llaveOrdenMensual.replace(/\|/g, "");
+                    llaveOrdenMensual = llaveOrdenMensual.replace(/\s+/g, ' ');
+                    currentRow.llaveOrdenMensual = llaveOrdenMensual;
+                    currentRow.fechaSolicitudDe = currentRow.FECHA_SOLICITUD;
+                    currentRow.fechaSolicitudHasta = currentRow.FECHA_SOLICITUD;
+                    if (false) {
+                    } else if (unidad === 'JORNADA') {
+                        currentRow.fechaSolicitudHasta = sumarDias(currentRow.fechaSolicitudDe, cantidad);
+                    } else if (unidad === 'DIA') {
+                        currentRow.fechaSolicitudHasta = sumarDias(currentRow.fechaSolicitudDe, cantidad);
+                    } else if (unidad === 'HORA') {
+                        currentRow.fechaSolicitudHasta = sumarDias(currentRow.fechaSolicitudDe, Math.round(cantidad / 24));
+                    } else if (unidad === 'MES') {
+                        currentRow.fechaSolicitudHasta = sumarDias(currentRow.fechaSolicitudDe, cantidad * 31);
+                    } else if (unidad === 'SEMANA') {
+                        currentRow.fechaSolicitudHasta = sumarDias(currentRow.fechaSolicitudDe, cantidad * 7);
+                    } else if (unidad === 'QUINCENA') {
+                        currentRow.fechaSolicitudHasta = sumarDias(currentRow.fechaSolicitudDe, cantidad * 15);
+                    }
+                    currentRow.fechaSolicitudDeFormat = currentRow.fechaSolicitudDe.getFullYear() + "/" + (currentRow.fechaSolicitudDe.getMonth() + 1) + "/" + currentRow.fechaSolicitudDe.getDate();
+                    currentRow.fechaSolicitudHastaFormat = currentRow.fechaSolicitudHasta.getFullYear() + "/" + (currentRow.fechaSolicitudHasta.getMonth() + 1) + "/" + currentRow.fechaSolicitudHasta.getDate();
+                    currentRow.unidad = unidad;
+                    currentRow.cantidad = cantidad;
+                    currentRow.nombreServicio = nombreServicio;
+                    currentRow.cotizacion = cotizacion;
+                    currentRow.deduccion = deduccion;
+                    currentRow.totSIva = cotizacion - deduccion;
+                    currentRow.nombreDeAutoridad = currentRow.NOMBRE_AUTORIDAD;
+
+                    if (autoridadActual.fAInicial == null) {
+                        autoridadActual.fAInicial = currentRow.fechaSolicitudDe;
+                    }
+                    if (autoridadActual.fAFinal == null) {
+                        autoridadActual.fAFinal = currentRow.fechaSolicitudDe;
+                    }
+
+
+                    if (currentRow.fechaSolicitudHasta.getTime() > autoridadActual.fAFinal.getTime()) {
+                        autoridadActual.fAFinal = currentRow.fechaSolicitudHasta;
+                    }
+
+
+                    autoridadActual.fAInicialFormat = autoridadActual.fAInicial.getFullYear() + "/" + (autoridadActual.fAInicial.getMonth() + 1) + "/" + autoridadActual.fAInicial.getDate();
+                    autoridadActual.fAFinalFormat = autoridadActual.fAFinal.getFullYear() + "/" + (autoridadActual.fAFinal.getMonth() + 1) + "/" + autoridadActual.fAFinal.getDate();
+
+
+
+                    if (!isNaN(cotizacion)) {
+                        autoridadActual.totCotizado = autoridadActual.totCotizado + cotizacion;
+                    }
+                    if (!isNaN(deduccion)) {
+                        autoridadActual.totDeduccion = autoridadActual.totDeduccion + deduccion;
+                    }
+
+
+                    servicioActual = autoridadActual.serviciosAgrupados[idTipoServicio];
+                    if (typeof servicioActual === "undefined") {
+                        servicioActual = {
+                            tipoServicio: currentRow.TIPO,
+                            totCotizado: 0,
+                            totDeduccion: 0,
+                            totalFinal: 0,
+                            totalFinalIva: 0,
+                            totalFinalRetencion4: 0,
+                            totalResultado: 0,
+
+                            totalFinalTexto: "",
+                            totalFinalIvaTexto: "",
+                            totalFinalRetencion4Texto: "",
+                            totalResultadoTexto: "",
+                            fechaSolicitud: dp.fMonth+"/"+ dp.fYear
+                        };
+                    }
+                    autoridadActual.serviciosAgrupados[idTipoServicio] = servicioActual;
+                    if (!isNaN(cotizacion)) {
+                        servicioActual.totCotizado = servicioActual.totCotizado + cotizacion;
+                    }
+                    if (!isNaN(deduccion)) {
+                        servicioActual.totDeduccion = servicioActual.totDeduccion + deduccion;
+                    }
+                }
+
+
+                var config = {
+                    plural: 'pesos',
+                    singular: 'peso',
+                    centPlural: 'centavos MN',
+                    centSingular: 'centavo MN'
+                };
+
+                for (var reporte in reportes) {
+                    var reporteEnCurso = reportes[reporte];
+                    var serviciosAgrupados = reporteEnCurso.serviciosAgrupados;
+                    reporteEnCurso.ejercido=0;
+                    reporteEnCurso.ejercidoTexto="";
+                    for (var servicioAgrupado in serviciosAgrupados) {
+                        var servicioAgrupadoEnCurso = serviciosAgrupados[servicioAgrupado];
+                        servicioAgrupadoEnCurso.totalFinal = servicioAgrupadoEnCurso.totCotizado - servicioAgrupadoEnCurso.totDeduccion;
+                        servicioAgrupadoEnCurso.totalFinalIva = servicioAgrupadoEnCurso.totalFinal * 0.15;
+                        servicioAgrupadoEnCurso.totalFinalRetencion4 = servicioAgrupadoEnCurso.totalFinal * 0.04;
+                        servicioAgrupadoEnCurso.totalResultado = (servicioAgrupadoEnCurso.totalFinal + servicioAgrupadoEnCurso.totalFinalIva) - servicioAgrupadoEnCurso.totalFinalRetencion4;
                         
-                
+                        reporteEnCurso.ejercido=reporteEnCurso.ejercido+servicioAgrupadoEnCurso.totalResultado;
                         
-                        
+                        servicioAgrupadoEnCurso.totalFinal = roundToTwo(servicioAgrupadoEnCurso.totalFinal);
+                        servicioAgrupadoEnCurso.totalFinalIva = roundToTwo(servicioAgrupadoEnCurso.totalFinalIva);
+                        servicioAgrupadoEnCurso.totalFinalRetencion4 = roundToTwo(servicioAgrupadoEnCurso.totalFinalRetencion4);
+                        servicioAgrupadoEnCurso.totalResultado = roundToTwo(servicioAgrupadoEnCurso.totalResultado);
+
+                        servicioAgrupadoEnCurso.totalFinalTexto = numeroALetras(servicioAgrupadoEnCurso.totalFinal, config);
+                        servicioAgrupadoEnCurso.totalFinalIvaTexto = numeroALetras(servicioAgrupadoEnCurso.totalFinalIva, config);
+                        servicioAgrupadoEnCurso.totalFinalRetencion4Texto = numeroALetras(servicioAgrupadoEnCurso.totalFinalRetencion4, config);
+                        servicioAgrupadoEnCurso.totalResultadoTexto = numeroALetras(servicioAgrupadoEnCurso.totalResultado, config);
+                    }
+                    reporteEnCurso.ejercido=roundToTwo(reporteEnCurso.ejercido);
+                    reporteEnCurso.ejercidoTexto=numeroALetras(reporteEnCurso.ejercido,config);
+                }
+
+                dp.reportes = reportes;
+                return dp;
+            })
+            .then(function (dp) {
+                return dp;
+            })
+            .then(function (dp) {
+                return dp;
+            })
+            .then(function (dp) {
+                var genDate = new Date();
+
+                res.render("factura", {
+                    reportes: dp.reportes,
+                    title: 'Factura',
+                    firma: dp.firma,
+                    firmaNombre: dp.firmaNombre,
+                    factura: dp.factura,
+                    noIdPedido: dp.noIdPedido,
+                    noIdRecepcion: dp.noIdRecepcion,
+                    genDate: genDate.getDate() + "/" + (genDate.getMonth() + 1) + "/" + genDate.getFullYear()
+                });
+                return dp;
+            })
+            .catch(function (err) {
+                mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/getFactura]');
+                response.error = err.message;
+                res.render("error", {
+                    error: err.message,
+                    title: 'Error Consolidado'
+                });
+                //res.render("view1");
+                //res.jsonp(response);
+            });
+});
+//</editor-fold>
+
+//<editor-fold defaultstate="collapsed" desc="getConsolidado">
+var iva = 0.16;
+app.get('/getConsolidado', function (req, res) {
+    var requestID = new Date().getTime();
+    var response = {};
+    var dataPacket = {
+        requestID: requestID,
+        connectionParameters: SQLServerConnectionParameters,
+        looked: 0
+    };
+    mn.init(dataPacket)
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/getConsolidado]');
+                return dp;
+            })
+            .then(function (dp) {
+                inputValidation(response, req.query, [
+                    new FieldValidation('firma', ENC.STRING()),
+                    new FieldValidation('firmaNombre', ENC.STRING())
+                ]);
+                dp.firma = req.query.firma;
+                dp.firmaNombre = req.query.firmaNombre;
+                return dp;
+            })
+            .then(function (dp) {
+                var now = new Date();
+                var month = now.getMonth() + 1;
+                var year = now.getFullYear();
+                var fMonth = month - 1;
+                var fYear = year;
+                if (fMonth === 0) {
+                    fMonth = 12;
+                    fYear = fYear - 1;
+                }
+                dp.fMonth = fMonth;
+                dp.fYear = fYear;
+                dp.query = "" +
+                        "SELECT \n" +
+                        "	[OS].[ID_ORDEN_SERVICIO],\n" +
+                        "	[OS].[FECHA_SOLICITUD],\n" +
+                        "	\n" +
+                        "\n" +
+                        "	[TSERV].[ID_TIPO_SERVICIO],\n" +
+                        "	[TSERV].[TIPO],\n" +
+                        "\n" +
+                        "	[SERV].[ID_SERVICIO],\n" +
+                        "	[SERV].[NOMBRE_SERVICIO],\n" +
+                        "\n" +
+                        "	[COT].[ID_SERVICIO_COTIZACION],\n" +
+                        "	[COT].[ID_UNIDAD],\n" +
+                        "	[UNI].[UNIDAD],\n" +
+                        "	[COT].[CANTIDAD],\n" +
+                        "	[COT].[PRECIO_UNITARIO],\n" +
+                        "	[COT].[COTIZACION],\n" +
+                        "	[COT].[DEDUCCION],\n" +
+                        "	\n" +
+                        "	[CRED].[ID_CREDENCIAL],\n" +
+                        "\n" +
+                        "	[AUTH].[ID_AUTORIDAD],\n" +
+                        "	[AUTH].[NOMBRE_AUTORIDAD],\n" +
+                        "	[AUTH].[SERVICIO],\n" +
+                        "\n" +
+                        "\n" +
+                        "	[PS].[ID_PRESTADOR_SERVICIO],\n" +
+                        "	[PS].[ID_SUBZONA],\n" +
+                        "	[PS].[ID_ZONA],\n" +
+                        "	[PS].[RAZON_SOCIAL],\n" +
+                        "	[PS].[CALLE],\n" +
+                        "	[PS].[NUMERO],\n" +
+                        "	[PS].[MUNICIPIO],\n" +
+                        "	[PS].[COLONIA],\n" +
+                        "	[PS].[CP],\n" +
+                        "	[PS].[ENTIDAD_FEDERATIVA],\n" +
+                        "	[PS].[RFC],\n" +
+                        "	[PS].[TELEFONO],\n" +
+                        "	[PS].[ID_CONTRATO],\n" +
+                        "	[PS].[CONTRATO],\n" +
+                        "	[PS].[ID_PARTIDA],\n" +
+                        "	[PS].[PARTIDA]\n" +
                         "\n" +
                         "\n" +
                         "FROM  [SLOAA_TR_SERVICIO_COTIZACION] [COT]\n" +
@@ -4218,7 +4404,7 @@ app.get('/getConsolidado', function (req, res) {
                     var cotizacion = Number(currentRow.COTIZACION);
                     var deduccion = Number(currentRow.DEDUCCION);
 
-                
+
 
 
 
@@ -4227,40 +4413,40 @@ app.get('/getConsolidado', function (req, res) {
                     autoridadActual = reportes[idAutoridad];
                     if (typeof autoridadActual === "undefined") {
                         autoridadActual = {
-                            idPrestadorServicio:currentRow.ID_PRESTADOR_SERVICIO,
+                            idPrestadorServicio: currentRow.ID_PRESTADOR_SERVICIO,
                             idSubzona: currentRow.ID_SUBZONA,
-                            idZona:  currentRow.ID_ZONA,
+                            idZona: currentRow.ID_ZONA,
                             razonSocial: currentRow.RAZON_SOCIAL,
-                            calle:  currentRow.CALLE,
-                            numero:  currentRow.NUMERO,
-                            colonia:  currentRow.COLONIA,
-                            municipio:  currentRow.MUNICIPIO,
+                            calle: currentRow.CALLE,
+                            numero: currentRow.NUMERO,
+                            colonia: currentRow.COLONIA,
+                            municipio: currentRow.MUNICIPIO,
                             cp: currentRow.CP,
                             entidadFederativa: currentRow.ENTIDAD_FEDERATIVA,
                             rfc: currentRow.RFC,
                             telefono: currentRow.TELEFONO,
                             idContrato: currentRow.ID_CONTRATO,
                             contrato: currentRow.CONTRATO,
-                            idPartida:currentRow.ID_PARTIDA,
-                            partida:currentRow.PARTIDA,
+                            idPartida: currentRow.ID_PARTIDA,
+                            partida: currentRow.PARTIDA,
                             ordenesServicio: {},
                             totCotizado: 0,
                             totDeduccion: 0,
                             iva: iva,
-                            
-                            fAInicial:null,
-                            fAFinal:null,
-                            
-                            fAInicialFormat:null,
-                            fAFinalFormat:null
+
+                            fAInicial: null,
+                            fAFinal: null,
+
+                            fAInicialFormat: null,
+                            fAFinalFormat: null
                         };
                         reportes[idAutoridad] = autoridadActual;
                     }
-                   
-                  
-                    
-                    
-                    
+
+
+
+
+
                     odenServicioActual = autoridadActual.ordenesServicio[idOrdenServicio];
                     if (typeof odenServicioActual === "undefined") {
                         odenServicioActual = {
@@ -4300,21 +4486,21 @@ app.get('/getConsolidado', function (req, res) {
                     currentRow.totSIva = cotizacion - deduccion;
                     currentRow.nombreDeAutoridad = currentRow.NOMBRE_AUTORIDAD;
 
-                    if (autoridadActual.fAInicial==null) {
-                        autoridadActual.fAInicial=currentRow.fechaSolicitudDe;
+                    if (autoridadActual.fAInicial == null) {
+                        autoridadActual.fAInicial = currentRow.fechaSolicitudDe;
                     }
-                     if (autoridadActual.fAFinal==null) {
-                        autoridadActual.fAFinal=currentRow.fechaSolicitudDe;
+                    if (autoridadActual.fAFinal == null) {
+                        autoridadActual.fAFinal = currentRow.fechaSolicitudDe;
                     }
-                    
-                    
-                    if (currentRow.fechaSolicitudHasta.getTime()>autoridadActual.fAFinal.getTime()) {
-                        autoridadActual.fAFinal=currentRow.fechaSolicitudHasta;
+
+
+                    if (currentRow.fechaSolicitudHasta.getTime() > autoridadActual.fAFinal.getTime()) {
+                        autoridadActual.fAFinal = currentRow.fechaSolicitudHasta;
                     }
-                    
-                    
-                    autoridadActual.fAInicialFormat=autoridadActual.fAInicial.getFullYear() + "/" + (autoridadActual.fAInicial.getMonth() + 1) + "/" +autoridadActual.fAInicial.getDate();
-                    autoridadActual.fAFinalFormat=autoridadActual.fAFinal.getFullYear() + "/" + (autoridadActual.fAFinal.getMonth() + 1) + "/" +autoridadActual.fAFinal.getDate();
+
+
+                    autoridadActual.fAInicialFormat = autoridadActual.fAInicial.getFullYear() + "/" + (autoridadActual.fAInicial.getMonth() + 1) + "/" + autoridadActual.fAInicial.getDate();
+                    autoridadActual.fAFinalFormat = autoridadActual.fAFinal.getFullYear() + "/" + (autoridadActual.fAFinal.getMonth() + 1) + "/" + autoridadActual.fAFinal.getDate();
 
 
 
@@ -4340,7 +4526,9 @@ app.get('/getConsolidado', function (req, res) {
             .then(function (dp) {
                 res.render("consolidado", {
                     reportes: dp.reportes,
-                    title: 'Consolidado'
+                    title: 'Consolidado',
+                    firma: dp.firma,
+                    firmaNombre: dp.firmaNombre
                 });
                 return dp;
             })
