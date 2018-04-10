@@ -715,7 +715,6 @@ class ENCManagerSQLServer extends ENCPrimal {
             }
 
             if (input.looked === 1) {
-
                 mc.info('RID:[' + input.requestID + ']-[FREE-DML]-[START]');
                 mc.debug('RID:[' + input.requestID + ']-[FREE-DML]-[DML]:[' + input.dml + ']');
                 try {
@@ -3648,6 +3647,256 @@ app.get('/getCurDate', function (req, res) {
             })
             .catch(function (err) {
                 mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/getCurDate]');
+                response.error = err.message;
+                res.jsonp(response);
+            });
+});
+//</editor-fold>
+
+//<editor-fold defaultstate="collapsed" desc="registry">
+app.get('/registry', function (req, res) {
+    var requestID = new Date().getTime();
+    var response = {};
+    var dataPacket = {
+        requestID: requestID,
+        connectionParameters: SQLServerConnectionParameters,
+        looked: 1
+    };
+    mn.init(dataPacket)
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/registry]');
+                return dp;
+            })
+            .then(function (dp) {
+
+                inputValidation(response, req.query, [
+                    new FieldValidation('_dc', ENC.STRING()),
+                    new FieldValidation('callback', ENC.STRING()),
+                    new FieldValidation('user', ENC.STRING()),
+                    new FieldValidation('pass', ENC.STRING()),
+                    new FieldValidation('name', ENC.STRING()),
+                    new FieldValidation('place', ENC.STRING()),
+                    new FieldValidation('authority', ENC.STRING()),
+                    new FieldValidation('rol', ENC.STRING()),
+                    new FieldValidation('phone', ENC.STRING()),
+                    new FieldValidation('ext', ENC.STRING()),
+                    new FieldValidation('cell', ENC.STRING()),
+                    new FieldValidation('mail', ENC.STRING())
+                ]);
+                dp.user = req.query.user;
+                dp.pass = req.query.pass;
+                dp.name = req.query.name;
+                dp.place = req.query.place;
+                dp.authority = req.query.authority;
+                dp.rol = req.query.rol;
+                dp.phone = req.query.phone;
+                dp.ext = req.query.ext;
+                dp.cell = req.query.cell;
+                dp.mail = req.query.mail;
+                return dp;
+            })
+            .then(function (dp) {
+                dp.query = "SELECT MAX(ID_CREDENCIAL)+1 AS ID_CREDENCIAL FROM SLOAA_TR_CREDENCIAL";
+                return dp;
+            })
+            .then(msql.selectPromise)
+            .then(function (dp) {
+                //response = dp.queryResult;
+                if (dp.queryResult.rows !== null) {
+                    dp.idCredencial = dp.queryResult.rows[0].ID_CREDENCIAL;
+                } else {
+                    throw "No se encontro ID_CREDENCIAL";
+                }
+                return dp;
+            })
+            .then(function (dp) {
+                dp.dml = "INSERT INTO SLOAA_TR_CREDENCIAL VALUES(" + dp.idCredencial + ",'" + dp.name + "', '" + dp.place + "', '" + dp.phone + "', '" + dp.ext + "', '" + dp.mail + "', 's/ptt', '" + dp.cell + "', '" + dp.user + "', '" + dp.pass + "', " + dp.authority + ", " + dp.rol + ", " + dp.idCredencial + ")";
+                return dp;
+            })
+            .then(msql.freeDMLPromise)
+            .then(function (dp) {
+                if (dp.resultDML !== null) {
+                    if (dp.resultDML.rowsAffected.length > 0) {
+                        response.success = true;
+                    } else {
+                        response.success = false;
+                        throw "No se pudo registrar al usuario";
+                    }
+                } else {
+                    response.success = false;
+                    throw "No se pudo registrar al usuario";
+                }
+                return dp;
+            })
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[END]:[/registry]');
+                res.jsonp(response);
+            })
+            .catch(function (err) {
+                mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/registry]');
+                response.error = err.message;
+                res.jsonp(response);
+            });
+});
+//</editor-fold>
+
+//<editor-fold defaultstate="collapsed" desc="getAllPlaces">
+app.get('/getAllPlaces', function (req, res) {
+    var requestID = new Date().getTime();
+    var response = {};
+    var dataPacket = {
+        requestID: requestID,
+        connectionParameters: SQLServerConnectionParameters,
+        looked: 0
+    };
+    mn.init(dataPacket)
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/getAllPlaces]');
+                return dp;
+            })
+            .then(function (dp) {
+
+                inputValidation(response, req.query, [
+                    new FieldValidation('_dc', ENC.STRING()),
+                    new FieldValidation('callback', ENC.STRING()),
+                    new FieldValidation('limit', ENC.STRING()),
+                    new FieldValidation('page', ENC.STRING()),
+                    new FieldValidation('query', ENC.STRING()),
+                    new FieldValidation('start', ENC.STRING())
+                ]);
+//                dp.idZona = req.query.idZona;
+                return dp;
+            })
+            .then(function (dp) {
+                dp.query = "SELECT DISTINCT(CARGO) FROM SLOAA_TR_CREDENCIAL";
+                return dp;
+            })
+            .then(msql.selectPromise)
+            .then(function (dp) {
+                //response = dp.queryResult;
+                if (dp.queryResult.rows !== null) {
+                    response.cargos = dp.queryResult.rows;
+                    response.success = true;
+                } else {
+                    response.success = false;
+                }
+                return dp;
+            })
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[END]:[/getAllPlaces]');
+                res.jsonp(response);
+            })
+            .catch(function (err) {
+                mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/getAllPlaces]');
+                response.error = err.message;
+                res.jsonp(response);
+            });
+});
+//</editor-fold>
+
+//<editor-fold defaultstate="collapsed" desc="getAllAuthorities">
+app.get('/getAllAuthorities', function (req, res) {
+    var requestID = new Date().getTime();
+    var response = {};
+    var dataPacket = {
+        requestID: requestID,
+        connectionParameters: SQLServerConnectionParameters,
+        looked: 0
+    };
+    mn.init(dataPacket)
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/getAllAuthorities]');
+                return dp;
+            })
+            .then(function (dp) {
+
+                inputValidation(response, req.query, [
+                    new FieldValidation('_dc', ENC.STRING()),
+                    new FieldValidation('callback', ENC.STRING()),
+                    new FieldValidation('limit', ENC.STRING()),
+                    new FieldValidation('page', ENC.STRING()),
+                    new FieldValidation('query', ENC.STRING()),
+                    new FieldValidation('start', ENC.STRING())
+                ]);
+//                dp.idZona = req.query.idZona;
+                return dp;
+            })
+            .then(function (dp) {
+                dp.query = "SELECT ID_AUTORIDAD,NOMBRE_AUTORIDAD FROM SLOAA_TC_AUTORIDAD";
+                return dp;
+            })
+            .then(msql.selectPromise)
+            .then(function (dp) {
+                //response = dp.queryResult;
+                if (dp.queryResult.rows !== null) {
+                    response.authorities = dp.queryResult.rows;
+                    response.success = true;
+                } else {
+                    response.success = false;
+                }
+                return dp;
+            })
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[END]:[/getAllAuthorities]');
+                res.jsonp(response);
+            })
+            .catch(function (err) {
+                mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/getAllAuthorities]');
+                response.error = err.message;
+                res.jsonp(response);
+            });
+});
+//</editor-fold>
+
+
+//<editor-fold defaultstate="collapsed" desc="getAllRoles">
+app.get('/getAllRoles', function (req, res) {
+    var requestID = new Date().getTime();
+    var response = {};
+    var dataPacket = {
+        requestID: requestID,
+        connectionParameters: SQLServerConnectionParameters,
+        looked: 0
+    };
+    mn.init(dataPacket)
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/getAllRoles]');
+                return dp;
+            })
+            .then(function (dp) {
+
+                inputValidation(response, req.query, [
+                    new FieldValidation('_dc', ENC.STRING()),
+                    new FieldValidation('callback', ENC.STRING()),
+                    new FieldValidation('limit', ENC.STRING()),
+                    new FieldValidation('page', ENC.STRING()),
+                    new FieldValidation('query', ENC.STRING()),
+                    new FieldValidation('start', ENC.STRING())
+                ]);
+//                dp.idZona = req.query.idZona;
+                return dp;
+            })
+            .then(function (dp) {
+                dp.query = "SELECT ID_ROL,NOMBRE_ROL FROM SLOAA_TS_ROL";
+                return dp;
+            })
+            .then(msql.selectPromise)
+            .then(function (dp) {
+                //response = dp.queryResult;
+                if (dp.queryResult.rows !== null) {
+                    response.roles = dp.queryResult.rows;
+                    response.success = true;
+                } else {
+                    response.success = false;
+                }
+                return dp;
+            })
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[END]:[/getAllRoles]');
+                res.jsonp(response);
+            })
+            .catch(function (err) {
+                mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/getAllRoles]');
                 response.error = err.message;
                 res.jsonp(response);
             });

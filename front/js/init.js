@@ -76,21 +76,12 @@ var createRegistry = function (button) {
         animateTarget: button,
         width: 500,
 //        height: 400,
-        height: 410,
+        height: 495,
         layout: 'form',
         items: [
             {
                 xtype: 'form',
                 bodyPadding: 5,
-                defaults:{
-                  listeners: {
-                      specialkey: function(field, e){
-                          if (e.getKey() == e.ENTER) {
-                                console.log('listo');
-                          }
-                      }
-                  }
-                },
                 items: [
                     {
                         xtype: 'fieldset',
@@ -98,7 +89,14 @@ var createRegistry = function (button) {
                         title: 'Información de Usuario',
                         defaultType: 'textfield',
                         defaults: {
-                            anchor: '99%'
+                            anchor: '99%',
+                            listeners: {
+                                specialkey: function (field, e) {
+                                    if (e.getKey() == e.ENTER) {
+                                        field.up('window').down('#sendRegistry').click();
+                                    }
+                                }
+                            }
                         },
                         items: [
                             {
@@ -127,7 +125,14 @@ var createRegistry = function (button) {
                         title: 'Información de Contacto',
                         defaultType: 'textfield',
                         defaults: {
-                            anchor: '99%'
+                            anchor: '99%',
+                            listeners: {
+                                specialkey: function (field, e) {
+                                    if (e.getKey() == e.ENTER) {
+                                        field.up('window').down('#sendRegistry').click();
+                                    }
+                                }
+                            }
                         },
                         items: [
                             {
@@ -148,6 +153,72 @@ var createRegistry = function (button) {
                                     }
                                     return result;
                                 }
+                            },
+                            {
+                                xtype: 'combobox',
+                                allowBlank: false,
+                                fieldLabel: 'Puesto',
+                                emptyText: 'Puesto',
+                                valueField: 'CARGO',
+                                displayField: 'CARGO',
+                                queryMode: 'remote',
+                                editable: false,
+                                name: 'place',
+                                store: Ext.create('Ext.data.Store', {
+                                    fields: ['CARGO'],
+                                    proxy: {
+                                        type: 'jsonp',
+                                        url: serviceUrl + 'getAllPlaces',
+                                        reader: {
+                                            type: 'json',
+                                            rootProperty: 'cargos'
+                                        }
+                                    }
+                                }),
+                            },
+                            {
+                                xtype: 'combobox',
+                                allowBlank: false,
+                                fieldLabel: 'Autoridad',
+                                emptyText: 'Autoridad',
+                                valueField: 'ID_AUTORIDAD',
+                                displayField: 'NOMBRE_AUTORIDAD',
+                                queryMode: 'remote',
+                                editable: false,
+                                name: 'authority',
+                                store: Ext.create('Ext.data.Store', {
+                                    fields: ['ID_AUTORIDAD', 'NOMBRE_AUTORIDAD'],
+                                    proxy: {
+                                        type: 'jsonp',
+                                        url: serviceUrl + 'getAllAuthorities',
+                                        reader: {
+                                            type: 'json',
+                                            rootProperty: 'authorities'
+                                        }
+                                    }
+                                }),
+                            },
+                            {
+                                xtype: 'combobox',
+                                allowBlank: false,
+                                fieldLabel: 'Rol',
+                                emptyText: 'Rol',
+                                valueField: 'ID_ROL',
+                                displayField: 'NOMBRE_ROL',
+                                queryMode: 'remote',
+                                editable: false,
+                                name: 'rol',
+                                store: Ext.create('Ext.data.Store', {
+                                    fields: ['ID_ROL', 'NOMBRE_ROL'],
+                                    proxy: {
+                                        type: 'jsonp',
+                                        url: serviceUrl + 'getAllRoles',
+                                        reader: {
+                                            type: 'json',
+                                            rootProperty: 'roles'
+                                        }
+                                    }
+                                }),
                             },
                             {
                                 allowBlank: false,
@@ -206,15 +277,33 @@ var createRegistry = function (button) {
         buttons: [
             {
                 text: 'Solicitar Registro',
-                itemId: 'register',
+                itemId: 'sendRegistry',
                 handler: function (button) {
-                    x = button.up('window');
                     var thisForm = button.up('window').down('form');
                     var error = thisForm.child('#errorInfo');
                     if (thisForm.isValid()) {
                         error.setFieldLabel('');
                         error.setValue('');
-                        Ext.Msg.alert(':)', 'Ay wey!!');
+                        //Enviar registro
+                        Ext.data.JsonP.request({
+                            url: serviceUrl + 'registry',
+                            params: thisForm.getValues(),
+                            success: function (result) {
+                                if (result.success) {
+                                    Ext.Msg.show({
+                                        title: 'Registro',
+                                        message: 'La solicitud ha sido enviada.',
+                                        buttons: Ext.Msg.OK,
+                                        icon: Ext.Msg.INFO,
+                                        fn: function (btn) {
+                                            button.up('window').close();
+                                        }
+                                    });
+                                } else {
+                                    Ext.Msg.alert('Registro', 'No fue posible enviar la solicitud, intente mas tarde.');
+                                }
+                            }
+                        });
                     } else {
                         var field = thisForm.getForm().getFields().items.find(function (item) {
                             if (!Ext.isEmpty(item.activeErrors)) {
@@ -478,8 +567,8 @@ var createViewport = function () {
                                             url: serviceUrl + 'getCurDate',
                                             success: function (result) {
                                                 var available = result.success && result.avalible;
-                                                viewPort.down('toolbar #update').setDisabled(!available);
-                                                viewPort.down('toolbar #leftDays').setValue(available ? '<span style="color:gray;">(' + result.leftDay + ' días restantes)</span>' : '');
+                                                viewPort.down('toolbar #reportA').setDisabled(!available);
+                                                viewPort.down('toolbar #leftDaysA').setValue(available ? '<span style="color:gray;">(' + result.leftDay + ' días restantes)</span>' : '');
                                             }
                                         });
 
@@ -531,7 +620,7 @@ var createViewport = function () {
                                         },
                                         {
                                             text: 'Generar Reporte',
-                                            itemId: 'update',
+                                            itemId: 'reportA',
 //                                            disabled: true,
                                             glyph: 'xf15b@FontAwesome',
                                             handler: function (button) {
@@ -540,7 +629,33 @@ var createViewport = function () {
                                         },
                                         {
                                             xtype: 'displayfield',
-                                            itemId: 'leftDays',
+                                            itemId: 'leftDaysA',
+                                            labelWidth: 150
+                                        },
+                                        {
+                                            text: 'Factura',
+                                            itemId: 'reportB',
+                                            glyph: 'xf15b@FontAwesome',
+                                            handler: function (button) {
+                                                signWindow(button);
+                                            }
+                                        },
+                                        {
+                                            xtype: 'displayfield',
+                                            itemId: 'leftDaysB',
+                                            labelWidth: 150
+                                        },
+                                        {
+                                            text: 'Consolidado',
+                                            itemId: 'reportC',
+                                            glyph: 'xf15b@FontAwesome',
+                                            handler: function (button) {
+                                                signWindow(button);
+                                            }
+                                        },
+                                        {
+                                            xtype: 'displayfield',
+                                            itemId: 'leftDaysC',
                                             labelWidth: 150
                                         }
                                     ]
