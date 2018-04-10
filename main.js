@@ -3653,6 +3653,900 @@ app.get('/getCurDate', function (req, res) {
 });
 //</editor-fold>
 
+//<editor-fold defaultstate="collapsed" desc="Numero a Texto">
+var numeroALetras = (function () {
+
+// Código basado en https://gist.github.com/alfchee/e563340276f89b22042a
+    function Unidades(num) {
+
+        switch (num)
+        {
+            case 1:
+                return 'UN';
+            case 2:
+                return 'DOS';
+            case 3:
+                return 'TRES';
+            case 4:
+                return 'CUATRO';
+            case 5:
+                return 'CINCO';
+            case 6:
+                return 'SEIS';
+            case 7:
+                return 'SIETE';
+            case 8:
+                return 'OCHO';
+            case 9:
+                return 'NUEVE';
+        }
+
+        return '';
+    }//Unidades()
+
+    function Decenas(num) {
+
+        let decena = Math.floor(num / 10);
+        let unidad = num - (decena * 10);
+
+        switch (decena)
+        {
+            case 1:
+            switch (unidad)
+            {
+                case 0:
+                    return 'DIEZ';
+                case 1:
+                    return 'ONCE';
+                case 2:
+                    return 'DOCE';
+                case 3:
+                    return 'TRECE';
+                case 4:
+                    return 'CATORCE';
+                case 5:
+                    return 'QUINCE';
+                default:
+                    return 'DIECI' + Unidades(unidad);
+            }
+            case 2:
+            switch (unidad)
+            {
+                case 0:
+                    return 'VEINTE';
+                default:
+                    return 'VEINTI' + Unidades(unidad);
+            }
+            case 3:
+                return DecenasY('TREINTA', unidad);
+            case 4:
+                return DecenasY('CUARENTA', unidad);
+            case 5:
+                return DecenasY('CINCUENTA', unidad);
+            case 6:
+                return DecenasY('SESENTA', unidad);
+            case 7:
+                return DecenasY('SETENTA', unidad);
+            case 8:
+                return DecenasY('OCHENTA', unidad);
+            case 9:
+                return DecenasY('NOVENTA', unidad);
+            case 0:
+                return Unidades(unidad);
+        }
+    }//Unidades()
+
+    function DecenasY(strSin, numUnidades) {
+        if (numUnidades > 0)
+            return strSin + ' Y ' + Unidades(numUnidades);
+
+        return strSin;
+    }//DecenasY()
+
+    function Centenas(num) {
+        let centenas = Math.floor(num / 100);
+        let decenas = num - (centenas * 100);
+
+        switch (centenas)
+        {
+            case 1:
+                if (decenas > 0)
+                    return 'CIENTO ' + Decenas(decenas);
+                return 'CIEN';
+            case 2:
+                return 'DOSCIENTOS ' + Decenas(decenas);
+            case 3:
+                return 'TRESCIENTOS ' + Decenas(decenas);
+            case 4:
+                return 'CUATROCIENTOS ' + Decenas(decenas);
+            case 5:
+                return 'QUINIENTOS ' + Decenas(decenas);
+            case 6:
+                return 'SEISCIENTOS ' + Decenas(decenas);
+            case 7:
+                return 'SETECIENTOS ' + Decenas(decenas);
+            case 8:
+                return 'OCHOCIENTOS ' + Decenas(decenas);
+            case 9:
+                return 'NOVECIENTOS ' + Decenas(decenas);
+        }
+
+        return Decenas(decenas);
+    }//Centenas()
+
+    function Seccion(num, divisor, strSingular, strPlural) {
+        let cientos = Math.floor(num / divisor);
+        let resto = num - (cientos * divisor);
+
+        let letras = '';
+
+        if (cientos > 0)
+            if (cientos > 1)
+                letras = Centenas(cientos) + ' ' + strPlural;
+            else
+                letras = strSingular;
+
+        if (resto > 0)
+            letras += '';
+
+        return letras;
+    }//Seccion()
+
+    function Miles(num) {
+        let divisor = 1000;
+        let cientos = Math.floor(num / divisor)
+        let resto = num - (cientos * divisor)
+
+        let strMiles = Seccion(num, divisor, 'UN MIL', 'MIL');
+        let strCentenas = Centenas(resto);
+
+        if (strMiles == '')
+            return strCentenas;
+
+        return strMiles + ' ' + strCentenas;
+    }//Miles()
+
+    function Millones(num) {
+        let divisor = 1000000;
+        let cientos = Math.floor(num / divisor);
+        let resto = num - (cientos * divisor);
+
+        let strMillones = Seccion(num, divisor, 'UN MILLON DE', 'MILLONES DE');
+        let strMiles = Miles(resto);
+
+        if (strMillones == '') {
+            return strMiles;
+        }
+
+        return strMillones + ' ' + strMiles;
+    }//Millones()
+
+    return function NumeroALetras(num, currency) {
+        currency = currency || {};
+        let data = {
+            numero: num,
+            enteros: Math.floor(num),
+            centavos: (((Math.round(num * 100)) - (Math.floor(num) * 100))),
+            letrasCentavos: '',
+            letrasMonedaPlural: currency.plural || 'PESOS CHILENOS', //'PESOS', 'Dólares', 'Bolívares', 'etcs'
+            letrasMonedaSingular: currency.singular || 'PESO CHILENO', //'PESO', 'Dólar', 'Bolivar', 'etc'
+            letrasMonedaCentavoPlural: currency.centPlural || 'CHIQUI PESOS CHILENOS',
+            letrasMonedaCentavoSingular: currency.centSingular || 'CHIQUI PESO CHILENO'
+        };
+
+        if (data.centavos > 0) {
+            data.letrasCentavos = 'CON ' + (function () {
+                if (data.centavos == 1)
+                    return Millones(data.centavos) + ' ' + data.letrasMonedaCentavoSingular;
+                else
+                    return Millones(data.centavos) + ' ' + data.letrasMonedaCentavoPlural;
+            })();
+        }
+        ;
+
+        if (data.enteros == 0)
+            return 'CERO ' + data.letrasMonedaPlural + ' ' + data.letrasCentavos;
+        if (data.enteros == 1)
+            return Millones(data.enteros) + ' ' + data.letrasMonedaSingular + ' ' + data.letrasCentavos;
+        else
+            return Millones(data.enteros) + ' ' + data.letrasMonedaPlural + ' ' + data.letrasCentavos;
+    };
+
+})();
+
+//// Modo de uso: 500,34 USD
+//console.log(numeroALetras(542.34, {
+//    plural: 'pesos',
+//    singular: 'peso',
+//    centPlural: 'centavos MN',
+//    centSingular: 'centavo MN'
+//}));
+//</editor-fold>
+
+//<editor-fold defaultstate="collapsed" desc="SumaDias">
+sumarDias = function (fecha, dias) {
+//        dia =,
+//        mes =  + 1,
+//        anio = ,
+    addTime = dias * 86400; //Tiempo en segundos
+    newDate = new Date(fecha.getFullYear(), fecha.getMonth(), fecha.getDate());
+    newDate.setSeconds(addTime); //Añado el tiempo
+    return newDate;
+};
+//</editor-fold>
+
+//<editor-fold defaultstate="collapsed" desc="Redondea a 2 Decimales">
+var roundToTwo = function (num) {
+    return +(Math.round(num + "e+2") + "e-2");
+};
+//</editor-fold>
+
+
+
+
+
+
+//<editor-fold defaultstate="collapsed" desc="getFactura">
+app.get('/getFactura', function (req, res) {
+    var requestID = new Date().getTime();
+    var response = {};
+    var dataPacket = {
+        requestID: requestID,
+        connectionParameters: SQLServerConnectionParameters,
+        looked: 0
+    };
+    mn.init(dataPacket)
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/getFactura]');
+                return dp;
+            })
+            .then(function (dp) {
+                inputValidation(response, req.query, [
+                    new FieldValidation('idAutoridad', ENC.STRING()),
+                    new FieldValidation('firma', ENC.STRING()),
+                    new FieldValidation('firmaNombre', ENC.STRING()),
+                    new FieldValidation('factura', ENC.STRING()),
+                    new FieldValidation('noIdPedido', ENC.STRING()),
+                    new FieldValidation('noIdRecepcion', ENC.STRING())
+                ]);
+                dp.firma = req.query.firma;
+                dp.firmaNombre = req.query.firmaNombre;
+                dp.idAutoridad = req.query.idAutoridad;
+                dp.factura = req.query.factura;
+                dp.noIdPedido = req.query.noIdPedido;
+                dp.noIdRecepcion = req.query.noIdRecepcion;
+
+                return dp;
+            })
+            .then(function (dp) {
+                var now = new Date();
+                var month = now.getMonth() + 1;
+                var year = now.getFullYear();
+                var fMonth = month - 1;
+                var fYear = year;
+                if (fMonth === 0) {
+                    fMonth = 12;
+                    fYear = fYear - 1;
+                }
+                dp.fMonth = fMonth;
+                dp.fYear = fYear;
+                dp.query = "" +
+                        "SELECT \n" +
+                        "	[OS].[ID_ORDEN_SERVICIO],\n" +
+                        "	[OS].[FECHA_SOLICITUD],\n" +
+                        "	\n" +
+                        "\n" +
+                        "	[TSERV].[ID_TIPO_SERVICIO],\n" +
+                        "	[TSERV].[TIPO],\n" +
+                        "\n" +
+                        "	[SERV].[ID_SERVICIO],\n" +
+                        "	[SERV].[NOMBRE_SERVICIO],\n" +
+                        "\n" +
+                        "	[COT].[ID_SERVICIO_COTIZACION],\n" +
+                        "	[COT].[ID_UNIDAD],\n" +
+                        "	[UNI].[UNIDAD],\n" +
+                        "	[COT].[CANTIDAD],\n" +
+                        "	[COT].[PRECIO_UNITARIO],\n" +
+                        "	[COT].[COTIZACION],\n" +
+                        "	[COT].[DEDUCCION],\n" +
+                        "	\n" +
+                        "	[CRED].[ID_CREDENCIAL],\n" +
+                        "\n" +
+                        "	[AUTH].[ID_AUTORIDAD],\n" +
+                        "	[AUTH].[NOMBRE_AUTORIDAD],\n" +
+                        "	[AUTH].[SERVICIO],\n" +
+                        "\n" +
+                        "\n" +
+                        "	[PS].[ID_PRESTADOR_SERVICIO],\n" +
+                        "	[PS].[ID_SUBZONA],\n" +
+                        "	[PS].[ID_ZONA],\n" +
+                        "	[PS].[RAZON_SOCIAL],\n" +
+                        "	[PS].[CALLE],\n" +
+                        "	[PS].[NUMERO],\n" +
+                        "	[PS].[MUNICIPIO],\n" +
+                        "	[PS].[COLONIA],\n" +
+                        "	[PS].[CP],\n" +
+                        "	[PS].[ENTIDAD_FEDERATIVA],\n" +
+                        "	[PS].[RFC],\n" +
+                        "	[PS].[TELEFONO],\n" +
+                        "\n" +
+                        "\n" +
+                         "	[CONT].[ID_CONTRATO],\n" +
+                        "	[CONT].[CONTRATO],\n" +
+                        
+                        "	[PAR].[ID_PARTIDA],\n" +
+                        "	[PAR].[PARTIDA],\n" +
+                        
+                        "       [PROY].[ID_PROYECTO],\n"+
+                        "	[PROY].[PROYECTO],\n" +
+                        
+                        "       [ACU].[ID_ACUERDO],\n"+
+                        "	[ACU].[ACUERDO]\n" +
+                        "\n" +
+                        "\n" +
+                        "FROM  [SLOAA_TR_SERVICIO_COTIZACION] [COT]\n" +
+                        "LEFT JOIN [SLOAA_TR_ORDEN_SERVICIO] [OS] ON [OS].[ID_ORDEN_SERVICIO]=[COT].[ID_ORDEN_SERVICIO]\n" +
+                        "LEFT JOIN [SLOAA_TR_CREDENCIAL] [CRED] ON [CRED].[ID_CREDENCIAL]=[OS].[ID_CREDENCIAL]\n" +
+                        "LEFT JOIN [SLOAA_TC_AUTORIDAD] [AUTH] ON [AUTH].[ID_AUTORIDAD]=[CRED].[ID_AUTORIDAD]\n" +
+                        "LEFT JOIN  [SLOAA_TC_UNIDAD] [UNI] ON [UNI].[ID_UNIDAD]=[COT].[ID_UNIDAD]\n" +
+                        "LEFT JOIN [SLOAA_TC_TIPO_SERVICIO] [TSERV] ON [TSERV].[ID_TIPO_SERVICIO]=[COT].[ID_TIPO_SERVICIO]\n" +
+                        "LEFT JOIN [SLOAA_TC_SERVICIO]  [SERV] ON  [SERV].[ID_TIPO_SERVICIO]=[COT].[ID_TIPO_SERVICIO] AND [SERV].[ID_SERVICIO]=[COT].[ID_SERVICIO]\n" +
+                        "LEFT JOIN [SLOAA_TC_PRESTADOR_SERVICIOS] [PS] ON [COT].[ID_PRESTADOR_SERVICIO]=[PS].[ID_PRESTADOR_SERVICIO] AND [COT].[ID_ZONA]=[PS].[ID_ZONA] AND [COT].[ID_SUBZONA]=[PS].[ID_SUBZONA]\n " +
+                        
+                        "LEFT JOIN [SLOAA_TC_CONTRATO] [CONT] ON  [PS].[ID_CONTRATO]=[CONT].[ID_CONTRATO]\n" +
+                        "LEFT JOIN [SLOAA_TC_PARTIDA] [PAR] ON  [PS].[ID_PARTIDA]=[PAR].[ID_PARTIDA]\n" +
+                        "LEFT JOIN [SLOAA_TC_PROYECTO] [PROY] ON  [PS].[ID_PROYECTO]=[PROY].[ID_PROYECTO]\n" +
+                        "LEFT JOIN [SLOAA_TC_ACUERDO] [ACU] ON  [PS].[ID_ACUERDO]=[ACU].[ID_ACUERDO]\n" +
+                        
+                        "\n" +
+                        "WHERE \n" +
+                        "1=1\n";
+
+
+                dp.query = dp.query + " AND [COT].[CANCELACION]=0  \n";
+                dp.query = dp.query + " AND [OS].[ID_STATUS]=7 \n";
+                //dp.query = dp.query + " AND MONTH([ORD].[FECHA_SOLICITUD])=MONTH(GetDate()) \n";
+                //dp.query = dp.query + " AND YEAR([ORD].[FECHA_SOLICITUD])=YEAR(GetDate()) \n";
+                dp.query = dp.query + " AND MONTH([OS].[FECHA_SOLICITUD])=" + fMonth + " \n";
+                dp.query = dp.query + " AND YEAR([OS].[FECHA_SOLICITUD])=" + fYear + " \n";
+
+                if (dp.idAutoridad !== "") {
+                    dp.query = dp.query + " AND [AUTH].[ID_AUTORIDAD]=" + dp.idAutoridad + " \n";
+                }
+
+                return dp;
+            })
+            .then(msql.selectPromise)
+            .then(function (dp) {
+                //response = dp.queryResult;
+                if (dp.queryResult.rows !== null) {
+                    dp.servicios = dp.queryResult.rows;
+                    dp.success = true;
+                } else {
+                    throw new Error("Error de parametros");
+                }
+                return dp;
+            })
+            .then(function (dp) {
+
+                var reportes = {
+                };
+                for (var currentKey in dp.servicios) {
+                    var currentRow = dp.servicios[currentKey];
+                    var idAutoridad = currentRow.ID_AUTORIDAD;
+                    var nombreDeAutoridad = currentRow.NOMBRE_AUTORIDAD;
+                    var idServicioServicio = currentRow.ID_AUTORIDAD;
+                    var idTipoServicio = currentRow.ID_TIPO_SERVICIO;
+
+                    var idServicioCotizacion = currentRow.ID_SERVICIO_COTIZACION;
+                    var idOrdenServicio = currentRow.ID_ORDEN_SERVICIO;
+                    var nombreServicio = currentRow.NOMBRE_SERVICIO;
+                    var cantidad = Number(currentRow.CANTIDAD);
+                    var unidad = currentRow.UNIDAD;
+                    var cotizacion = Number(currentRow.COTIZACION);
+                    var deduccion = Number(currentRow.DEDUCCION);
+
+
+
+
+
+                    var autoridadActual;
+                    var odenServicioActual;
+                    var servicioActual;
+                    autoridadActual = reportes[idAutoridad];
+                    if (typeof autoridadActual === "undefined") {
+                        autoridadActual = {
+                            idPrestadorServicio: currentRow.ID_PRESTADOR_SERVICIO,
+                            idProyecto: currentRow.ID_PROYECTO,
+                            idAcuerdo: currentRow.ID_ACUERDO,
+                            idSubzona: currentRow.ID_SUBZONA,
+                            idZona: currentRow.ID_ZONA,
+                            razonSocial: currentRow.RAZON_SOCIAL,
+                            calle: currentRow.CALLE,
+                            numero: currentRow.NUMERO,
+                            colonia: currentRow.COLONIA,
+                            municipio: currentRow.MUNICIPIO,
+                            cp: currentRow.CP,
+                            entidadFederativa: currentRow.ENTIDAD_FEDERATIVA,
+                            rfc: currentRow.RFC,
+                            telefono: currentRow.TELEFONO,
+                            idContrato: currentRow.ID_CONTRATO,
+                            contrato: currentRow.CONTRATO,
+                            idPartida: currentRow.ID_PARTIDA,
+                            partida: currentRow.PARTIDA,
+                            ordenesServicio: {},
+                            totCotizado: 0,
+                            totDeduccion: 0,
+                            iva: iva,
+
+                            fAInicial: null,
+                            fAFinal: null,
+
+                            fAInicialFormat: null,
+                            fAFinalFormat: null,
+                            serviciosAgrupados: {}
+                        };
+                        reportes[idAutoridad] = autoridadActual;
+                    }
+
+
+
+
+
+                    odenServicioActual = autoridadActual.ordenesServicio[idOrdenServicio];
+                    if (typeof odenServicioActual === "undefined") {
+                        odenServicioActual = {
+                            servicios: {}
+                        };
+                        autoridadActual.ordenesServicio[idOrdenServicio] = odenServicioActual;
+                    }
+                    odenServicioActual.servicios[idServicioCotizacion] = currentRow;
+
+                    var llaveOrdenMensual = "MX-SAT-TN-" + currentRow.SERVICIO + "-" + dp.fYear + "-" + dp.fMonth;
+                    llaveOrdenMensual = llaveOrdenMensual.replace(/\|/g, "");
+                    llaveOrdenMensual = llaveOrdenMensual.replace(/\s+/g, ' ');
+                    currentRow.llaveOrdenMensual = llaveOrdenMensual;
+                    currentRow.fechaSolicitudDe = currentRow.FECHA_SOLICITUD;
+                    currentRow.fechaSolicitudHasta = currentRow.FECHA_SOLICITUD;
+                    if (false) {
+                    } else if (unidad === 'JORNADA') {
+                        currentRow.fechaSolicitudHasta = sumarDias(currentRow.fechaSolicitudDe, cantidad);
+                    } else if (unidad === 'DIA') {
+                        currentRow.fechaSolicitudHasta = sumarDias(currentRow.fechaSolicitudDe, cantidad);
+                    } else if (unidad === 'HORA') {
+                        currentRow.fechaSolicitudHasta = sumarDias(currentRow.fechaSolicitudDe, Math.round(cantidad / 24));
+                    } else if (unidad === 'MES') {
+                        currentRow.fechaSolicitudHasta = sumarDias(currentRow.fechaSolicitudDe, cantidad * 31);
+                    } else if (unidad === 'SEMANA') {
+                        currentRow.fechaSolicitudHasta = sumarDias(currentRow.fechaSolicitudDe, cantidad * 7);
+                    } else if (unidad === 'QUINCENA') {
+                        currentRow.fechaSolicitudHasta = sumarDias(currentRow.fechaSolicitudDe, cantidad * 15);
+                    }
+                    currentRow.fechaSolicitudDeFormat = currentRow.fechaSolicitudDe.getFullYear() + "/" + (currentRow.fechaSolicitudDe.getMonth() + 1) + "/" + currentRow.fechaSolicitudDe.getDate();
+                    currentRow.fechaSolicitudHastaFormat = currentRow.fechaSolicitudHasta.getFullYear() + "/" + (currentRow.fechaSolicitudHasta.getMonth() + 1) + "/" + currentRow.fechaSolicitudHasta.getDate();
+                    currentRow.unidad = unidad;
+                    currentRow.cantidad = cantidad;
+                    currentRow.nombreServicio = nombreServicio;
+                    currentRow.cotizacion = cotizacion;
+                    currentRow.deduccion = deduccion;
+                    currentRow.totSIva = cotizacion - deduccion;
+                    currentRow.nombreDeAutoridad = currentRow.NOMBRE_AUTORIDAD;
+
+                    if (autoridadActual.fAInicial == null) {
+                        autoridadActual.fAInicial = currentRow.fechaSolicitudDe;
+                    }
+                    if (autoridadActual.fAFinal == null) {
+                        autoridadActual.fAFinal = currentRow.fechaSolicitudDe;
+                    }
+
+
+                    if (currentRow.fechaSolicitudHasta.getTime() > autoridadActual.fAFinal.getTime()) {
+                        autoridadActual.fAFinal = currentRow.fechaSolicitudHasta;
+                    }
+
+
+                    autoridadActual.fAInicialFormat = autoridadActual.fAInicial.getFullYear() + "/" + (autoridadActual.fAInicial.getMonth() + 1) + "/" + autoridadActual.fAInicial.getDate();
+                    autoridadActual.fAFinalFormat = autoridadActual.fAFinal.getFullYear() + "/" + (autoridadActual.fAFinal.getMonth() + 1) + "/" + autoridadActual.fAFinal.getDate();
+
+
+
+                    if (!isNaN(cotizacion)) {
+                        autoridadActual.totCotizado = autoridadActual.totCotizado + cotizacion;
+                    }
+                    if (!isNaN(deduccion)) {
+                        autoridadActual.totDeduccion = autoridadActual.totDeduccion + deduccion;
+                    }
+
+
+                    servicioActual = autoridadActual.serviciosAgrupados[idTipoServicio];
+                    if (typeof servicioActual === "undefined") {
+                        servicioActual = {
+                            tipoServicio: currentRow.TIPO,
+                            totCotizado: 0,
+                            totDeduccion: 0,
+                            totalFinal: 0,
+                            totalFinalIva: 0,
+                            totalFinalRetencion4: 0,
+                            totalResultado: 0,
+
+                            totalFinalTexto: "",
+                            totalFinalIvaTexto: "",
+                            totalFinalRetencion4Texto: "",
+                            totalResultadoTexto: "",
+                            fechaSolicitud: dp.fMonth + "/" + dp.fYear
+                        };
+                    }
+                    autoridadActual.serviciosAgrupados[idTipoServicio] = servicioActual;
+                    if (!isNaN(cotizacion)) {
+                        servicioActual.totCotizado = servicioActual.totCotizado + cotizacion;
+                    }
+                    if (!isNaN(deduccion)) {
+                        servicioActual.totDeduccion = servicioActual.totDeduccion + deduccion;
+                    }
+                }
+
+
+                var config = {
+                    plural: 'pesos',
+                    singular: 'peso',
+                    centPlural: 'centavos MN',
+                    centSingular: 'centavo MN'
+                };
+
+                for (var reporte in reportes) {
+                    var reporteEnCurso = reportes[reporte];
+                    var serviciosAgrupados = reporteEnCurso.serviciosAgrupados;
+                    reporteEnCurso.ejercido = 0;
+                    reporteEnCurso.ejercidoTexto = "";
+                    for (var servicioAgrupado in serviciosAgrupados) {
+                        var servicioAgrupadoEnCurso = serviciosAgrupados[servicioAgrupado];
+                        servicioAgrupadoEnCurso.totalFinal = servicioAgrupadoEnCurso.totCotizado - servicioAgrupadoEnCurso.totDeduccion;
+                        servicioAgrupadoEnCurso.totalFinalIva = servicioAgrupadoEnCurso.totalFinal * 0.15;
+                        servicioAgrupadoEnCurso.totalFinalRetencion4 = servicioAgrupadoEnCurso.totalFinal * 0.04;
+                        servicioAgrupadoEnCurso.totalResultado = (servicioAgrupadoEnCurso.totalFinal + servicioAgrupadoEnCurso.totalFinalIva) - servicioAgrupadoEnCurso.totalFinalRetencion4;
+
+                        reporteEnCurso.ejercido = reporteEnCurso.ejercido + servicioAgrupadoEnCurso.totalResultado;
+
+                        servicioAgrupadoEnCurso.totalFinal = roundToTwo(servicioAgrupadoEnCurso.totalFinal);
+                        servicioAgrupadoEnCurso.totalFinalIva = roundToTwo(servicioAgrupadoEnCurso.totalFinalIva);
+                        servicioAgrupadoEnCurso.totalFinalRetencion4 = roundToTwo(servicioAgrupadoEnCurso.totalFinalRetencion4);
+                        servicioAgrupadoEnCurso.totalResultado = roundToTwo(servicioAgrupadoEnCurso.totalResultado);
+
+                        servicioAgrupadoEnCurso.totalFinalTexto = numeroALetras(servicioAgrupadoEnCurso.totalFinal, config);
+                        servicioAgrupadoEnCurso.totalFinalIvaTexto = numeroALetras(servicioAgrupadoEnCurso.totalFinalIva, config);
+                        servicioAgrupadoEnCurso.totalFinalRetencion4Texto = numeroALetras(servicioAgrupadoEnCurso.totalFinalRetencion4, config);
+                        servicioAgrupadoEnCurso.totalResultadoTexto = numeroALetras(servicioAgrupadoEnCurso.totalResultado, config);
+                    }
+                    reporteEnCurso.ejercido = roundToTwo(reporteEnCurso.ejercido);
+                    reporteEnCurso.ejercidoTexto = numeroALetras(reporteEnCurso.ejercido, config);
+                }
+
+                dp.reportes = reportes;
+                return dp;
+            })
+            .then(function (dp) {
+                return dp;
+            })
+            .then(function (dp) {
+                return dp;
+            })
+            .then(function (dp) {
+                var genDate = new Date();
+
+                res.render("factura", {
+                    reportes: dp.reportes,
+                    title: 'Factura',
+                    firma: dp.firma,
+                    firmaNombre: dp.firmaNombre,
+                    factura: dp.factura,
+                    noIdPedido: dp.noIdPedido,
+                    noIdRecepcion: dp.noIdRecepcion,
+                    genDate: genDate.getDate() + "/" + (genDate.getMonth() + 1) + "/" + genDate.getFullYear()
+                });
+                return dp;
+            })
+            .catch(function (err) {
+                mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/getFactura]');
+                response.error = err.message;
+                res.render("error", {
+                    error: err.message,
+                    title: 'Error Consolidado'
+                });
+                //res.render("view1");
+                //res.jsonp(response);
+            });
+});
+//</editor-fold>
+
+//<editor-fold defaultstate="collapsed" desc="getConsolidado">
+var iva = 0.16;
+app.get('/getConsolidado', function (req, res) {
+    var requestID = new Date().getTime();
+    var response = {};
+    var dataPacket = {
+        requestID: requestID,
+        connectionParameters: SQLServerConnectionParameters,
+        looked: 0
+    };
+    mn.init(dataPacket)
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/getConsolidado]');
+                return dp;
+            })
+            .then(function (dp) {
+                inputValidation(response, req.query, [
+                    new FieldValidation('firma', ENC.STRING()),
+                    new FieldValidation('firmaNombre', ENC.STRING())
+                ]);
+                dp.firma = req.query.firma;
+                dp.firmaNombre = req.query.firmaNombre;
+                return dp;
+            })
+            .then(function (dp) {
+                var now = new Date();
+                var month = now.getMonth() + 1;
+                var year = now.getFullYear();
+                var fMonth = month - 1;
+                var fYear = year;
+                if (fMonth === 0) {
+                    fMonth = 12;
+                    fYear = fYear - 1;
+                }
+                dp.fMonth = fMonth;
+                dp.fYear = fYear;
+                dp.query = "" +
+                        "SELECT \n" +
+                        "	[OS].[ID_ORDEN_SERVICIO],\n" +
+                        "	[OS].[FECHA_SOLICITUD],\n" +
+                        "	\n" +
+                        "\n" +
+                        "	[TSERV].[ID_TIPO_SERVICIO],\n" +
+                        "	[TSERV].[TIPO],\n" +
+                        "\n" +
+                        "	[SERV].[ID_SERVICIO],\n" +
+                        "	[SERV].[NOMBRE_SERVICIO],\n" +
+                        "\n" +
+                        "	[COT].[ID_SERVICIO_COTIZACION],\n" +
+                        "	[COT].[ID_UNIDAD],\n" +
+                        "	[UNI].[UNIDAD],\n" +
+                        "	[COT].[CANTIDAD],\n" +
+                        "	[COT].[PRECIO_UNITARIO],\n" +
+                        "	[COT].[COTIZACION],\n" +
+                        "	[COT].[DEDUCCION],\n" +
+                        "	\n" +
+                        "	[CRED].[ID_CREDENCIAL],\n" +
+                        "\n" +
+                        "	[AUTH].[ID_AUTORIDAD],\n" +
+                        "	[AUTH].[NOMBRE_AUTORIDAD],\n" +
+                        "	[AUTH].[SERVICIO],\n" +
+                        "\n" +
+                        "\n" +
+                        "	[PS].[ID_PRESTADOR_SERVICIO],\n" +
+                        "	[PS].[ID_SUBZONA],\n" +
+                        "	[PS].[ID_ZONA],\n" +
+                        "	[PS].[RAZON_SOCIAL],\n" +
+                        "	[PS].[CALLE],\n" +
+                        "	[PS].[NUMERO],\n" +
+                        "	[PS].[MUNICIPIO],\n" +
+                        "	[PS].[COLONIA],\n" +
+                        "	[PS].[CP],\n" +
+                        "	[PS].[ENTIDAD_FEDERATIVA],\n" +
+                        "	[PS].[RFC],\n" +
+                        "	[PS].[TELEFONO],\n" +
+                        "\n" +
+                        "\n" +
+                         "	[CONT].[ID_CONTRATO],\n" +
+                        "	[CONT].[CONTRATO],\n" +
+                        
+                        "	[PAR].[ID_PARTIDA],\n" +
+                        "	[PAR].[PARTIDA],\n" +
+                        
+                        "       [PROY].[ID_PROYECTO],\n"+
+                        "	[PROY].[PROYECTO],\n" +
+                        
+                        "       [ACU].[ID_ACUERDO],\n"+
+                        "	[ACU].[ACUERDO]\n" +
+                        "\n" +
+                        "\n" +
+                        "FROM  [SLOAA_TR_SERVICIO_COTIZACION] [COT]\n" +
+                        "LEFT JOIN [SLOAA_TR_ORDEN_SERVICIO] [OS] ON [OS].[ID_ORDEN_SERVICIO]=[COT].[ID_ORDEN_SERVICIO]\n" +
+                        "LEFT JOIN [SLOAA_TR_CREDENCIAL] [CRED] ON [CRED].[ID_CREDENCIAL]=[OS].[ID_CREDENCIAL]\n" +
+                        "LEFT JOIN [SLOAA_TC_AUTORIDAD] [AUTH] ON [AUTH].[ID_AUTORIDAD]=[CRED].[ID_AUTORIDAD]\n" +
+                        "LEFT JOIN  [SLOAA_TC_UNIDAD] [UNI] ON [UNI].[ID_UNIDAD]=[COT].[ID_UNIDAD]\n" +
+                        "LEFT JOIN [SLOAA_TC_TIPO_SERVICIO] [TSERV] ON [TSERV].[ID_TIPO_SERVICIO]=[COT].[ID_TIPO_SERVICIO]\n" +
+                        "LEFT JOIN [SLOAA_TC_SERVICIO]  [SERV] ON  [SERV].[ID_TIPO_SERVICIO]=[COT].[ID_TIPO_SERVICIO] AND [SERV].[ID_SERVICIO]=[COT].[ID_SERVICIO]\n" +
+                        "LEFT JOIN [SLOAA_TC_PRESTADOR_SERVICIOS] [PS] ON [COT].[ID_PRESTADOR_SERVICIO]=[PS].[ID_PRESTADOR_SERVICIO] AND [COT].[ID_ZONA]=[PS].[ID_ZONA] AND [COT].[ID_SUBZONA]=[PS].[ID_SUBZONA]\n " +
+                        
+                        "LEFT JOIN [SLOAA_TC_CONTRATO] [CONT] ON  [PS].[ID_CONTRATO]=[CONT].[ID_CONTRATO]\n" +
+                        "LEFT JOIN [SLOAA_TC_PARTIDA] [PAR] ON  [PS].[ID_PARTIDA]=[PAR].[ID_PARTIDA]\n" +
+                        "LEFT JOIN [SLOAA_TC_PROYECTO] [PROY] ON  [PS].[ID_PROYECTO]=[PROY].[ID_PROYECTO]\n" +
+                        "LEFT JOIN [SLOAA_TC_ACUERDO] [ACU] ON  [PS].[ID_ACUERDO]=[ACU].[ID_ACUERDO]\n" +
+                        "\n" +
+                        "WHERE \n" +
+                        "1=1\n";
+
+
+                dp.query = dp.query + " AND [COT].[CANCELACION]=0  \n";
+                dp.query = dp.query + " AND [OS].[ID_STATUS]=7 \n";
+                //dp.query = dp.query + " AND MONTH([ORD].[FECHA_SOLICITUD])=MONTH(GetDate()) \n";
+                //dp.query = dp.query + " AND YEAR([ORD].[FECHA_SOLICITUD])=YEAR(GetDate()) \n";
+                dp.query = dp.query + " AND MONTH([OS].[FECHA_SOLICITUD])=" + fMonth + " \n";
+                dp.query = dp.query + " AND YEAR([OS].[FECHA_SOLICITUD])=" + fYear + " \n";
+
+
+                //dp.query = dp.query + " AND [AUTH].[ID_AUTORIDAD]=" + dp.idAutoridad + " \n";
+
+                return dp;
+            })
+            .then(msql.selectPromise)
+            .then(function (dp) {
+                //response = dp.queryResult;
+                if (dp.queryResult.rows !== null) {
+                    dp.servicios = dp.queryResult.rows;
+                    dp.success = true;
+                } else {
+                    throw new Error("Error de parametros");
+                }
+                return dp;
+            })
+            .then(function (dp) {
+
+                var reportes = {
+                };
+                for (var currentKey in dp.servicios) {
+                    var currentRow = dp.servicios[currentKey];
+                    var idAutoridad = currentRow.ID_AUTORIDAD;
+                    var nombreDeAutoridad = currentRow.NOMBRE_AUTORIDAD;
+                    var idServicioServicio = currentRow.ID_AUTORIDAD;
+                    var idServicioCotizacion = currentRow.ID_SERVICIO_COTIZACION;
+                    var idOrdenServicio = currentRow.ID_ORDEN_SERVICIO;
+                    var nombreServicio = currentRow.NOMBRE_SERVICIO;
+                    var cantidad = Number(currentRow.CANTIDAD);
+                    var unidad = currentRow.UNIDAD;
+                    var cotizacion = Number(currentRow.COTIZACION);
+                    var deduccion = Number(currentRow.DEDUCCION);
+
+
+
+
+
+                    var autoridadActual;
+                    var odenServicioActual;
+                    autoridadActual = reportes[idAutoridad];
+                    if (typeof autoridadActual === "undefined") {
+                        autoridadActual = {
+                            idPrestadorServicio: currentRow.ID_PRESTADOR_SERVICIO,
+                            idSubzona: currentRow.ID_SUBZONA,
+                            idZona: currentRow.ID_ZONA,
+                            razonSocial: currentRow.RAZON_SOCIAL,
+                            calle: currentRow.CALLE,
+                            numero: currentRow.NUMERO,
+                            colonia: currentRow.COLONIA,
+                            municipio: currentRow.MUNICIPIO,
+                            cp: currentRow.CP,
+                            entidadFederativa: currentRow.ENTIDAD_FEDERATIVA,
+                            rfc: currentRow.RFC,
+                            telefono: currentRow.TELEFONO,
+                            idContrato: currentRow.ID_CONTRATO,
+                            contrato: currentRow.CONTRATO,
+                            idPartida: currentRow.ID_PARTIDA,
+                            partida: currentRow.PARTIDA,
+                            ordenesServicio: {},
+                            totCotizado: 0,
+                            totDeduccion: 0,
+                            iva: iva,
+
+                            fAInicial: null,
+                            fAFinal: null,
+
+                            fAInicialFormat: null,
+                            fAFinalFormat: null
+                        };
+                        reportes[idAutoridad] = autoridadActual;
+                    }
+
+
+
+
+
+                    odenServicioActual = autoridadActual.ordenesServicio[idOrdenServicio];
+                    if (typeof odenServicioActual === "undefined") {
+                        odenServicioActual = {
+                            servicios: {}
+                        };
+                        autoridadActual.ordenesServicio[idOrdenServicio] = odenServicioActual;
+                    }
+                    odenServicioActual.servicios[idServicioCotizacion] = currentRow;
+
+                    var llaveOrdenMensual = "MX-SAT-TN-" + currentRow.SERVICIO + "-" + dp.fYear + "-" + dp.fMonth;
+                    llaveOrdenMensual = llaveOrdenMensual.replace(/\|/g, "");
+                    llaveOrdenMensual = llaveOrdenMensual.replace(/\s+/g, ' ');
+                    currentRow.llaveOrdenMensual = llaveOrdenMensual;
+                    currentRow.fechaSolicitudDe = currentRow.FECHA_SOLICITUD;
+                    currentRow.fechaSolicitudHasta = currentRow.FECHA_SOLICITUD;
+                    if (false) {
+                    } else if (unidad === 'JORNADA') {
+                        currentRow.fechaSolicitudHasta = sumarDias(currentRow.fechaSolicitudDe, cantidad);
+                    } else if (unidad === 'DIA') {
+                        currentRow.fechaSolicitudHasta = sumarDias(currentRow.fechaSolicitudDe, cantidad);
+                    } else if (unidad === 'HORA') {
+                        currentRow.fechaSolicitudHasta = sumarDias(currentRow.fechaSolicitudDe, Math.round(cantidad / 24));
+                    } else if (unidad === 'MES') {
+                        currentRow.fechaSolicitudHasta = sumarDias(currentRow.fechaSolicitudDe, cantidad * 31);
+                    } else if (unidad === 'SEMANA') {
+                        currentRow.fechaSolicitudHasta = sumarDias(currentRow.fechaSolicitudDe, cantidad * 7);
+                    } else if (unidad === 'QUINCENA') {
+                        currentRow.fechaSolicitudHasta = sumarDias(currentRow.fechaSolicitudDe, cantidad * 15);
+                    }
+                    currentRow.fechaSolicitudDeFormat = currentRow.fechaSolicitudDe.getFullYear() + "/" + (currentRow.fechaSolicitudDe.getMonth() + 1) + "/" + currentRow.fechaSolicitudDe.getDate();
+                    currentRow.fechaSolicitudHastaFormat = currentRow.fechaSolicitudHasta.getFullYear() + "/" + (currentRow.fechaSolicitudHasta.getMonth() + 1) + "/" + currentRow.fechaSolicitudHasta.getDate();
+                    currentRow.unidad = unidad;
+                    currentRow.cantidad = cantidad;
+                    currentRow.nombreServicio = nombreServicio;
+                    currentRow.cotizacion = cotizacion;
+                    currentRow.deduccion = deduccion;
+                    currentRow.totSIva = cotizacion - deduccion;
+                    currentRow.nombreDeAutoridad = currentRow.NOMBRE_AUTORIDAD;
+
+                    if (autoridadActual.fAInicial == null) {
+                        autoridadActual.fAInicial = currentRow.fechaSolicitudDe;
+                    }
+                    if (autoridadActual.fAFinal == null) {
+                        autoridadActual.fAFinal = currentRow.fechaSolicitudDe;
+                    }
+
+
+                    if (currentRow.fechaSolicitudHasta.getTime() > autoridadActual.fAFinal.getTime()) {
+                        autoridadActual.fAFinal = currentRow.fechaSolicitudHasta;
+                    }
+
+
+                    autoridadActual.fAInicialFormat = autoridadActual.fAInicial.getFullYear() + "/" + (autoridadActual.fAInicial.getMonth() + 1) + "/" + autoridadActual.fAInicial.getDate();
+                    autoridadActual.fAFinalFormat = autoridadActual.fAFinal.getFullYear() + "/" + (autoridadActual.fAFinal.getMonth() + 1) + "/" + autoridadActual.fAFinal.getDate();
+
+
+
+                    if (!isNaN(cotizacion)) {
+                        autoridadActual.totCotizado = autoridadActual.totCotizado + cotizacion;
+                    }
+                    if (!isNaN(deduccion)) {
+                        autoridadActual.totDeduccion = autoridadActual.totDeduccion + deduccion;
+                    }
+
+
+                }
+
+                dp.reportes = reportes;
+                return dp;
+            })
+            .then(function (dp) {
+                return dp;
+            })
+            .then(function (dp) {
+                return dp;
+            })
+            .then(function (dp) {
+                res.render("consolidado", {
+                    reportes: dp.reportes,
+                    title: 'Consolidado',
+                    firma: dp.firma,
+                    firmaNombre: dp.firmaNombre
+                });
+                return dp;
+            })
+            .catch(function (err) {
+                mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/getConsolidado]');
+                response.error = err.message;
+                res.render("error", {
+                    error: err.message,
+                    title: 'Error Consolidado'
+                });
+                //res.render("view1");
+                //res.jsonp(response);
+            });
+});
+//</editor-fold>
+
 //<editor-fold defaultstate="collapsed" desc="registry">
 app.get('/registry', function (req, res) {
     var requestID = new Date().getTime();
