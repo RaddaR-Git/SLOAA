@@ -4578,6 +4578,7 @@ app.get('/registry', function (req, res) {
             .then(function (dp) {
                 if (dp.resultDML !== null) {
                     if (dp.resultDML.rowsAffected.length > 0) {
+                        response.idCredencial = dp.idCredencial;
                         response.success = true;
                     } else {
                         response.success = false;
@@ -5636,6 +5637,95 @@ app.get('/getConsolidado', function (req, res) {
                 res.render("error", {
                     error: err.message,
                     title: 'Error Consolidado'
+                });
+                //res.render("view1");
+                //res.jsonp(response);
+            });
+});
+//</editor-fold>
+
+//<editor-fold defaultstate="collapsed" desc="getAcuseAlta">
+app.get('/getAcuseAlta', function (req, res) {
+    var requestID = new Date().getTime();
+    var response = {};
+    var dataPacket = {
+        requestID: requestID,
+        connectionParameters: SQLServerConnectionParameters,
+        looked: 0
+    };
+    mn.init(dataPacket)
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/getAcuseAlta]');
+                return dp;
+            })
+            .then(function (dp) {
+                inputValidation(response, req.query, [
+                    new FieldValidation('idCredencial', ENC.STRING()),
+                    new FieldValidation('firma', ENC.STRING()),
+                    new FieldValidation('firmaNombre', ENC.STRING())
+                ]);
+                dp.firma = req.query.firma;
+                dp.firmaNombre = req.query.firmaNombre;
+                dp.idCredencial = req.query.idCredencial;
+                return dp;
+            })
+
+            .then(function (dp) {
+
+                dp.query = "SELECT  [ID_CREDENCIAL]\n" +
+                        "      ,[NOMBRE]\n" +
+                        "      ,[CARGO]\n" +
+                        "      ,[TELEFONO]\n" +
+                        "      ,[EXT]\n" +
+                        "      ,[EMAIL]\n" +
+                        "      ,[PTT]\n" +
+                        "      ,[MOVIL]\n" +
+                        "      ,[USUARIO_NOMBRE]\n" +
+                        "      ,[USUARIO_PASSWORD]\n" +
+                        "      ,[ID_AUTORIDAD]\n" +
+                        "      ,[ID_ROL]\n" +
+                        "      ,[ID_CREDENCIAL_SUPERIOR]\n" +
+                        "  FROM [SOA_db].[dbo].[SLOAA_TR_CREDENCIAL] WHERE [ID_CREDENCIAL]=" + dp.idCredencial + "";
+                return dp;
+            })
+            .then(msql.selectPromise)
+
+
+            .then(function (dp) {
+                //response = dp.queryResult;
+                if (dp.queryResult.rows !== null && dp.queryResult.rows.length > 0) {
+                    dp.credencial = dp.queryResult.rows[0];
+                    dp.success = true;
+                } else {
+                    throw new Error("Error de parametros");
+                }
+
+
+                var d = new Date();
+                dp.fechaProcedimiento =
+                        ("00" + d.getDate()).slice(-2) + "/" +
+                        ("00" + (d.getMonth() + 1)).slice(-2) + "/" +
+                        d.getFullYear() + " " +
+                        ("00" + d.getHours()).slice(-2) + ":" +
+                        ("00" + d.getMinutes()).slice(-2) + ":" +
+                        ("00" + d.getSeconds()).slice(-2);
+
+                return dp;
+            })
+
+            .then(function (dp) {
+                res.render("acuseAlta", {
+                    dp: dp,
+                    title: 'Acuse de Alta de Usuario'
+                });
+                return dp;
+            })
+            .catch(function (err) {
+                mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/getAcuseAlta]');
+                response.error = err.message;
+                res.render("error", {
+                    error: err.message,
+                    title: 'Error AcuseAlta'
                 });
                 //res.render("view1");
                 //res.jsonp(response);

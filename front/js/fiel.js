@@ -38,6 +38,11 @@ var fielSign = function (form, firmaStep, button) {
                             } else if (firmaStep === 5) {
                                 form.up('window').close();
                                 window.open(serviceUrl + 'getConsolidado?firma=' + firma + '&firmaNombre=' + login.credential.USUARIO_NOMBRE);
+                            } else if (firmaStep === 6) {
+                                var vals = button.up('window').down('form').getValues();
+                                form.up('window').close()
+                                button.up('window').close();
+                                window.open(serviceUrl + 'getAcuseAlta?firma=' + firma + '&firmaNombre=' + vals.user + '&idCredencial=' + button.idCredencial);
                             } else {
                                 var validateMask = new Ext.LoadMask({
                                     msg: 'Validando Firma...',

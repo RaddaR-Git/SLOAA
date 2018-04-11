@@ -614,8 +614,12 @@ HTML RESPONSE
 http://localhost:3000/getConsolidado?firma=ddddddddddddd&firmaNombre=rrrrrrrrrrrrrrrr
 
 
-
 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓getFactura
 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 localhost:3000/getFactura?firma=ddddddddddddd&firmaNombre=rrrrrrrrrrrrrrrr&idAutoridad=1&factura=facccc&noIdPedido=idPedidooo&noIdRecepcion=noIdRecepcionn
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓getAcuseAlta
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+http://localhost:3000/getAcuseAlta?firma=ddddddddddddd&firmaNombre=rrrrrrrrrrrrrrrr&idCredencial=1&_dc=dsadasas&callback=dsad

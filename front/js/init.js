@@ -291,12 +291,17 @@ var createRegistry = function (button) {
                             success: function (result) {
                                 if (result.success) {
                                     Ext.Msg.show({
-                                        title: 'Registro',
-                                        message: 'La solicitud ha sido enviada.',
-                                        buttons: Ext.Msg.OK,
+                                        title: 'Registro solicitado',
+                                        message: '¿Desea obtener acuse de registro',
+                                        buttons: Ext.Msg.YESNO,
                                         icon: Ext.Msg.INFO,
                                         fn: function (btn) {
-                                            button.up('window').close();
+                                            if (btn == 'yes') {
+                                                button.idCredencial = result.idCredencial;
+                                                signWindow(button, 6);
+                                            } else {
+                                                button.up('window').close();
+                                            }
                                         }
                                     });
                                 } else {

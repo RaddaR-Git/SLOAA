@@ -1,0 +1,67 @@
+//- 
+    To change this license header, choose License Headers in Project Properties.
+    To change this template file, choose Tools | Templates
+    and open the template in the editor.
+doctype
+html
+  head
+    title #{title} Reporte
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body
+    .container
+    div
+        table(cellspacing="5" width='100%')
+            tr
+                td(align="right")  <img src="https://tramitesdigitales.sat.gob.mx/SIPRED.Monitor.Externo/images/logoH_col.svg" height="200" width="200"/>
+            tr
+                td(align="left") Acuse de Solicitud de alta de Usuario
+     .container(align="center")
+        table
+            tr
+                td
+                    table(border="0" cellspacing="8")
+                        tr
+                            td USUARIO
+                            td #{dp.credencial.USUARIO_NOMBRE}
+                        tr
+                            td NOMBRE
+                            td #{dp.credencial.NOMBRE}
+                        tr
+                            td MAIL
+                            td #{dp.credencial.EMAIL}
+                        tr
+                            td MOVIL
+                            td #{dp.credencial.MOVIL}
+                        tr
+                            td TELEFONO LOCAL
+                            td #{dp.credencial.TELEFONO}
+                        tr
+                            td EXTENCION
+                            td #{dp.credencial.EXT}
+                        tr
+                            td PUESTO
+                            td #{dp.credencial.CARGO} 
+                        tr
+                            td CODIGO DE AUTORIDAD
+                            td #{dp.credencial.ID_AUTORIDAD} 
+                        tr
+                            td Fecha de procedimiento
+                            td #{ dp.fechaProcedimiento} 
+
+                   
+                    
+    .container
+    table(width="100%" border="1")
+        tr
+            td(width="200") Nombre-Efirma
+            td #{dp.firma}
+        tr
+            td Efirma
+            td #{dp.firmaNombre}
+            
+    div &nbsp;
+    div &nbsp;
+    div &nbsp;
+    div &nbsp;
+    footer
+<button onClick="window.print()" >Imprimir</button>    
