@@ -879,7 +879,7 @@ var server;
 var SQLServerConnectionParameters = {
     user: 'sa',
     password: 'Lufiri01011',
-    server: 'localhost',
+    server: '192.168.56.102',
     database: 'SOA_db'
 };
 ////var connectionParameters1 = {
@@ -1001,7 +1001,7 @@ app.get('/login', function (req, res) {
                         "  \n" +
                         "  WHERE \n" +
                         "	            [CRED].[USUARIO_NOMBRE]='" + dp.user + "'\n" +
-                        "		AND [CRED].[USUARIO_PASSWORD]='" + dp.password + "'";
+                        "		AND [CRED].[USUARIO_PASSWORD]='" + dp.password + "' AND [CRED].[ACTIVO]=1";
                 return dp;
             })
             .then(msql.selectPromise)
@@ -3581,7 +3581,6 @@ app.get('/getReport', function (req, res) {
 });
 //</editor-fold>
 
-
 //<editor-fold defaultstate="collapsed" desc="getCurDate">
 app.get('/getCurDate', function (req, res) {
     var requestID = new Date().getTime();
@@ -3610,11 +3609,16 @@ app.get('/getCurDate', function (req, res) {
                 response.curDay = now.getDay();
                 response.curMonth = now.getMonth() + 1;
                 response.curYear = now.getFullYear();
-                response.avalible = false;
+                response.avalibleTen = false;
+                response.avalibleFifteen = false;
                 if (response.curDay <= 10) {
-                    response.avalible = true;
+                    response.avalibleTen = true;
                 }
-                response.leftDay = 10 - response.curDay;
+                if (response.curDay <= 15) {
+                    response.avalibleFifteen = true;
+                }
+                response.leftDayTen = 10 - response.curDay;
+                response.leftDayFifteen = 15 - response.curDay;
                 response.success = true;
                 return dp;
             })
@@ -4567,7 +4571,7 @@ app.get('/registry', function (req, res) {
                 return dp;
             })
             .then(function (dp) {
-                dp.dml = "INSERT INTO SLOAA_TR_CREDENCIAL VALUES(" + dp.idCredencial + ",'" + dp.name + "', '" + dp.place + "', '" + dp.phone + "', '" + dp.ext + "', '" + dp.mail + "', 's/ptt', '" + dp.cell + "', '" + dp.user + "', '" + dp.pass + "', " + dp.authority + ", " + dp.rol + ", " + dp.idCredencial + ")";
+                dp.dml = "INSERT INTO SLOAA_TR_CREDENCIAL VALUES(" + dp.idCredencial + ",'" + dp.name + "', '" + dp.place + "', '" + dp.phone + "', '" + dp.ext + "', '" + dp.mail + "', 's/ptt', '" + dp.cell + "', '" + dp.user + "', '" + dp.pass + "', " + dp.authority + ", " + dp.rol + ", " + dp.idCredencial + ",0)";
                 return dp;
             })
             .then(msql.freeDMLPromise)
@@ -4733,7 +4737,7 @@ app.get('/getAllRoles', function (req, res) {
                 return dp;
             })
             .then(function (dp) {
-                dp.query = "SELECT ID_ROL,NOMBRE_ROL FROM SLOAA_TS_ROL";
+                dp.query = "SELECT ID_ROL,NOMBRE_ROL FROM SLOAA_TS_ROL WHERE ID_ROL < 5";
                 return dp;
             })
             .then(msql.selectPromise)

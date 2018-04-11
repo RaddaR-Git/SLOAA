@@ -566,9 +566,14 @@ var createViewport = function () {
                                         Ext.data.JsonP.request({
                                             url: serviceUrl + 'getCurDate',
                                             success: function (result) {
-                                                var available = result.success && result.avalible;
-                                                viewPort.down('toolbar #reportA').setDisabled(!available);
-                                                viewPort.down('toolbar #leftDaysA').setValue(available ? '<span style="color:gray;">(' + result.leftDay + ' días restantes)</span>' : '');
+                                                var availableTen = result.success && result.avalibleTen;
+                                                var avalibleFifteen = result.success && result.avalibleFifteen;
+                                                viewPort.down('toolbar #reportA').setDisabled(!availableTen);
+                                                viewPort.down('toolbar #leftDaysA').setValue(availableTen ? '<span style="color:gray;">(' + result.leftDayTen + ' días restantes)</span>' : '');
+                                                viewPort.down('toolbar #reportB').setDisabled(!avalibleFifteen);
+                                                viewPort.down('toolbar #leftDaysB').setValue(avalibleFifteen ? '<span style="color:gray;">(' + result.leftDayFifteen + ' días restantes)</span>' : '');
+                                                viewPort.down('toolbar #reportC').setDisabled(!availableTen);
+                                                viewPort.down('toolbar #leftDaysC').setValue(availableTen ? '<span style="color:gray;">(' + result.leftDayTen + ' días restantes)</span>' : '');
                                             }
                                         });
 
@@ -624,7 +629,7 @@ var createViewport = function () {
 //                                            disabled: true,
                                             glyph: 'xf15b@FontAwesome',
                                             handler: function (button) {
-                                                signWindow(button);
+                                                signWindow(button, 3);
                                             }
                                         },
                                         {
@@ -637,7 +642,7 @@ var createViewport = function () {
                                             itemId: 'reportB',
                                             glyph: 'xf15b@FontAwesome',
                                             handler: function (button) {
-                                                signWindow(button);
+                                                preFormReport(button);
                                             }
                                         },
                                         {
@@ -650,7 +655,7 @@ var createViewport = function () {
                                             itemId: 'reportC',
                                             glyph: 'xf15b@FontAwesome',
                                             handler: function (button) {
-                                                signWindow(button);
+                                                signWindow(button, 5);
                                             }
                                         },
                                         {
@@ -671,13 +676,110 @@ var createViewport = function () {
     });
 };
 
-var signWindow = function (button) {
+var preFormReport = function (button) {
+    Ext.create('Ext.window.Window', {
+        title: 'Registro',
+        animateTarget: button,
+        width: 350,
+        height: 250,
+        layout: 'form',
+        items: [
+            {
+                xtype: 'form',
+                bodyPadding: 5,
+                items: [
+                    {
+                        xtype: 'fieldset',
+                        title: 'Datos de Factura',
+                        defaultType: 'textfield',
+                        defaults: {
+                            listeners: {
+                                specialkey: function (field, e) {
+                                    if (e.getKey() == e.ENTER) {
+                                        field.up('window').down('#billReport').click();
+                                    }
+                                }
+                            }
+                        },
+                        items: [
+                            {
+                                allowBlank: false,
+                                fieldLabel: 'Factura',
+                                emptyText: 'Factura',
+                                name: 'bill'
+                            },
+                            {
+                                allowBlank: false,
+                                fieldLabel: 'NoIdPedido',
+                                emptyText: 'NoIdPedido',
+                                name: 'noIdPedido'
+                            },
+                            {
+                                allowBlank: false,
+                                fieldLabel: 'NoIdRecepcion',
+                                emptyText: 'NoIdRecepcion',
+                                name: 'noIdRecepcion'
+                            },
+                            {
+                                xtype: 'combobox',
+                                allowBlank: false,
+                                fieldLabel: 'Autoridad',
+                                emptyText: 'Autoridad',
+                                valueField: 'ID_AUTORIDAD',
+                                displayField: 'NOMBRE_AUTORIDAD',
+                                queryMode: 'remote',
+                                editable: false,
+                                name: 'idAutoridad',
+                                store: Ext.create('Ext.data.Store', {
+                                    fields: ['ID_AUTORIDAD', 'NOMBRE_AUTORIDAD'],
+                                    proxy: {
+                                        type: 'jsonp',
+                                        url: serviceUrl + 'getAllAuthorities',
+                                        reader: {
+                                            type: 'json',
+                                            rootProperty: 'authorities'
+                                        }
+                                    }
+                                }),
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        buttons: [
+            {
+                text: 'Acpetar',
+                itemId: 'billReport',
+                handler: function (button) {
+                    var thisForm = button.up('window').down('form');
+                    if (thisForm.isValid()) {
+                        signWindow(button, 4);
+                    } else {
+                        var field = thisForm.getForm().getFields().items.find(function (item) {
+                            if (!Ext.isEmpty(item.activeErrors)) {
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        });
+                        field.focus();
+                        Ext.Msg.alert('Error', 'Revisar los campos marcados en rojo.');
+                    }
+                }
+            }
+        ]
+    }).show();
+};
+
+var signWindow = function (button, report) {
     Ext.create('Ext.window.Window', {
         title: 'Firma',
         animateTarget: button,
         height: 200,
         width: 300,
         layout: 'center',
+        modal: true,
         items: [
             {
                 xtype: 'form',
@@ -710,7 +812,7 @@ var signWindow = function (button) {
                         listeners: {
                             specialkey: function (field, e) {
                                 if (e.getKey() == e.ENTER) {
-                                    fielSign(field.up('form'), 3);
+                                    fielSign(field.up('form'), report, button);
                                 }
                             }
                         }
@@ -723,8 +825,8 @@ var signWindow = function (button) {
                 text: 'Firmar',
                 glyph: 'xf084@FontAwesome',
                 itemId: 'signButtonConfirmaciones',
-                handler: function (button) {
-                    fielSign(button.up('window').down('#sf1'), 3);
+                handler: function (signButton) {
+                    fielSign(signButton.up('window').down('#sf1'), report, button);
                 }
             }
         ]

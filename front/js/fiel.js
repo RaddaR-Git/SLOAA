@@ -1,4 +1,4 @@
-var fielSign = function (form, firmaStep) {
+var fielSign = function (form, firmaStep, button) {
 
     var signMask = new Ext.LoadMask({
         msg: 'Firmando Orden...',
@@ -30,6 +30,14 @@ var fielSign = function (form, firmaStep) {
                             if (firmaStep === 3) {
                                 form.up('window').close();
                                 window.open(serviceUrl + 'getReport?idAutoridad=' + login.credential.ID_AUTORIDAD + '&idOrden=' + '&userName=' + login.credential.USUARIO_NOMBRE + '|' + login.credential.CARGO + '&eFirma=' + firma + '&mensual=1');
+                            } else if (firmaStep === 4) {
+                                var vals = button.up('window').down('form').getValues();
+                                form.up('window').close();
+                                button.up('window').close();
+                                window.open(serviceUrl + 'getFactura?idAutoridad=' + login.credential.ID_AUTORIDAD + '&factura=' + vals.bill + '&noIdPedido=' + vals.noIdPedido + '&noIdRecepcion=' + vals.noIdRecepcion + '&firma=' + firma + '&firmaNombre=' + login.credential.USUARIO_NOMBRE);
+                            } else if (firmaStep === 5) {
+                                form.up('window').close();
+                                window.open(serviceUrl + 'getConsolidado?firma=' + firma + '&firmaNombre=' + login.credential.USUARIO_NOMBRE);
                             } else {
                                 var validateMask = new Ext.LoadMask({
                                     msg: 'Validando Firma...',
