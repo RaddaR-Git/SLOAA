@@ -519,7 +519,7 @@ var createViewport = function () {
                             collapsible: true,
                             listeners: {
                                 itemdblclick: function (grid, record, item, index, e, eOpts) {
-                                    launchWindow(record);
+                                    orderWindow(record);
                                 }
                             },
                             store: Ext.create('Ext.data.Store', {
@@ -602,7 +602,7 @@ var createViewport = function () {
                                         {
                                             iconCls: 'pictos pictos-info',
                                             handler: function (view, rowIndex, colIndex, item, e, record, row) {
-                                                launchWindow(record);
+                                                orderWindow(record);
                                             }
                                         }
                                     ]
@@ -618,7 +618,7 @@ var createViewport = function () {
                                             text: 'Nueva Orden de Servicio',
                                             glyph: 'xf055@FontAwesome',
                                             handler: function (button) {
-                                                launchWindow();
+                                                orderWindow();
                                             }
                                         },
                                         {
@@ -838,7 +838,7 @@ var signWindow = function (button, report) {
     }).show();
 };
 
-var launchWindow = function (recordBase) {
+var orderWindow = function (recordBase) {
     var thisWin = Ext.create('Ext.window.Window', {
         title: 'Orden de Servicio',
         height: 700,
@@ -1642,7 +1642,7 @@ var launchWindow = function (recordBase) {
                             }
                         }),
                         columns: [
-                            {text: 'Firma1', dataIndex: 'FIRMA1_USERNAME1', flex: 1}
+                            {text: 'Firma', dataIndex: 'FIRMA1_USERNAME1', flex: 1}
                         ]
                     }
                 ],
@@ -2006,12 +2006,13 @@ var launchWindow = function (recordBase) {
                                 hidden: true,
                                 glyph: 'xf0c7@FontAwesome',
                                 handler: function (button) {
-                                    var values = button.up('form').getValues();
-                                    values.idOrdenServicio = thisWin.ordenServicio.ID_ORDEN_SERVICIO;
-                                    values.idServicioCotizacion = button.up('form').up('panel').getComponent('deduccionesGrid').getSelection()[0].data.ID_SERVICIO_COTIZACION;
+                                    var vals = button.up('form').getValues();
+                                    vals.idOrdenServicio = thisWin.ordenServicio.ID_ORDEN_SERVICIO;
+                                    vals.idServicioCotizacion = button.up('form').up('panel').getComponent('deduccionesGrid').getSelection()[0].data.ID_SERVICIO_COTIZACION;
+                                    vals.deduccion = button.up('form').down('displayfield[itemId="total"]').getValue();
                                     Ext.data.JsonP.request({
                                         url: serviceUrl + 'setDeduccionCotizacion',
-                                        params: values,
+                                        params: vals,
                                         success: function (result) {
                                             if (result.success) {
                                                 thisWin.getComponent('e5').getComponent('e5f1').reset();
@@ -2059,12 +2060,16 @@ var launchWindow = function (recordBase) {
                         ],
                         listeners: {
                             itemclick: function (grid, record, item, index, e, eOpts) {
-                                var thisForm = thisWin.getComponent('e5').getComponent('e5f1');
+                                x = record;
+                                thisForm = thisWin.getComponent('e5').getComponent('e5f1');
                                 thisForm.setDisabled(false);
-//                                thisForm.down('#deduccionCantidad').setValue(record.data.CANTIDAD);
-//                                thisForm.down('#deduccionTiempo').setValue(-1);
-//                                thisForm.down('#deduccion').setValue(record.data.DEDUCCION);
-//                                thisForm.down('#deduccionJustificacion').setValue(record.data.DEDUCCION_JUSTIFICACION);
+                                thisForm.down('#deduccionCantidad').setValue(record.data.DEDUCCION_CANTIDAD);
+                                thisForm.down('#deduccionTiempo').setValue(record.data.DEDUCCION_TIEMPO);
+                                thisForm.down('#deduccion').setValue(record.data.DEDUCCION / (record.data.DEDUCCION_CANTIDAD * record.data.DEDUCCION_TIEMPO));
+                                thisForm.down('#cancelacion').setValue(record.data.CANCELACION);
+                                thisForm.down('#deduccionJustificacion').setValue(record.data.DEDUCCION_JUSTIFICACION);
+                                thisForm.down('#deduccionCumplimiento').setValue(record.data.CUMPLIMIENTO);
+                                thisForm.down('#deduccionIdentificado').setValue(record.data.IDENTIFICADO);
                             }
                         }
                     }
