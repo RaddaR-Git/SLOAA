@@ -14,8 +14,8 @@ html
     -ordenesServicio = reporteEnCurso.ordenesServicio;
     
     -totBruto = reporteEnCurso.totCotizado - reporteEnCurso.totDeduccion;
-    -totBrutoIva = totBruto * reporteEnCurso.iva;
-    -totBrutoRet4 = totBruto * 0.04;
+    -totBrutoRet4=reporteEnCurso.totRetenido4;
+    -totBrutoIva=reporteEnCurso.totIva;
 
     .container
     div
@@ -116,16 +116,6 @@ html
                                 p ______________________________
                         tr
                             td(align="center") Representante unico de #{reporteEnCurso.razonSocial}
-                        tr
-                            td(align="center")
-                                br
-                                br
-                                br
-                                br
-                                p ______________________________
-                        tr
-                            td(align="center") Administrador de Destino de bienes "2"
-
  
     .container
             br
