@@ -2060,12 +2060,12 @@ var orderWindow = function (recordBase) {
                         ],
                         listeners: {
                             itemclick: function (grid, record, item, index, e, eOpts) {
-                                x = record;
+                                var deduction = record.data.DEDUCCION / (record.data.DEDUCCION_CANTIDAD * record.data.DEDUCCION_TIEMPO);
                                 thisForm = thisWin.getComponent('e5').getComponent('e5f1');
                                 thisForm.setDisabled(false);
                                 thisForm.down('#deduccionCantidad').setValue(record.data.DEDUCCION_CANTIDAD);
                                 thisForm.down('#deduccionTiempo').setValue(record.data.DEDUCCION_TIEMPO);
-                                thisForm.down('#deduccion').setValue(record.data.DEDUCCION / (record.data.DEDUCCION_CANTIDAD * record.data.DEDUCCION_TIEMPO));
+                                thisForm.down('#deduccion').setValue(isNaN(deduction) ? 0 : deduction);
                                 thisForm.down('#cancelacion').setValue(record.data.CANCELACION);
                                 thisForm.down('#deduccionJustificacion').setValue(record.data.DEDUCCION_JUSTIFICACION);
                                 thisForm.down('#deduccionCumplimiento').setValue(record.data.CUMPLIMIENTO);
