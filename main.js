@@ -3966,9 +3966,9 @@ app.get('/getFactura', function (req, res) {
                         "LEFT JOIN [SLOAA_TC_SERVICIO]  [SERV] ON  [SERV].[ID_TIPO_SERVICIO]=[COT].[ID_TIPO_SERVICIO] AND [SERV].[ID_SERVICIO]=[COT].[ID_SERVICIO]\n" +
                         "LEFT JOIN [SLOAA_TC_PRESTADOR_SERVICIOS] [PS] ON [COT].[ID_PRESTADOR_SERVICIO]=[PS].[ID_PRESTADOR_SERVICIO] AND [COT].[ID_ZONA]=[PS].[ID_ZONA] AND [COT].[ID_SUBZONA]=[PS].[ID_SUBZONA]\n " +
                         "LEFT JOIN [SLOAA_TC_CONTRATO] [CONT] ON  [PS].[ID_CONTRATO]=[CONT].[ID_CONTRATO]\n" +
-                        "LEFT JOIN [SLOAA_TC_PARTIDA] [PAR] ON  [PS].[ID_PARTIDA]=[PAR].[ID_PARTIDA]\n" +
                         "LEFT JOIN [SLOAA_TC_PROYECTO] [PROY] ON  [PS].[ID_PROYECTO]=[PROY].[ID_PROYECTO]\n" +
                         "LEFT JOIN [SLOAA_TC_ACUERDO] [ACU] ON  [PS].[ID_ACUERDO]=[ACU].[ID_ACUERDO]\n" +
+                        "LEFT JOIN [SLOAA_TC_PARTIDA] [PAR] ON  [AUTH].[ID_PARTIDA]=[PAR].[ID_PARTIDA]\n" +
                         "\n" +
                         "WHERE \n" +
                         "1=1\n";
@@ -4211,6 +4211,7 @@ app.get('/getFactura', function (req, res) {
                 res.render("factura", {
                     reportes: dp.reportes,
                     title: 'Factura',
+                    fYear:dp.fYear,
                     firma: dp.firma,
                     firmaNombre: dp.firmaNombre,
                     factura: dp.factura,
@@ -4329,9 +4330,9 @@ app.get('/getConsolidado', function (req, res) {
                         "LEFT JOIN [SLOAA_TC_SERVICIO]  [SERV] ON  [SERV].[ID_TIPO_SERVICIO]=[COT].[ID_TIPO_SERVICIO] AND [SERV].[ID_SERVICIO]=[COT].[ID_SERVICIO]\n" +
                         "LEFT JOIN [SLOAA_TC_PRESTADOR_SERVICIOS] [PS] ON [COT].[ID_PRESTADOR_SERVICIO]=[PS].[ID_PRESTADOR_SERVICIO] AND [COT].[ID_ZONA]=[PS].[ID_ZONA] AND [COT].[ID_SUBZONA]=[PS].[ID_SUBZONA]\n " +
                         "LEFT JOIN [SLOAA_TC_CONTRATO] [CONT] ON  [PS].[ID_CONTRATO]=[CONT].[ID_CONTRATO]\n" +
-                        "LEFT JOIN [SLOAA_TC_PARTIDA] [PAR] ON  [PS].[ID_PARTIDA]=[PAR].[ID_PARTIDA]\n" +
                         "LEFT JOIN [SLOAA_TC_PROYECTO] [PROY] ON  [PS].[ID_PROYECTO]=[PROY].[ID_PROYECTO]\n" +
                         "LEFT JOIN [SLOAA_TC_ACUERDO] [ACU] ON  [PS].[ID_ACUERDO]=[ACU].[ID_ACUERDO]\n" +
+                        "LEFT JOIN [SLOAA_TC_PARTIDA] [PAR] ON  [AUTH].[ID_PARTIDA]=[PAR].[ID_PARTIDA]\n" +
                         "\n" +
                         "WHERE \n" +
                         "1=1\n";
@@ -4823,6 +4824,7 @@ app.get('/getAcuseAlta', function (req, res) {
                         "      ,[ID_AUTORIDAD]\n" +
                         "      ,[ID_ROL]\n" +
                         "      ,[ID_CREDENCIAL_SUPERIOR]\n" +
+                        "      ,[RFC]\n" +
                         "  FROM [SOA_db].[dbo].[SLOAA_TR_CREDENCIAL] WHERE [ID_CREDENCIAL]=" + dp.idCredencial + "";
                 return dp;
             })
