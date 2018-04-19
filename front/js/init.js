@@ -284,31 +284,33 @@ var createRegistry = function (button) {
                     if (thisForm.isValid()) {
                         error.setFieldLabel('');
                         error.setValue('');
+                        //firma
+                        signWindow(button, 6)
                         //Enviar registro
-                        Ext.data.JsonP.request({
-                            url: serviceUrl + 'registry',
-                            params: thisForm.getValues(),
-                            success: function (result) {
-                                if (result.success) {
-                                    Ext.Msg.show({
-                                        title: 'Registro solicitado',
-                                        message: '¿Desea obtener acuse de registro',
-                                        buttons: Ext.Msg.YESNO,
-                                        icon: Ext.Msg.INFO,
-                                        fn: function (btn) {
-                                            if (btn == 'yes') {
-                                                button.idCredencial = result.idCredencial;
-                                                signWindow(button, 6);
-                                            } else {
-                                                button.up('window').close();
-                                            }
-                                        }
-                                    });
-                                } else {
-                                    Ext.Msg.alert('Registro', 'No fue posible enviar la solicitud, intente mas tarde.');
-                                }
-                            }
-                        });
+//                        Ext.data.JsonP.request({
+//                            url: serviceUrl + 'registry',
+//                            params: thisForm.getValues(),
+//                            success: function (result) {
+//                                if (result.success) {
+//                                    Ext.Msg.show({
+//                                        title: 'Registro solicitado',
+//                                        message: '¿Desea obtener acuse de registro',
+//                                        buttons: Ext.Msg.YESNO,
+//                                        icon: Ext.Msg.INFO,
+//                                        fn: function (btn) {
+//                                            if (btn == 'yes') {
+//                                                button.idCredencial = result.idCredencial;
+//                                                signWindow(button, 6);
+//                                            } else {
+//                                                button.up('window').close();
+//                                            }
+//                                        }
+//                                    });
+//                                } else {
+//                                    Ext.Msg.alert('Registro', 'No fue posible enviar la solicitud, intente mas tarde.');
+//                                }
+//                            }
+//                        });
                     } else {
                         var field = thisForm.getForm().getFields().items.find(function (item) {
                             if (!Ext.isEmpty(item.activeErrors)) {

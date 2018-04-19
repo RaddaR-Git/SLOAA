@@ -22,27 +22,55 @@ var fielSign = function (form, firmaStep, button) {
                     return '||' + serialNumber + '|UTF-8|' + rfc + '||';
                 },
                 function (error_code, certificado, firma, cadena_original) {//funcion callback
-                    signMask.destroy();
+//                    signMask.destroy();
                     if (error_code === 0) {
                         var cert = new PKI.SAT.Certificado(certificado);
                         var certificadoVigente = cert.isVigente();
                         if (certificadoVigente) {
                             if (firmaStep === 3) {
+                                signMask.destroy();
                                 form.up('window').close();
                                 window.open(serviceUrl + 'getReport?idAutoridad=' + login.credential.ID_AUTORIDAD + '&idOrden=' + '&userName=' + login.credential.USUARIO_NOMBRE + '|' + login.credential.CARGO + '&eFirma=' + firma + '&mensual=1');
                             } else if (firmaStep === 4) {
+                                signMask.destroy();
                                 var vals = button.up('window').down('form').getValues();
                                 form.up('window').close();
                                 button.up('window').close();
                                 window.open(serviceUrl + 'getFactura?idAutoridad=' + login.credential.ID_AUTORIDAD + '&factura=' + vals.bill + '&noIdPedido=' + vals.noIdPedido + '&noIdRecepcion=' + vals.noIdRecepcion + '&firma=' + firma + '&firmaNombre=' + login.credential.USUARIO_NOMBRE);
                             } else if (firmaStep === 5) {
+                                signMask.destroy();
                                 form.up('window').close();
                                 window.open(serviceUrl + 'getConsolidado?firma=' + firma + '&firmaNombre=' + login.credential.USUARIO_NOMBRE);
                             } else if (firmaStep === 6) {
                                 var vals = button.up('window').down('form').getValues();
-                                form.up('window').close()
-                                button.up('window').close();
-                                window.open(serviceUrl + 'getAcuseAlta?firma=' + firma + '&firmaNombre=' + vals.user + '&idCredencial=' + button.idCredencial);
+                                vals.rfc = cert.getRFC();
+                                Ext.data.JsonP.request({
+                                    url: serviceUrl + 'registry',
+                                    params: vals,
+                                    success: function (result) {
+                                        if (result.success) {
+                                            Ext.Msg.show({
+                                                title: 'Registro',
+                                                message: 'Registro solicitado con éxito',
+                                                buttons: Ext.Msg.OK,
+                                                icon: Ext.Msg.INFO,
+                                                fn: function (btn) {
+                                                    form.up('window').close();
+                                                    button.up('window').close();
+                                                    window.open(serviceUrl + 'getAcuseAlta?firma=' + firma + '&firmaNombre=' + vals.user + '&idCredencial=' + result.idCredencial);
+                                                }
+                                            });
+                                        } else {
+                                            Ext.Msg.alert('Error', 'No se completó el registro.');
+                                        }
+                                    },
+                                    callback: function () {
+                                        signMask.destroy();
+                                    },
+                                    failure: function (result) {
+                                        Ext.Msg.alert('Failed', result.msg);
+                                    }
+                                });
                             } else {
                                 var validateMask = new Ext.LoadMask({
                                     msg: 'Validando Firma...',
@@ -92,6 +120,9 @@ var fielSign = function (form, firmaStep, button) {
                                             Ext.Msg.alert('Error', 'La firma no coincide.');
                                         }
                                     },
+                                    callback: function () {
+                                        signMask.destroy();
+                                    },
                                     failure: function (result) {
                                         validateMask.destroy();
                                         Ext.Msg.alert('Failed', result.msg);
@@ -102,6 +133,7 @@ var fielSign = function (form, firmaStep, button) {
                             Ext.Msg.alert('Error', 'El certificado no es vigente');
                         }
                     } else {
+                        signMask.destroy();
                         Ext.Msg.alert('Error', 'Ocurrió un error al firmar la cadena: \n' + PKI.SAT.FielUtil.obtenMensajeError(error_code));
                     }
                 }

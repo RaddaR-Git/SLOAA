@@ -649,7 +649,7 @@ class ENCManagerSQLServer extends ENCPrimal {
     }
     selectPromise(input) {
         return new Promise(function (resolve, reject) {
-            
+
             try {
                 ENC.validateType('requestID', input.requestID, ENC.NUMBER());
                 ENC.validateType('connectionParameters', input.connectionParameters, ENC.OBJECT());
@@ -879,7 +879,7 @@ var server;
 var SQLServerConnectionParameters = {
     user: 'sa',
     password: 'Lufiri01011',
-    server: 'localhost',
+    server: '192.168.56.102',
     database: 'SOA_db'
 };
 ////var connectionParameters1 = {
@@ -4132,7 +4132,7 @@ app.get('/getFactura', function (req, res) {
                     servicioActual = autoridadActual.serviciosAgrupados[idTipoServicio];
                     if (typeof servicioActual === "undefined") {
                         servicioActual = {
-                            idTipoServicio:currentRow.ID_TIPO_SERVICIO,
+                            idTipoServicio: currentRow.ID_TIPO_SERVICIO,
                             tipoServicio: currentRow.TIPO,
                             totCotizado: 0,
                             totDeduccion: 0,
@@ -4174,9 +4174,9 @@ app.get('/getFactura', function (req, res) {
                         var servicioAgrupadoEnCurso = serviciosAgrupados[servicioAgrupado];
                         servicioAgrupadoEnCurso.totalFinal = servicioAgrupadoEnCurso.totCotizado - servicioAgrupadoEnCurso.totDeduccion;
                         servicioAgrupadoEnCurso.totalFinalIva = servicioAgrupadoEnCurso.totalFinal * iva;
-                        servicioAgrupadoEnCurso.totalFinalRetencion4=0;
-                        if (servicioAgrupadoEnCurso.idTipoServicio===1) {
-                            servicioAgrupadoEnCurso.totalFinalRetencion4 = servicioAgrupadoEnCurso.totalFinal * 0.04;    
+                        servicioAgrupadoEnCurso.totalFinalRetencion4 = 0;
+                        if (servicioAgrupadoEnCurso.idTipoServicio === 1) {
+                            servicioAgrupadoEnCurso.totalFinalRetencion4 = servicioAgrupadoEnCurso.totalFinal * 0.04;
                         }
                         servicioAgrupadoEnCurso.totalResultado = (servicioAgrupadoEnCurso.totalFinal + servicioAgrupadoEnCurso.totalFinalIva) - servicioAgrupadoEnCurso.totalFinalRetencion4;
 
@@ -4211,7 +4211,7 @@ app.get('/getFactura', function (req, res) {
                 res.render("factura", {
                     reportes: dp.reportes,
                     title: 'Factura',
-                    fYear:dp.fYear,
+                    fYear: dp.fYear,
                     firma: dp.firma,
                     firmaNombre: dp.firmaNombre,
                     factura: dp.factura,
@@ -4366,8 +4366,8 @@ app.get('/getConsolidado', function (req, res) {
                 var reportes = {
                 };
                 for (var currentKey in dp.servicios) {
-                    var currentRow ={};
-                    currentRow=dp.servicios[currentKey];
+                    var currentRow = {};
+                    currentRow = dp.servicios[currentKey];
                     var idAutoridad = currentRow.ID_AUTORIDAD;
                     var nombreDeAutoridad = currentRow.NOMBRE_AUTORIDAD;
                     var idServicioServicio = currentRow.ID_AUTORIDAD;
@@ -4408,7 +4408,7 @@ app.get('/getConsolidado', function (req, res) {
                             ordenesServicio: {},
                             totCotizado: 0,
                             totDeduccion: 0,
-                            totIva:0,
+                            totIva: 0,
                             totRetenido4: 0,
                             iva: iva,
 
@@ -4485,19 +4485,19 @@ app.get('/getConsolidado', function (req, res) {
                     if (!isNaN(cotizacion)) {
                         autoridadActual.totCotizado = autoridadActual.totCotizado + cotizacion;
                     }
-                     if (!isNaN(deduccion)) {
+                    if (!isNaN(deduccion)) {
                         autoridadActual.totDeduccion = autoridadActual.totDeduccion + deduccion;
                     }
 
-                    
-                    var totalTemp= cotizacion-deduccion;
-                    
-                    if (idTipoServicio===1) {
-                        autoridadActual.totRetenido4=autoridadActual.totRetenido4+totalTemp*0.04;
+
+                    var totalTemp = cotizacion - deduccion;
+
+                    if (idTipoServicio === 1) {
+                        autoridadActual.totRetenido4 = autoridadActual.totRetenido4 + totalTemp * 0.04;
                     }
-                    
-                    autoridadActual.totIva=autoridadActual.totIva+totalTemp*iva;
-                    
+
+                    autoridadActual.totIva = autoridadActual.totIva + totalTemp * iva;
+
 
                 }
 
@@ -4560,7 +4560,8 @@ app.get('/registry', function (req, res) {
                     new FieldValidation('phone', ENC.STRING()),
                     new FieldValidation('ext', ENC.STRING()),
                     new FieldValidation('cell', ENC.STRING()),
-                    new FieldValidation('mail', ENC.STRING())
+                    new FieldValidation('mail', ENC.STRING()),
+                    new FieldValidation('rfc', ENC.STRING())
                 ]);
                 dp.user = req.query.user;
                 dp.pass = req.query.pass;
@@ -4572,6 +4573,7 @@ app.get('/registry', function (req, res) {
                 dp.ext = req.query.ext;
                 dp.cell = req.query.cell;
                 dp.mail = req.query.mail;
+                dp.rfc = req.query.rfc;
                 return dp;
             })
             .then(function (dp) {
@@ -4589,7 +4591,7 @@ app.get('/registry', function (req, res) {
                 return dp;
             })
             .then(function (dp) {
-                dp.dml = "INSERT INTO SLOAA_TR_CREDENCIAL VALUES(" + dp.idCredencial + ",'" + dp.name + "', '" + dp.place + "', '" + dp.phone + "', '" + dp.ext + "', '" + dp.mail + "', 's/ptt', '" + dp.cell + "', '" + dp.user + "', '" + dp.pass + "', " + dp.authority + ", " + dp.rol + ", " + dp.idCredencial + ",0)";
+                dp.dml = "INSERT INTO SLOAA_TR_CREDENCIAL VALUES(" + dp.idCredencial + ",'" + dp.name + "', '" + dp.place + "', '" + dp.phone + "', '" + dp.ext + "', '" + dp.mail + "', 's/ptt', '" + dp.cell + "', '" + dp.user + "', '" + dp.pass + "', " + dp.authority + ", " + dp.rol + ", " + dp.idCredencial + ",0,'" + dp.rfc + "')";
                 return dp;
             })
             .then(msql.freeDMLPromise)
@@ -4781,7 +4783,6 @@ app.get('/getAllRoles', function (req, res) {
             });
 });
 //</editor-fold>
-
 
 //<editor-fold defaultstate="collapsed" desc="getAcuseAlta">
 app.get('/getAcuseAlta', function (req, res) {
