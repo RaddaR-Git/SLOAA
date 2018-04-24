@@ -36,7 +36,7 @@ var fielSign = function (form, firmaStep, button) {
                                 var vals = button.up('window').down('form').getValues();
                                 form.up('window').close();
                                 button.up('window').close();
-                                window.open(serviceUrl + 'getFactura?idAutoridad=' + login.credential.ID_AUTORIDAD + '&factura=' + vals.bill + '&noIdPedido=' + vals.noIdPedido + '&noIdRecepcion=' + vals.noIdRecepcion + '&firma=' + firma + '&firmaNombre=' + login.credential.USUARIO_NOMBRE);
+                                window.open(serviceUrl + 'getFactura?idAutoridad=' + login.credential.ID_AUTORIDAD + '&factura=' + vals.bill + '&noIdPedido=' + vals.noIdPedido + '&noIdRecepcion=' + vals.noIdRecepcion + '&noOficio=' + vals.noOficio + '&firma=' + firma + '&firmaNombre=' + login.credential.USUARIO_NOMBRE);
                             } else if (firmaStep === 5) {
                                 signMask.destroy();
                                 form.up('window').close();

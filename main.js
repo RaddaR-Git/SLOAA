@@ -3883,7 +3883,8 @@ app.get('/getFactura', function (req, res) {
                     new FieldValidation('firmaNombre', ENC.STRING()),
                     new FieldValidation('factura', ENC.STRING()),
                     new FieldValidation('noIdPedido', ENC.STRING()),
-                    new FieldValidation('noIdRecepcion', ENC.STRING())
+                    new FieldValidation('noIdRecepcion', ENC.STRING()),
+                    new FieldValidation('noOficio', ENC.STRING())
                 ]);
                 dp.firma = req.query.firma;
                 dp.firmaNombre = req.query.firmaNombre;
@@ -3891,6 +3892,7 @@ app.get('/getFactura', function (req, res) {
                 dp.factura = req.query.factura;
                 dp.noIdPedido = req.query.noIdPedido;
                 dp.noIdRecepcion = req.query.noIdRecepcion;
+                dp.noOficio = req.query.noOficio;
 
                 return dp;
             })
@@ -4217,6 +4219,7 @@ app.get('/getFactura', function (req, res) {
                     factura: dp.factura,
                     noIdPedido: dp.noIdPedido,
                     noIdRecepcion: dp.noIdRecepcion,
+                    noOficio: dp.noOficio,
                     genDate: genDate.getDate() + "/" + (genDate.getMonth() + 1) + "/" + genDate.getFullYear()
                 });
                 return dp;

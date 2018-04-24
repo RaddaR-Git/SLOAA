@@ -577,10 +577,25 @@ var createViewport = function () {
                                                 var avalibleFifteen = result.success && result.avalibleFifteen;
                                                 viewPort.down('toolbar #reportA').setDisabled(!availableTen);
                                                 viewPort.down('toolbar #leftDaysA').setValue(availableTen ? '<span style="color:gray;">(' + result.leftDayTen + ' días restantes)</span>' : '');
-                                                viewPort.down('toolbar #reportB').setDisabled(!avalibleFifteen);
-                                                viewPort.down('toolbar #leftDaysB').setValue(avalibleFifteen ? '<span style="color:gray;">(' + result.leftDayFifteen + ' días restantes)</span>' : '');
-                                                viewPort.down('toolbar #reportC').setDisabled(!availableTen);
-                                                viewPort.down('toolbar #leftDaysC').setValue(availableTen ? '<span style="color:gray;">(' + result.leftDayTen + ' días restantes)</span>' : '');
+                                                if (login.privilegios.f4) {
+                                                    //muestra botones
+                                                    viewPort.down('toolbar #reportB').setHidden(false);
+                                                    viewPort.down('toolbar #leftDaysB').setHidden(false);
+                                                    viewPort.down('toolbar #reportC').setHidden(false);
+                                                    viewPort.down('toolbar #leftDaysC').setHidden(false);
+                                                    //configura botones
+                                                    viewPort.down('toolbar #reportB').setDisabled(!avalibleFifteen);
+                                                    viewPort.down('toolbar #leftDaysB').setValue(avalibleFifteen ? '<span style="color:gray;">(' + result.leftDayFifteen + ' días restantes)</span>' : '');
+                                                    viewPort.down('toolbar #reportC').setDisabled(!availableTen);
+                                                    viewPort.down('toolbar #leftDaysC').setValue(availableTen ? '<span style="color:gray;">(' + result.leftDayTen + ' días restantes)</span>' : '');
+                                                } else {
+                                                    //quita botones
+                                                    viewPort.down('toolbar #reportB').setHidden(true);
+                                                    viewPort.down('toolbar #leftDaysB').setHidden(true);
+                                                    viewPort.down('toolbar #reportC').setHidden(true);
+                                                    viewPort.down('toolbar #leftDaysC').setHidden(true);
+                                                }
+
                                             }
                                         });
 
@@ -688,7 +703,7 @@ var preFormReport = function (button) {
         title: 'Registro',
         animateTarget: button,
         width: 350,
-        height: 250,
+        height: 270,
         layout: 'form',
         items: [
             {
@@ -714,6 +729,12 @@ var preFormReport = function (button) {
                                 fieldLabel: 'Factura',
                                 emptyText: 'Factura',
                                 name: 'bill'
+                            },
+                            {
+                                allowBlank: false,
+                                fieldLabel: 'NoOficio',
+                                emptyText: 'NoOficio',
+                                name: 'noOficio'
                             },
                             {
                                 allowBlank: false,
