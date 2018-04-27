@@ -556,7 +556,7 @@ var createViewport = function () {
                                         var data = new Array();
                                         var record;
                                         records.forEach(function (item) {
-                                            if (!map.includes(item.data.ID_STATUS)) {
+                                            if (map.indexOf(item.data.ID_STATUS) === -1) {
                                                 record = new Object();
                                                 record.ID_STATUS = item.data.ID_STATUS;
                                                 record.NOMBRE_STATUS = item.data.NOMBRE_STATUS;
