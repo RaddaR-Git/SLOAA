@@ -1895,6 +1895,7 @@ app.get('/setDeduccionCotizacion', function (req, res) {
                     new FieldValidation('deduccionJustificacion', ENC.STRING()),
                     new FieldValidation('deduccionCumplimiento', ENC.STRING()),
                     new FieldValidation('deduccionIdentificado', ENC.STRING()),
+                    new FieldValidation('serviceDate', ENC.STRING()),
                     new FieldValidation('_dc', ENC.STRING()),
                     new FieldValidation('callback', ENC.STRING())
                 ]);
@@ -1907,15 +1908,16 @@ app.get('/setDeduccionCotizacion', function (req, res) {
                 dp.deduccionJustificacion = req.query.deduccionJustificacion;
                 dp.deduccionCumplimiento = req.query.deduccionCumplimiento;
                 dp.deduccionIdentificado = req.query.deduccionIdentificado;
+                dp.serviceDate = req.query.serviceDate;
                 dp.looked = 1;
                 return dp;
             })
             .then(function (dp) {
-                dp.dml = " UPDATE [dbo].[SLOAA_TR_SERVICIO_COTIZACION] SET   [DEDUCCION_CANTIDAD]=" + dp.deduccionCantidad + " ,[DEDUCCION_TIEMPO]=" + dp.deduccionTiempo + " ,[CANCELACION]=" + dp.cancelacion + "       ,[DEDUCCION]=" + dp.deduccion + ",[DEDUCCION_JUSTIFICACION]='" + dp.deduccionJustificacion + "',[PRECIO_SERVICIO_FINAL]= [COTIZACION]-" + dp.deduccion + ", [CUMPLIMIENTO]=" + dp.deduccionCumplimiento + ", [IDENTIFICADO]=" + dp.deduccionIdentificado + "   \n" +
-                        " WHERE \n" +
-                        " 1=1\n" +
-                        " AND [ID_ORDEN_SERVICIO]=" + dp.idOrdenServicio + "\n" +
-                        " AND [ID_SERVICIO_COTIZACION]=" + dp.idServicioCotizacion + "";
+                dp.dml = " UPDATE [dbo].[SLOAA_TR_SERVICIO_COTIZACION] SET   [DEDUCCION_CANTIDAD]=" + dp.deduccionCantidad + " ,[DEDUCCION_TIEMPO]=" + dp.deduccionTiempo + " ,[CANCELACION]=" + dp.cancelacion + "       ,[DEDUCCION]=" + dp.deduccion + ",[DEDUCCION_JUSTIFICACION]='" + dp.deduccionJustificacion + "',[PRECIO_SERVICIO_FINAL]= [COTIZACION]-" + dp.deduccion + ", [CUMPLIMIENTO]=" + dp.deduccionCumplimiento + ", [IDENTIFICADO]=" + dp.deduccionIdentificado + ", [FECHA_SERVICIO]='" + dp.serviceDate + "'" +
+                        " WHERE " +
+                        " 1=1 " +
+                        " AND [ID_ORDEN_SERVICIO]=" + dp.idOrdenServicio +
+                        " AND [ID_SERVICIO_COTIZACION]=" + dp.idServicioCotizacion;
                 return dp;
             })
             .then(msql.freeDMLPromise)

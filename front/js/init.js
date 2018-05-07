@@ -1867,13 +1867,39 @@ var orderWindow = function (recordBase) {
                         bodyPadding: 10,
                         region: 'north',
                         layout: 'vbox',
-                        flex: 1,
+                        flex: 2,
                         calculate: function () {
                             var values = this.getValues();
                             var total = parseInt(values.deduccionCantidad) * parseInt(values.deduccionTiempo) * parseInt(values.deduccion);
                             this.getComponent('totalSet').getComponent('total').setValue(total);
                         },
                         items: [
+                            {
+                                xtype: 'fieldset',
+                                layout: 'hbox',
+                                border: false,
+                                items: [
+                                    {
+                                        xtype: 'datefield',
+                                        fieldLabel: 'Fecha de Servicio',
+                                        name: 'serviceDate',
+                                        keyMapEnabled: true,
+                                        margin: '0 10 0 0',
+                                        labelWidth: 120,
+                                        width: 230,
+                                        value: new Date()
+                                    },
+                                    {
+                                        xtype: 'timefield',
+                                        fieldLabel: 'Hora',
+                                        name: 'serviceTime',
+                                        margin: '0 10 0 20',
+                                        labelWidth: 125,
+                                        width: 230,
+                                        value: new Date()
+                                    }
+                                ]
+                            },
                             {
                                 xtype: 'fieldset',
                                 defaultType: 'numberfield',
@@ -1890,7 +1916,8 @@ var orderWindow = function (recordBase) {
                                         minValue: 0,
                                         flex: 1,
                                         margin: '0 10 0 0',
-                                        width: 200,
+                                        labelWidth: 120,
+                                        width: 230,
                                         listeners: {
                                             change: function (combobox, newValue, oldValue, eOpts) {
                                                 if (newValue > combobox.maxValue) {
@@ -1911,8 +1938,8 @@ var orderWindow = function (recordBase) {
                                         maxValue: 6,
                                         minValue: 0,
                                         flex: 1,
-                                        margin: '0 10 0 0',
-                                        width: 200,
+                                        margin: '0 10 0 20',
+                                        width: 230,
                                         labelWidth: 125,
                                         listeners: {
                                             change: function (combobox, newValue, oldValue, eOpts) {
@@ -1941,8 +1968,9 @@ var orderWindow = function (recordBase) {
                                         maxValue: 1000,
                                         minValue: 0,
                                         flex: 1,
-                                        margin: '0 10 0 0',
-                                        width: 200,
+                                        margin: '0 10 0 20',
+                                        labelWidth: 80,
+                                        width: 160,
                                         listeners: {
                                             change: function (combobox, newValue, oldValue, eOpts) {
                                                 if (newValue > combobox.maxValue) {
@@ -2033,6 +2061,9 @@ var orderWindow = function (recordBase) {
                                     vals.idOrdenServicio = thisWin.ordenServicio.ID_ORDEN_SERVICIO;
                                     vals.idServicioCotizacion = button.up('form').up('panel').getComponent('deduccionesGrid').getSelection()[0].data.ID_SERVICIO_COTIZACION;
                                     vals.deduccion = button.up('form').down('displayfield[itemId="total"]').getValue();
+                                    var serviceDate = Ext.Date.parse(vals.serviceDate + ' ' + vals.serviceTime, 'd/m/Y g:i A');
+                                    delete vals.serviceTime;
+                                    vals.serviceDate = serviceDate.toISOString();
                                     Ext.data.JsonP.request({
                                         url: serviceUrl + 'setDeduccionCotizacion',
                                         params: vals,
