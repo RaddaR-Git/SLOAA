@@ -966,7 +966,7 @@ var orderWindow = function (recordBase) {
                                 xtype: 'timefield',
                                 fieldLabel: 'Hora',
                                 itemId: 'horaSolicitud',
-                                name: 'horaSolicitud',
+                                name: 'horaSolicitud'
                             },
                             {
                                 xtype: 'textfield',
@@ -1881,7 +1881,7 @@ var orderWindow = function (recordBase) {
                                 items: [
                                     {
                                         xtype: 'datefield',
-                                        fieldLabel: 'Fecha de Servicio',
+                                        fieldLabel: 'Servicio ejercido',
                                         name: 'serviceDate',
                                         keyMapEnabled: true,
                                         margin: '0 10 0 0',
