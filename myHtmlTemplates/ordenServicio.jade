@@ -7,6 +7,7 @@ html
   head
     title #{title} Reporte
     link(rel='stylesheet', href='/stylesheets/style.css')
+    -var numberFormat=function(currentNumber){return new Intl.NumberFormat('en-US', {maximumFractionDigits: 10}).format(currentNumber);};
   body
     .container
     p #{year + "/" + month + "/" + day}     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  #{nombreAutoridad} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #{tipoReporte}
@@ -79,9 +80,9 @@ html
                                         td(bgcolor="#dbdbdb")  #{ordenes[orden].servicios[servicio].NOMBRE_SERVICIO}
                                         td(bgcolor="#dbdbdb")  #{ordenes[orden].servicios[servicio].UNIDAD}
                                         td(bgcolor="#dbdbdb")  #{ordenes[orden].servicios[servicio].CANTIDAD}
-                                        td(bgcolor="#dbdbdb")  #{ordenes[orden].servicios[servicio].PRECIO_UNITARIO}
-                                        td(bgcolor="#dbdbdb")  #{ordenes[orden].servicios[servicio].COTIZACION}
-                                        td(bgcolor="#dbdbdb")  #{ordenes[orden].servicios[servicio].DEDUCCION}
+                                        td(bgcolor="#dbdbdb")  #{numberFormat(ordenes[orden].servicios[servicio].PRECIO_UNITARIO)}
+                                        td(bgcolor="#dbdbdb")  #{numberFormat(ordenes[orden].servicios[servicio].COTIZACION)}
+                                        td(bgcolor="#dbdbdb")  #{numberFormat(ordenes[orden].servicios[servicio].DEDUCCION)}
                                         td  &nbsp;
                                     tr
                                         td(align="center" colspan=8 style="color:white;" ) &nbsp; 
@@ -91,9 +92,9 @@ html
                                         td  &nbsp;
                                         td  &nbsp;
                                         td  &nbsp;
-                                        td(bgcolor="#dbdbdb")  #{ordenes[orden].cotizacion}
-                                        td(bgcolor="#dbdbdb")  #{ordenes[orden].deducciones}
-                                        td(bgcolor="#dbdbdb")  #{ordenes[orden].total}
+                                        td(bgcolor="#dbdbdb")  #{numberFormat(ordenes[orden].cotizacion)}
+                                        td(bgcolor="#dbdbdb")  #{numberFormat(ordenes[orden].deducciones)}
+                                        td(bgcolor="#dbdbdb")  #{numberFormat(ordenes[orden].total)}
                     table(cellspacing="5" width='100%')
                         tr
                             td(align="center") <hr>
@@ -133,6 +134,7 @@ html
     div &nbsp;
     div &nbsp;
     .container
+    h3
     div
             table(cellspacing="5" width='100%')
                 tr(align="center")       
@@ -141,7 +143,7 @@ html
                     td Proveedor
                 
     footer
-<button onClick="window.print()" >Imprimir</button>    
+<button onClick="this.hidden=true; window.print(); this.hidden=false;" >Imprimir</button>    
 
 
 

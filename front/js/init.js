@@ -1882,21 +1882,21 @@ var orderWindow = function (recordBase) {
                                     {
                                         xtype: 'datefield',
                                         fieldLabel: 'Servicio ejercido',
+                                        itemId: 'serviceDate',
                                         name: 'serviceDate',
                                         keyMapEnabled: true,
                                         margin: '0 10 0 0',
                                         labelWidth: 120,
-                                        width: 230,
-                                        value: new Date()
+                                        width: 230
                                     },
                                     {
                                         xtype: 'timefield',
                                         fieldLabel: 'Hora',
+                                        itemId: 'serviceTime',
                                         name: 'serviceTime',
                                         margin: '0 10 0 20',
                                         labelWidth: 125,
-                                        width: 230,
-                                        value: new Date()
+                                        width: 230
                                     }
                                 ]
                             },
@@ -1908,7 +1908,6 @@ var orderWindow = function (recordBase) {
                                 items: [
                                     {
                                         itemId: 'deduccionCantidad',
-                                        reference: 'hola',
                                         name: 'deduccionCantidad',
                                         fieldLabel: 'Cantidad',
                                         value: 0,
@@ -2115,6 +2114,7 @@ var orderWindow = function (recordBase) {
                         listeners: {
                             itemclick: function (grid, record, item, index, e, eOpts) {
                                 var deduction = record.data.DEDUCCION / (record.data.DEDUCCION_CANTIDAD * record.data.DEDUCCION_TIEMPO);
+                                var serviceDate = record.data.FECHA_SERVICIO;
                                 thisForm = thisWin.getComponent('e5').getComponent('e5f1');
                                 thisForm.setDisabled(false);
                                 thisForm.down('#deduccionCantidad').setValue(record.data.DEDUCCION_CANTIDAD);
@@ -2124,6 +2124,8 @@ var orderWindow = function (recordBase) {
                                 thisForm.down('#deduccionJustificacion').setValue(record.data.DEDUCCION_JUSTIFICACION);
                                 thisForm.down('#deduccionCumplimiento').setValue(record.data.CUMPLIMIENTO);
                                 thisForm.down('#deduccionIdentificado').setValue(record.data.IDENTIFICADO);
+                                thisForm.down('#serviceDate').setValue(Ext.isEmpty(serviceDate) ? new Date() : new Date(serviceDate));
+                                thisForm.down('#serviceTime').setValue(Ext.isEmpty(serviceDate) ? new Date() : new Date(serviceDate));
                             }
                         }
                     }
@@ -2141,7 +2143,7 @@ var orderWindow = function (recordBase) {
                             if (button.getText() === 'Siguiente') {
                                 button.next();
                             } else {
-                                setStatusServiceOrder(thisWin.ordenServicio.ID_ORDEN_SERVICIO, 5, button.next);
+                                setStatusServiceOrder(thisWin.ordenServicio.ID_ORDEN_SERVICIO, 5, button.next, new Date().toISOString());
                             }
                         }
                     }
@@ -2376,12 +2378,13 @@ var orderWindow = function (recordBase) {
         ]
 
     });
-    var setStatusServiceOrder = function (idOrdenServicio, idStatus, callback) {
+    var setStatusServiceOrder = function (idOrdenServicio, idStatus, callback, extraParams) {
         Ext.data.JsonP.request({
             url: serviceUrl + 'setStatusOrdenServicio',
             params: {
                 idOrdenServicio: idOrdenServicio,
-                idStatus: idStatus
+                idStatus: idStatus,
+                extraParams: extraParams
             },
             success: function (result) {
                 if (result.success) {

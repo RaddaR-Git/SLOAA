@@ -1842,7 +1842,7 @@ app.get('/getAllCotizacionXOrden', function (req, res) {
                 return dp;
             })
             .then(function (dp) {
-                dp.query = "SELECT COT.ID_SERVICIO_COTIZACION, COT.ID_ORDEN_SERVICIO, COT.ID_TIPO_SERVICIO, COT.ID_SERVICIO, COT.ID_UNIDAD, COT.ID_ZONA, COT.ID_SUBZONA, COT.ID_PRESTADOR_SERVICIO, COT.PRECIO_UNITARIO, COT.CANTIDAD, COT.COTIZACION, COT.DEDUCCION, COT.DEDUCCION_CANTIDAD, COT.DEDUCCION_TIEMPO, COT.CANCELACION, COT.CUMPLIMIENTO, COT.IDENTIFICADO, COT.DEDUCCION_JUSTIFICACION, COT.PRECIO_SERVICIO_FINAL, COT.VALIDA_DISPONIBILIDAD, SERV.NOMBRE_SERVICIO, TIPO.TIPO, PRES.NOMBRE, SUBZ.SUBZONA, ZONA.ZONA FROM SLOAA_TR_SERVICIO_COTIZACION COT INNER JOIN SLOAA_TR_PRECIO_UNITARIO UNIT ON COT.ID_TIPO_SERVICIO = UNIT.ID_TIPO_SERVICIO AND COT.ID_SERVICIO = UNIT.ID_SERVICIO AND COT.ID_UNIDAD = UNIT.ID_UNIDAD INNER JOIN SLOAA_TC_SERVICIO SERV ON SERV.ID_SERVICIO = UNIT.ID_SERVICIO AND SERV.ID_SERVICIO = UNIT.ID_SERVICIO INNER JOIN SLOAA_TC_TIPO_SERVICIO TIPO ON TIPO.ID_TIPO_SERVICIO = SERV.ID_TIPO_SERVICIO INNER JOIN SLOAA_TC_PRESTADOR_SERVICIOS_X_SERVICIO PRESERV ON PRESERV.ID_PRESTADOR_SERVICIO = COT.ID_PRESTADOR_SERVICIO AND PRESERV.ID_TIPO_SERVICIO = COT.ID_TIPO_SERVICIO AND PRESERV.ID_SERVICIO = COT.ID_SERVICIO INNER JOIN SLOAA_TC_PRESTADOR_SERVICIOS PRES ON PRES.ID_PRESTADOR_SERVICIO = PRESERV.ID_PRESTADOR_SERVICIO AND PRES.ID_ZONA = PRESERV.ID_ZONA AND PRES.ID_SUBZONA = PRESERV.ID_SUBZONA INNER JOIN SLOAA_TC_SUBZONA SUBZ ON SUBZ.ID_ZONA = PRES.ID_ZONA AND SUBZ.ID_SUBZONA = PRES.ID_SUBZONA INNER JOIN SLOAA_TC_ZONA ZONA ON ZONA.ID_ZONA = SUBZ.ID_ZONA \n\
+                dp.query = "SELECT COT.ID_SERVICIO_COTIZACION, COT.ID_ORDEN_SERVICIO, COT.ID_TIPO_SERVICIO, COT.ID_SERVICIO, COT.ID_UNIDAD, COT.ID_ZONA, COT.ID_SUBZONA, COT.ID_PRESTADOR_SERVICIO, COT.PRECIO_UNITARIO, COT.CANTIDAD, COT.COTIZACION, COT.DEDUCCION, COT.DEDUCCION_CANTIDAD, COT.DEDUCCION_TIEMPO, COT.CANCELACION, COT.CUMPLIMIENTO, COT.IDENTIFICADO, COT.DEDUCCION_JUSTIFICACION, COT.PRECIO_SERVICIO_FINAL, COT.VALIDA_DISPONIBILIDAD, COT.FECHA_SERVICIO, SERV.NOMBRE_SERVICIO, TIPO.TIPO, PRES.NOMBRE, SUBZ.SUBZONA, ZONA.ZONA FROM SLOAA_TR_SERVICIO_COTIZACION COT INNER JOIN SLOAA_TR_PRECIO_UNITARIO UNIT ON COT.ID_TIPO_SERVICIO = UNIT.ID_TIPO_SERVICIO AND COT.ID_SERVICIO = UNIT.ID_SERVICIO AND COT.ID_UNIDAD = UNIT.ID_UNIDAD INNER JOIN SLOAA_TC_SERVICIO SERV ON SERV.ID_SERVICIO = UNIT.ID_SERVICIO AND SERV.ID_SERVICIO = UNIT.ID_SERVICIO INNER JOIN SLOAA_TC_TIPO_SERVICIO TIPO ON TIPO.ID_TIPO_SERVICIO = SERV.ID_TIPO_SERVICIO INNER JOIN SLOAA_TC_PRESTADOR_SERVICIOS_X_SERVICIO PRESERV ON PRESERV.ID_PRESTADOR_SERVICIO = COT.ID_PRESTADOR_SERVICIO AND PRESERV.ID_TIPO_SERVICIO = COT.ID_TIPO_SERVICIO AND PRESERV.ID_SERVICIO = COT.ID_SERVICIO INNER JOIN SLOAA_TC_PRESTADOR_SERVICIOS PRES ON PRES.ID_PRESTADOR_SERVICIO = PRESERV.ID_PRESTADOR_SERVICIO AND PRES.ID_ZONA = PRESERV.ID_ZONA AND PRES.ID_SUBZONA = PRESERV.ID_SUBZONA INNER JOIN SLOAA_TC_SUBZONA SUBZ ON SUBZ.ID_ZONA = PRES.ID_ZONA AND SUBZ.ID_SUBZONA = PRES.ID_SUBZONA INNER JOIN SLOAA_TC_ZONA ZONA ON ZONA.ID_ZONA = SUBZ.ID_ZONA \n\
                         WHERE ID_ORDEN_SERVICIO =" + dp.idOrdenServicio + "";
                 return dp;
             })
@@ -2761,15 +2761,36 @@ app.get('/setStatusOrdenServicio', function (req, res) {
                 inputValidation(response, req.query, [
                     new FieldValidation('idOrdenServicio', ENC.STRING()),
                     new FieldValidation('idStatus', ENC.STRING()),
+                    new FieldValidation('extraParams', ENC.STRING()),
                     new FieldValidation('_dc', ENC.STRING()),
                     new FieldValidation('callback', ENC.STRING())
                 ]);
                 dp.idOrdenServicio = req.query.idOrdenServicio;
                 dp.idStatus = req.query.idStatus;
+                dp.extraParams = req.query.extraParams;
                 dp.looked = 1;
                 return dp;
             })
-
+            //<editor-fold defaultstate="collapsed" desc="UPDATE Fecha">
+            .then(function (dp) {
+                dp.dml = "UPDATE SLOAA_TR_SERVICIO_COTIZACION SET FECHA_SERVICIO='" + dp.extraParams + "' WHERE ID_ORDEN_SERVICIO=" + dp.idOrdenServicio + " AND FECHA_SERVICIO IS NULL";
+                return dp;
+            })
+            .then(msql.freeDMLPromise)
+            .then(function (dp) {
+                if (dp.resultDML !== null) {
+                    if (dp.resultDML.rowsAffected.length > 0) {
+                        response.success = true;
+                    } else {
+                        response.success = false;
+                        throw "No se pudo confirmar la operación";
+                    }
+                } else {
+                    response.success = false;
+                    throw "No se pudo confirmar la operación";
+                }
+                return dp;
+            })
             //<editor-fold defaultstate="collapsed" desc="UPDATE">
             .then(function (dp) {
 
@@ -2779,7 +2800,6 @@ app.get('/setStatusOrdenServicio', function (req, res) {
                 return dp;
             })
             .then(msql.freeDMLPromise)
-
             .then(function (dp) {
                 if (dp.resultDML !== null) {
                     if (dp.resultDML.rowsAffected.length > 0) {
@@ -3494,7 +3514,9 @@ app.get('/getReport', function (req, res) {
                         currentOrden = {
                             llaveSistema: currentRow.LLAVE_SISTEMA,
                             idOrdenServicio: currentRow.ID_ORDEN_SERVICIO,
-                            fechaSolicitud: currentRow.FECHA_SOLICITUD.toISOString().replace("T", " ").replace("Z", " "),
+                            fechaSolicitud: getFormattedDate(currentRow.FECHA_SOLICITUD),
+                            fechaServicio:  getFormattedDate(currentRow.FECHA_SERVICIO), 
+                            fechaServicioDate: currentRow.FECHA_SERVICIO, 
                             domicilio: currentRow.DOMICILIO,
                             firmaGenerador: firmaGenerador,
                             firmaRevisor: firmaRevisor,
@@ -3512,6 +3534,11 @@ app.get('/getReport', function (req, res) {
                             deduccionJustificacionAllCount: 0
                         };
                         dp.ordenes[currentRow.LLAVE_SISTEMA] = currentOrden;
+                    }
+                    var fechaServicio =currentRow.FECHA_SERVICIO;
+                    if (currentOrden.fechaServicioDate.getTime()>fechaServicio.getTime()) {
+                        currentOrden.fechaServicioDate=fechaServicio;
+                        currentOrden.fechaServicio=getFormattedDate(fechaServicio);
                     }
 
                     currentOrden.servicios.push(dp.servicios[currentKey]);
@@ -3636,6 +3663,7 @@ app.get('/getCurDate', function (req, res) {
 });
 //</editor-fold>
 
+//<editor-fold defaultstate="collapsed" desc="UTILS">
 //<editor-fold defaultstate="collapsed" desc="Numero a Texto">
 var numeroALetras = (function () {
 
@@ -3864,6 +3892,18 @@ var roundToTwo = function (num) {
 };
 //</editor-fold>
 
+//<editor-fold defaultstate="collapsed" desc="Obtiene fecha formateada">
+var getFormattedDate=function (date) {
+  var year = date.getFullYear();
+  var month = (1 + date.getMonth()).toString();
+  month = month.length > 1 ? month : '0' + month;
+  var day = date.getDate().toString();
+  day = day.length > 1 ? day : '0' + day;
+  return day + '/' + month + '/' + year;
+};
+    //</editor-fold>
+//</editor-fold>
+
 //<editor-fold defaultstate="collapsed" desc="getFactura">
 app.get('/getFactura', function (req, res) {
     var requestID = new Date().getTime();
@@ -4059,7 +4099,21 @@ app.get('/getFactura', function (req, res) {
 
                             fAInicialFormat: null,
                             fAFinalFormat: null,
-                            serviciosAgrupados: {}
+                            serviciosAgrupados: {},
+                            granTotalAgrupado: {
+                                tipoServicio:'',
+                                totCotizado: 0,
+                                totDeduccion: 0,
+                                totalFinal: 0,
+                                totalFinalIva: 0,
+                                totalFinalRetencion4: 0,
+                                totalResultado: 0,
+                                totalFinalTexto: "",
+                                totalFinalIvaTexto: "",
+                                totalFinalRetencion4Texto: "",
+                                totalResultadoTexto: "",
+                                fechaSolicitud: dp.fMonth + "/" + dp.fYear
+                            }
                         };
                         reportes[idAutoridad] = autoridadActual;
                     }
@@ -4186,18 +4240,46 @@ app.get('/getFactura', function (req, res) {
 
                         reporteEnCurso.ejercido = reporteEnCurso.ejercido + servicioAgrupadoEnCurso.totalResultado;
 
-                        servicioAgrupadoEnCurso.totalFinal = roundToTwo(servicioAgrupadoEnCurso.totalFinal);
-                        servicioAgrupadoEnCurso.totalFinalIva = roundToTwo(servicioAgrupadoEnCurso.totalFinalIva);
-                        servicioAgrupadoEnCurso.totalFinalRetencion4 = roundToTwo(servicioAgrupadoEnCurso.totalFinalRetencion4);
-                        servicioAgrupadoEnCurso.totalResultado = roundToTwo(servicioAgrupadoEnCurso.totalResultado);
+                        servicioAgrupadoEnCurso.totalFinalROUNDED = roundToTwo(servicioAgrupadoEnCurso.totalFinal);
+                        servicioAgrupadoEnCurso.totalFinalIvaROUNDED = roundToTwo(servicioAgrupadoEnCurso.totalFinalIva);
+                        servicioAgrupadoEnCurso.totalFinalRetencion4ROUNDED = roundToTwo(servicioAgrupadoEnCurso.totalFinalRetencion4);
+                        servicioAgrupadoEnCurso.totalResultadoROUNDED = roundToTwo(servicioAgrupadoEnCurso.totalResultado);
 
-                        servicioAgrupadoEnCurso.totalFinalTexto = numeroALetras(servicioAgrupadoEnCurso.totalFinal, config);
-                        servicioAgrupadoEnCurso.totalFinalIvaTexto = numeroALetras(servicioAgrupadoEnCurso.totalFinalIva, config);
-                        servicioAgrupadoEnCurso.totalFinalRetencion4Texto = numeroALetras(servicioAgrupadoEnCurso.totalFinalRetencion4, config);
-                        servicioAgrupadoEnCurso.totalResultadoTexto = numeroALetras(servicioAgrupadoEnCurso.totalResultado, config);
+                        servicioAgrupadoEnCurso.totalFinalTexto = numeroALetras(servicioAgrupadoEnCurso.totalFinalROUNDED, config);
+                        servicioAgrupadoEnCurso.totalFinalIvaTexto = numeroALetras(servicioAgrupadoEnCurso.totalFinalIvaROUNDED, config);
+                        servicioAgrupadoEnCurso.totalFinalRetencion4Texto = numeroALetras(servicioAgrupadoEnCurso.totalFinalRetencion4ROUNDED, config);
+                        servicioAgrupadoEnCurso.totalResultadoTexto = numeroALetras(servicioAgrupadoEnCurso.totalResultadoROUNDED, config);
                     }
                     reporteEnCurso.ejercido = roundToTwo(reporteEnCurso.ejercido);
                     reporteEnCurso.ejercidoTexto = numeroALetras(reporteEnCurso.ejercido, config);
+                }
+                //Sumando los montos totales
+                for (var reporte in reportes) {
+                    var reporteEnCurso = reportes[reporte];
+                    var serviciosAgrupados = reporteEnCurso.serviciosAgrupados;
+                    var granTotalAgrupadoEnCurso=reporteEnCurso.granTotalAgrupado;
+                    for (var servicioAgrupado in serviciosAgrupados) {
+                        var servicioAgrupadoEnCurso = serviciosAgrupados[servicioAgrupado];
+                        granTotalAgrupadoEnCurso.tipoServicio = granTotalAgrupadoEnCurso.tipoServicio+" "+servicioAgrupadoEnCurso.tipoServicio;
+                        granTotalAgrupadoEnCurso.totCotizado=	granTotalAgrupadoEnCurso.totCotizado+servicioAgrupadoEnCurso.totCotizado;
+                        granTotalAgrupadoEnCurso.totDeduccion=	granTotalAgrupadoEnCurso.totDeduccion	+servicioAgrupadoEnCurso.totDeduccion	;
+                        granTotalAgrupadoEnCurso.totalFinal=	granTotalAgrupadoEnCurso.totalFinal+servicioAgrupadoEnCurso.totalFinal;
+                        granTotalAgrupadoEnCurso.totalFinalIva=	 granTotalAgrupadoEnCurso.totalFinalIva+ servicioAgrupadoEnCurso.totalFinalIva
+                        granTotalAgrupadoEnCurso.totalFinalRetencion4=	 granTotalAgrupadoEnCurso.totalFinalRetencion4+ servicioAgrupadoEnCurso.totalFinalRetencion4
+                        granTotalAgrupadoEnCurso.totalResultado	=	 granTotalAgrupadoEnCurso.totalResultado+ servicioAgrupadoEnCurso.totalResultado
+                    }
+                }
+                 for (var reporte in reportes) {
+                    var reporteEnCurso = reportes[reporte];
+                    var granTotalAgrupadoEnCurso=reporteEnCurso.granTotalAgrupado;
+                    granTotalAgrupadoEnCurso.totalFinalROUNDED = roundToTwo(granTotalAgrupadoEnCurso.totalFinal);
+                    granTotalAgrupadoEnCurso.totalFinalIvaROUNDED = roundToTwo(granTotalAgrupadoEnCurso.totalFinalIva);
+                    granTotalAgrupadoEnCurso.totalFinalRetencion4ROUNDED = roundToTwo(granTotalAgrupadoEnCurso.totalFinalRetencion4);
+                    granTotalAgrupadoEnCurso.totalResultadoROUNDED = roundToTwo(granTotalAgrupadoEnCurso.totalResultado);
+                    granTotalAgrupadoEnCurso.totalFinalTexto = numeroALetras(granTotalAgrupadoEnCurso.totalFinalROUNDED, config);
+                    granTotalAgrupadoEnCurso.totalFinalIvaTexto = numeroALetras(granTotalAgrupadoEnCurso.totalFinalIvaROUNDED, config);
+                    granTotalAgrupadoEnCurso.totalFinalRetencion4Texto = numeroALetras(granTotalAgrupadoEnCurso.totalFinalRetencion4ROUNDED, config);
+                    granTotalAgrupadoEnCurso.totalResultadoTexto = numeroALetras(granTotalAgrupadoEnCurso.totalResultadoROUNDED, config);
                 }
 
                 dp.reportes = reportes;
@@ -4294,6 +4376,7 @@ app.get('/getConsolidado', function (req, res) {
                         "	[COT].[PRECIO_UNITARIO],\n" +
                         "	[COT].[COTIZACION],\n" +
                         "	[COT].[DEDUCCION],\n" +
+                        "	[COT].[FECHA_SERVICIO],\n" +
                         "	\n" +
                         "	[CRED].[ID_CREDENCIAL],\n" +
                         "\n" +
@@ -4443,8 +4526,8 @@ app.get('/getConsolidado', function (req, res) {
                     llaveOrdenMensual = llaveOrdenMensual.replace(/\|/g, "");
                     llaveOrdenMensual = llaveOrdenMensual.replace(/\s+/g, ' ');
                     currentRow.llaveOrdenMensual = llaveOrdenMensual;
-                    currentRow.fechaSolicitudDe = currentRow.FECHA_SOLICITUD;
-                    currentRow.fechaSolicitudHasta = currentRow.FECHA_SOLICITUD;
+                    currentRow.fechaSolicitudDe = currentRow.FECHA_SERVICIO;
+                    currentRow.fechaSolicitudHasta = currentRow.FECHA_SERVICIO;
                     if (false) {
                     } else if (unidad === 'JORNADA') {
                         currentRow.fechaSolicitudHasta = sumarDias(currentRow.fechaSolicitudDe, cantidad);

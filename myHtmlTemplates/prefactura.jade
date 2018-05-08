@@ -7,14 +7,16 @@ html
   head
     title #{title} Reporte
     link(rel='stylesheet', href='/stylesheets/style.css')
+    -var numberFormat=function(currentNumber){return new Intl.NumberFormat('en-US', {maximumFractionDigits: 10}).format(currentNumber);};
   body
     .container
-    p #{year + "/" + month + "/" + day}     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  #{nombreAutoridad} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #{tipoReporte} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #{llaveOrdenMensual}
+    #{nombreAutoridad} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #{llaveOrdenMensual}
     .container
     div
             table(cellspacing="5" width='100%')
                 tr
-                    td(width='200') <img src="https://tramitesdigitales.sat.gob.mx/SIPRED.Monitor.Externo/images/logoH_col.svg" height="200" width="200"/>
+                    td() <img src="https://tramitesdigitales.sat.gob.mx/SIPRED.Monitor.Externo/images/logoH_col.svg" height="200" width="200"/>
+                tr
                     td(align="center") PREFACTURA SERVICIO LOGÍSTICO PARA LA OPERACIÓN DE LAS  AUTORIDADES ADUANERAS, <br> FISCALES Y ADMINISTRATIVAS 2018
                     
             -for (var orden in ordenes) {
@@ -24,7 +26,7 @@ html
                         td(colspan=2 align="center") #{ordenes[orden].llaveSistema}
                     tr(bgcolor="gray")
                         td(bgcolor="#b2b2b2" width="150") Fecha
-                        td(bgcolor="white") #{ordenes[orden].fechaSolicitud}
+                        td(bgcolor="white") #{ordenes[orden].fechaServicio} 
                     tr(bgcolor="gray")
                         td(bgcolor="#b2b2b2") Domicilio
                         td(bgcolor="white") #{ordenes[orden].domicilio}
@@ -51,9 +53,9 @@ html
                                         td(bgcolor="#dbdbdb")  #{ordenes[orden].servicios[servicio].NOMBRE_SERVICIO}
                                         td(bgcolor="#dbdbdb")  #{ordenes[orden].servicios[servicio].UNIDAD}
                                         td(bgcolor="#dbdbdb")  #{ordenes[orden].servicios[servicio].CANTIDAD}
-                                        td(bgcolor="#dbdbdb")  #{ordenes[orden].servicios[servicio].PRECIO_UNITARIO}
-                                        td(bgcolor="#dbdbdb")  #{ordenes[orden].servicios[servicio].COTIZACION}
-                                        td(bgcolor="#dbdbdb")  #{ordenes[orden].servicios[servicio].DEDUCCION}
+                                        td(bgcolor="#dbdbdb")  #{numberFormat(ordenes[orden].servicios[servicio].PRECIO_UNITARIO)}
+                                        td(bgcolor="#dbdbdb")  #{numberFormat(ordenes[orden].servicios[servicio].COTIZACION)}
+                                        td(bgcolor="#dbdbdb")  #{numberFormat(ordenes[orden].servicios[servicio].DEDUCCION)}
                                         td  &nbsp;
                                  -}
                                     tr
@@ -62,9 +64,9 @@ html
                                         td  &nbsp;
                                         td  &nbsp;
                                         td  &nbsp;
-                                        td(bgcolor="#dbdbdb")  #{ordenes[orden].cotizacion}
-                                        td(bgcolor="#dbdbdb")  #{ordenes[orden].deducciones}
-                                        td(bgcolor="#dbdbdb")  #{ordenes[orden].total}
+                                        td(bgcolor="#dbdbdb")  #{numberFormat(ordenes[orden].cotizacion)}
+                                        td(bgcolor="#dbdbdb")  #{numberFormat(ordenes[orden].deducciones)}
+                                        td(bgcolor="#dbdbdb")  #{numberFormat(ordenes[orden].total)}
         div &nbsp;
         -}
                        
@@ -86,7 +88,8 @@ html
     div &nbsp;
     div &nbsp;
     .container
-     div
+    h3
+    div
             table(cellspacing="5" width='100%')
                         tr(bgcolor="gray")
                             td(bgcolor="#cecece" width='20%') Usuario generador de prefactura:
@@ -100,7 +103,7 @@ html
 
 
     footer
-<button onClick="window.print()" >Imprimir</button>    
+<button onClick="this.hidden=true; window.print(); this.hidden=false;" >Imprimir</button>    
 
 
 

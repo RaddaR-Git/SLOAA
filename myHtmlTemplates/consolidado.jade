@@ -7,6 +7,7 @@ html
   head
     title #{title} Reporte
     link(rel='stylesheet', href='/stylesheets/style.css')
+    -var numberFormat=function(currentNumber){return new Intl.NumberFormat('en-US', {maximumFractionDigits: 10}).format(currentNumber);};
   body
   
     -for (var reporte in reportes) {
@@ -36,7 +37,7 @@ html
         table(border="0" cellspacing="5" width='100%' style="font-size:8px;")
             tr
                 td(align="center" valign="top")
-                    table(border=1 cellspacing="5" width='80%')
+                    table(border=1 cellspacing="5" width='80%' style='border-collapse: collapse;')
                         tr
                             td(align="center" colspan="3") Datos Provedor
                         tr
@@ -75,7 +76,7 @@ html
                             td(align="center" colspan="1") Telefono
 
                 td(align="center" valign="top")
-                    table(border=1 cellspacing="5" width='80%')
+                    table(border=1 cellspacing="5" width='80%' style='border-collapse: collapse;')
                         tr
                             td(align="center" colspan="3") Datos de Reporte
                         tr
@@ -104,7 +105,7 @@ html
                                 br
                                 br
                 td(align="center")
-                    table(border=1 cellspacing="5" width='80%')
+                    table(border=1 cellspacing="5" width='80%' style='border-collapse: collapse;')
                         tr
                             td(align="center") Nombre,Cargo y Firma de los responsables.
                         tr
@@ -116,11 +117,10 @@ html
                                 p ______________________________
                         tr
                             td(align="center") Representante unico de #{reporteEnCurso.razonSocial}
- 
     .container
             br
             br
-            table(border="1" width="100%" style="font-size:8px;")
+            table(border="1" width="100%" style="font-size:8px; border-collapse: collapse;")
                 tr
                     td(rowspan="2") No. de Prefactura
                     td(colspan="2") Fecha de Servicios solicitados
@@ -148,34 +148,35 @@ html
                     td #{servicioEnCurso.nombreServicio}
                     td #{servicioEnCurso.unidad}
                     td #{servicioEnCurso.cantidad}
-                    td #{servicioEnCurso.cotizacion}
-                    td #{servicioEnCurso.deduccion}
-                    td #{servicioEnCurso.totSIva}
-                    td #{servicioEnCurso.totSIva}
+                    td #{numberFormat(servicioEnCurso.cotizacion)}
+                    td #{numberFormat(servicioEnCurso.deduccion)}
+                    td #{numberFormat(servicioEnCurso.totSIva)}
+                    td #{numberFormat(servicioEnCurso.totSIva)}
                 -}
                 -}
                 tr
                     td(colspan="9" rowspan="6")
                     td Subtotal antes de deductiva
-                    td #{reporteEnCurso.totCotizado}
+                    td #{numberFormat(reporteEnCurso.totCotizado)}
                 tr
                     td Deductiva
-                    td #{reporteEnCurso.totDeduccion}
+                    td #{numberFormat(reporteEnCurso.totDeduccion)}
                 tr
                     td Subtotal Despues
-                    td #{totBruto}
+                    td #{numberFormat(totBruto)}
                 tr
                     td IVA
-                    td #{totBrutoIva}
+                    td #{numberFormat(totBrutoIva)}
                 tr
                     td RETENCION 4%
-                    td #{totBrutoRet4}
+                    td #{numberFormat(totBrutoRet4)}
                 tr
                     td GRAN TOTAL NETO
-                    td #{(totBruto + totBrutoIva) - totBrutoRet4}
-    
+                    td #{numberFormat((totBruto + totBrutoIva) - totBrutoRet4)}
+            div &nbsp;
     .container
-    table(width="100%" border="1"  style="font-size:9px;")
+    h3
+    table(width="100%" border="1"  style="font-size:9px; border-collapse: collapse;")
         tr
             td(width="200") Nombre/Puesto
             td #{firmaNombre}
@@ -191,4 +192,4 @@ html
 
     -}
     footer
-<button onClick="window.print()" >Imprimir</button>    
+<button  onClick="this.hidden=true; window.print(); this.hidden=false;" >Imprimir</button>    

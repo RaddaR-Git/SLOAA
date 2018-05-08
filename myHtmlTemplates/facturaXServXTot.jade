@@ -7,8 +7,8 @@ html
   head
     title #{title} Reporte
     link(rel='stylesheet', href='/stylesheets/style.css')
-    -var numberFormat=function(currentNumber){return new Intl.NumberFormat('en-US', {maximumFractionDigits: 10}).format(currentNumber);};
   body
+    
     -for (var reporte in reportes) {
     -reporteEnCurso = reportes[reporte];
     -ordenesServicio = reporteEnCurso.ordenesServicio;
@@ -51,13 +51,13 @@ html
 
 
     .container
-        table(border="0" width='100%'  style="font-size:12px; border-collapse: collapse;")
+        table(border="0" width='100%'  style="font-size:12px;")
             tr
                 td(width='100') En relacion con el "Servicio Lógisico para la Operacion de las Autoridades Aduaneras, Fiscales y Administrativas 2017-2019" que se paga mediante el Fideicomiso Público para Administrar la Contraprestacion del Articulo 16 de la Ley Aduanera , anexo remito a usted el Reporte Consolidaddo de Recepcion de Servicios , así como los documentos comprobatorios e informacion que a continuacion se detalla, a efecto de que tenga a bien tramitar el pago.
         div &nbsp;
         div &nbsp;
     .container
-        table(border="1" width='100%'  style="font-size:12px; border-collapse: collapse;")
+        table(border="1" width='100%'  style="font-size:12px;")
             tr
                 td(width='25%') No. Id Proyecto #{reporteEnCurso.idProyecto}
                 td(width='25%') No. Id Acuerdo #{reporteEnCurso.idAcuerdo} 
@@ -67,14 +67,13 @@ html
                 td(width='25%') Nombre del Beneficiario
                 td(width='75%' colspan="3") #{reporteEnCurso.razonSocial}
             tr
-                td(width='25%') #{numberFormat(reporteEnCurso.ejercido)}
+                td(width='25%') #{reporteEnCurso.ejercido}
                 td(width='75%' colspan="3") #{reporteEnCurso.ejercidoTexto}
-        div &nbsp;
+       
 
 
     .container
-        table(border="1" width='100%'  style="font-size:12px;border-collapse: collapse;")
-            -if(false){
+        table(border="1" width='100%'  style="font-size:12px;")
             -var serviciosAgrupados = reporteEnCurso.serviciosAgrupados;
             -for (var servicioAgrupado in serviciosAgrupados) {
             -var servicioEnCurso = serviciosAgrupados[servicioAgrupado];
@@ -89,26 +88,25 @@ html
                 td(rowspan="4") #{factura}
                 td() #{noIdPedido}
                 td() #{noIdRecepcion}
-                td() #{numberFormat(servicioEnCurso.totalFinal)}
+                td() #{servicioEnCurso.totalFinal}
                 td() #{servicioEnCurso.totalFinalTexto}
             tr
                 td(colspan="2") IVA
-                td() #{numberFormat(servicioEnCurso.totalFinalIva)}
+                td() #{servicioEnCurso.totalFinalIva}
                 td() #{servicioEnCurso.totalFinalIvaTexto}
             tr
                 td(colspan="2") Retención 4%
-                td() #{numberFormat(servicioEnCurso.totalFinalRetencion4)}
+                td() #{servicioEnCurso.totalFinalRetencion4}
                 td() #{servicioEnCurso.totalFinalRetencion4Texto}
             tr
                 td(colspan="2") Importe Factura
-                td() #{numberFormat(servicioEnCurso.totalResultado)}
+                td() #{servicioEnCurso.totalResultado}
                 td() #{servicioEnCurso.totalResultadoTexto}
             tr
                 td() Tipo de Moneda
                 td() Pesos
                 td() Periodo del Servicio
                 td(colspan="3") #{servicioEnCurso.fechaSolicitud}
-            -}
             -}
             -//--------------------------------------------------------------------------------------------
             -var granTotalAgrupado = reporteEnCurso.granTotalAgrupado
@@ -123,19 +121,19 @@ html
                 td(rowspan="4") #{factura}
                 td() #{noIdPedido}
                 td() #{noIdRecepcion}
-                td() #{numberFormat(granTotalAgrupado.totalFinal)}
+                td() #{granTotalAgrupado.totalFinal}
                 td() #{granTotalAgrupado.totalFinalTexto}
             tr
                 td(colspan="2") IVA
-                td() #{numberFormat(granTotalAgrupado.totalFinalIva)}
+                td() #{granTotalAgrupado.totalFinalIva}
                 td() #{granTotalAgrupado.totalFinalIvaTexto}
             tr
                 td(colspan="2") Retención 4%
-                td() #{numberFormat(granTotalAgrupado.totalFinalRetencion4)}
+                td() #{granTotalAgrupado.totalFinalRetencion4}
                 td() #{granTotalAgrupado.totalFinalRetencion4Texto}
             tr
                 td(colspan="2") Importe Factura
-                td() #{numberFormat(granTotalAgrupado.totalResultado)}
+                td() #{granTotalAgrupado.totalResultado}
                 td() #{granTotalAgrupado.totalResultadoTexto}
             tr
                 td() Tipo de Moneda
@@ -245,8 +243,7 @@ html
                 td() Tel 58 02 08 03 sat.gob.mx         youtube.com/satmx         twitter.com/satmx
             
     .container
-    h3
-    table(width="100%" border="1"  style="font-size:9px; border-collapse: collapse;")
+    table(width="100%" border="1"  style="font-size:9px;")
         tr
             td(width="200") Nombre/Puesto
             td #{firmaNombre}
@@ -262,4 +259,4 @@ html
     
     -}
     footer
-<button onClick="this.hidden=true; window.print(); this.hidden=false;" >Imprimir</button>    
+<button onClick="window.print()" >Imprimir</button>    
