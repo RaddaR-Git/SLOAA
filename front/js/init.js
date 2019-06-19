@@ -969,11 +969,40 @@ var orderWindow = function (recordBase) {
                                 name: 'horaSolicitud'
                             },
                             {
-                                xtype: 'textfield',
+                                xtype: 'combo',
                                 fieldLabel: 'Domicilio',
                                 itemId: 'domicilio',
                                 name: 'domicilio',
-                                width: '100%'
+                                width: '100%',
+                                queryMode: 'local',
+                                minChars: 0,
+                                displayField: 'NOMBRE_ROL',
+                                valueField: 'NOMBRE_ROL',
+                                publishes: 'NOMBRE_ROL',
+                                anyMatch: true,
+                                emptyText: 'Cargando...',
+                                store: Ext.create('Ext.data.Store', {
+                                    fields: ['area', 'idArea', 'idProyecto', 'proyecto'],
+                                    proxy: {
+                                        type: 'jsonp',
+                                        url: serviceUrl + 'getAddress',
+                                        reader: {
+                                            type: 'json',
+                                            rootProperty: 'address',
+//                                            totalProperty: 'total',
+                                            successProperty: 'success'
+//                                            messageProperty: 'message'
+                                        }
+                                    },
+                                    listeners: {
+                                        load: function (thisStore, records, successful, operation, eOpts) {
+                                            if (successful) {
+                                                thisWin.down("#domicilio").setEmptyText('Seleccionar...');
+                                            }
+                                        }
+                                    },
+                                    autoLoad: true
+                                })
                             },
                             {
                                 xtype: 'textareafield',

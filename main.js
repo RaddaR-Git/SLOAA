@@ -878,8 +878,8 @@ var mcph = new ENCripto();
 var server;
 var SQLServerConnectionParameters = {
     user: 'sa',
-    password: 'Lufiri01011',
-    server: '192.168.56.102',
+    password: 'Pass01011',
+    server: '10.15.17.29',
     database: 'SOA_db'
 };
 ////var connectionParameters1 = {
@@ -3515,8 +3515,8 @@ app.get('/getReport', function (req, res) {
                             llaveSistema: currentRow.LLAVE_SISTEMA,
                             idOrdenServicio: currentRow.ID_ORDEN_SERVICIO,
                             fechaSolicitud: getFormattedDate(currentRow.FECHA_SOLICITUD),
-                            fechaServicio:  getFormattedDate(currentRow.FECHA_SERVICIO), 
-                            fechaServicioDate: currentRow.FECHA_SERVICIO, 
+                            fechaServicio: getFormattedDate(currentRow.FECHA_SERVICIO),
+                            fechaServicioDate: currentRow.FECHA_SERVICIO,
                             domicilio: currentRow.DOMICILIO,
                             firmaGenerador: firmaGenerador,
                             firmaRevisor: firmaRevisor,
@@ -3535,10 +3535,10 @@ app.get('/getReport', function (req, res) {
                         };
                         dp.ordenes[currentRow.LLAVE_SISTEMA] = currentOrden;
                     }
-                    var fechaServicio =currentRow.FECHA_SERVICIO;
-                    if (currentOrden.fechaServicioDate.getTime()>fechaServicio.getTime()) {
-                        currentOrden.fechaServicioDate=fechaServicio;
-                        currentOrden.fechaServicio=getFormattedDate(fechaServicio);
+                    var fechaServicio = currentRow.FECHA_SERVICIO;
+                    if (currentOrden.fechaServicioDate.getTime() > fechaServicio.getTime()) {
+                        currentOrden.fechaServicioDate = fechaServicio;
+                        currentOrden.fechaServicio = getFormattedDate(fechaServicio);
                     }
 
                     currentOrden.servicios.push(dp.servicios[currentKey]);
@@ -3893,15 +3893,15 @@ var roundToTwo = function (num) {
 //</editor-fold>
 
 //<editor-fold defaultstate="collapsed" desc="Obtiene fecha formateada">
-var getFormattedDate=function (date) {
-  var year = date.getFullYear();
-  var month = (1 + date.getMonth()).toString();
-  month = month.length > 1 ? month : '0' + month;
-  var day = date.getDate().toString();
-  day = day.length > 1 ? day : '0' + day;
-  return day + '/' + month + '/' + year;
+var getFormattedDate = function (date) {
+    var year = date.getFullYear();
+    var month = (1 + date.getMonth()).toString();
+    month = month.length > 1 ? month : '0' + month;
+    var day = date.getDate().toString();
+    day = day.length > 1 ? day : '0' + day;
+    return day + '/' + month + '/' + year;
 };
-    //</editor-fold>
+//</editor-fold>
 //</editor-fold>
 
 //<editor-fold defaultstate="collapsed" desc="getFactura">
@@ -4101,7 +4101,7 @@ app.get('/getFactura', function (req, res) {
                             fAFinalFormat: null,
                             serviciosAgrupados: {},
                             granTotalAgrupado: {
-                                tipoServicio:'',
+                                tipoServicio: '',
                                 totCotizado: 0,
                                 totDeduccion: 0,
                                 totalFinal: 0,
@@ -4257,21 +4257,21 @@ app.get('/getFactura', function (req, res) {
                 for (var reporte in reportes) {
                     var reporteEnCurso = reportes[reporte];
                     var serviciosAgrupados = reporteEnCurso.serviciosAgrupados;
-                    var granTotalAgrupadoEnCurso=reporteEnCurso.granTotalAgrupado;
+                    var granTotalAgrupadoEnCurso = reporteEnCurso.granTotalAgrupado;
                     for (var servicioAgrupado in serviciosAgrupados) {
                         var servicioAgrupadoEnCurso = serviciosAgrupados[servicioAgrupado];
-                        granTotalAgrupadoEnCurso.tipoServicio = granTotalAgrupadoEnCurso.tipoServicio+" "+servicioAgrupadoEnCurso.tipoServicio;
-                        granTotalAgrupadoEnCurso.totCotizado=	granTotalAgrupadoEnCurso.totCotizado+servicioAgrupadoEnCurso.totCotizado;
-                        granTotalAgrupadoEnCurso.totDeduccion=	granTotalAgrupadoEnCurso.totDeduccion	+servicioAgrupadoEnCurso.totDeduccion	;
-                        granTotalAgrupadoEnCurso.totalFinal=	granTotalAgrupadoEnCurso.totalFinal+servicioAgrupadoEnCurso.totalFinal;
-                        granTotalAgrupadoEnCurso.totalFinalIva=	 granTotalAgrupadoEnCurso.totalFinalIva+ servicioAgrupadoEnCurso.totalFinalIva
-                        granTotalAgrupadoEnCurso.totalFinalRetencion4=	 granTotalAgrupadoEnCurso.totalFinalRetencion4+ servicioAgrupadoEnCurso.totalFinalRetencion4
-                        granTotalAgrupadoEnCurso.totalResultado	=	 granTotalAgrupadoEnCurso.totalResultado+ servicioAgrupadoEnCurso.totalResultado
+                        granTotalAgrupadoEnCurso.tipoServicio = granTotalAgrupadoEnCurso.tipoServicio + " " + servicioAgrupadoEnCurso.tipoServicio;
+                        granTotalAgrupadoEnCurso.totCotizado = granTotalAgrupadoEnCurso.totCotizado + servicioAgrupadoEnCurso.totCotizado;
+                        granTotalAgrupadoEnCurso.totDeduccion = granTotalAgrupadoEnCurso.totDeduccion + servicioAgrupadoEnCurso.totDeduccion;
+                        granTotalAgrupadoEnCurso.totalFinal = granTotalAgrupadoEnCurso.totalFinal + servicioAgrupadoEnCurso.totalFinal;
+                        granTotalAgrupadoEnCurso.totalFinalIva = granTotalAgrupadoEnCurso.totalFinalIva + servicioAgrupadoEnCurso.totalFinalIva
+                        granTotalAgrupadoEnCurso.totalFinalRetencion4 = granTotalAgrupadoEnCurso.totalFinalRetencion4 + servicioAgrupadoEnCurso.totalFinalRetencion4
+                        granTotalAgrupadoEnCurso.totalResultado = granTotalAgrupadoEnCurso.totalResultado + servicioAgrupadoEnCurso.totalResultado
                     }
                 }
-                 for (var reporte in reportes) {
+                for (var reporte in reportes) {
                     var reporteEnCurso = reportes[reporte];
-                    var granTotalAgrupadoEnCurso=reporteEnCurso.granTotalAgrupado;
+                    var granTotalAgrupadoEnCurso = reporteEnCurso.granTotalAgrupado;
                     granTotalAgrupadoEnCurso.totalFinalROUNDED = roundToTwo(granTotalAgrupadoEnCurso.totalFinal);
                     granTotalAgrupadoEnCurso.totalFinalIvaROUNDED = roundToTwo(granTotalAgrupadoEnCurso.totalFinalIva);
                     granTotalAgrupadoEnCurso.totalFinalRetencion4ROUNDED = roundToTwo(granTotalAgrupadoEnCurso.totalFinalRetencion4);
@@ -4958,6 +4958,60 @@ app.get('/getAcuseAlta', function (req, res) {
                 });
                 //res.render("view1");
                 //res.jsonp(response);
+            });
+});
+//</editor-fold>
+
+//<editor-fold defaultstate="collapsed" desc="getAddress">
+app.get('/getAddress', function (req, res) {
+    var requestID = new Date().getTime();
+    var response = {};
+    var dataPacket = {
+        requestID: requestID,
+        connectionParameters: SQLServerConnectionParameters,
+        looked: 0
+    };
+    mn.init(dataPacket)
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/getAddress]');
+                return dp;
+            })
+            .then(function (dp) {
+
+                inputValidation(response, req.query, [
+                    new FieldValidation('_dc', ENC.STRING()),
+                    new FieldValidation('callback', ENC.STRING()),
+                    new FieldValidation('limit', ENC.STRING()),
+                    new FieldValidation('page', ENC.STRING()),
+//                    new FieldValidation('query', ENC.STRING()),
+                    new FieldValidation('start', ENC.STRING())
+                ]);
+//                dp.idZona = req.query.idZona;
+                return dp;
+            })
+            .then(function (dp) {
+                dp.query = "SELECT NOMBRE_ROL FROM SLOAA_TS_ROL";
+                return dp;
+            })
+            .then(msql.selectPromise)
+            .then(function (dp) {
+                //response = dp.queryResult;
+                if (dp.queryResult.rows !== null) {
+                    response.address = dp.queryResult.rows;
+                    response.success = true;
+                } else {
+                    response.success = false;
+                }
+                return dp;
+            })
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[END]:[/getAddress]');
+                res.jsonp(response);
+            })
+            .catch(function (err) {
+                mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/getAddress]');
+                response.error = err.message;
+                res.jsonp(response);
             });
 });
 //</editor-fold>
