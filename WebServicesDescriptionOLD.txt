@@ -1,0 +1,744 @@
+
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓[01]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[login]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+Web service que recibe un nombre de usuario y  verifica contra  la base de datos  la existencia del usuario contraseña
+si existen ambas cosas retornara un objeto JSON "credential"
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+http://localhost:3000/login
+<-------------------------------------------
+{
+"user":"",
+"password":""
+}
+------------------------------------------->
+{
+	"credential": {
+		"ID_CREDENCIAL": 1,
+		"NOMBRE": "Carlos Palacios",
+		"USUARIO_NOMBRE": "carlos.palacios",
+		"ID_AUTORIDAD": 1,
+		"NOMBRE_AUTORIDAD": "Aduana Acapulco",
+		"ID_ZONA": 2,
+		"ID_ROL": 2,
+		"NOMBRE_ROL": "AUTORIDAD ESTANDAR",
+		"PRIVILEGIOS": {
+			"f1": true,
+			"f2": true,
+			"f3": {
+				"gen": true,
+				"rev": falsett
+			},
+			"f4": false,
+			"f5": true,
+			"f6": {
+				"gen": true,
+				"rev": falsett
+			},
+			"f7": true
+		},
+		"ID_CREDENCIAL_SUPERIOR": 2
+	},
+	"success": true
+}
+
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓[02]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[getAllOrdenServicio]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+Web service que obiene todas las ordenes de servicio de la Base de datos disponibles para el Rol y Tipo de Autoridad correspondientes a la
+credencial obtenida durante el Login retornara una coleccion de objetos JSON del tipo "orden de servicio"
+[!]Se requiere el tipo rol para en base a eso
+    Si es rol es 2 (AUTORIDAD ESTANDAR) Traera todas las Ordenes de servicio que sean de ese usuario y que pertenescan a su idAutoridad (Aduana)
+    Si es rol es 3 (AUTORIDAD SUPERVISOR) Traera todas las Ordenes de servicio que sean de ese usuario y de las ordenes de servicio de toda su gente a cargo que pertenescan a su idAutoridad (Aduana)
+    Si el rol es 4 (PRESTADOR DE SERVICIOS)Traera  todas las Ordenes de servicio que esten en estatus 7 (PREFACTURA)
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+
+http://localhost:3000/getAllOrdenServicio
+<-------------------------------------------
+{
+"idCredencial":"1",
+"idRol":"1",
+"idAutoridad":"2"
+}
+
+------------------------------------------->
+{
+    "ordenesServicio": [
+        {
+            "ID_ORDEN_SERVICIO": 1,
+            "NUM_ORDEN": 1,
+            "FECHA_SOLICITUD": "2018-01-19T00:00:00.000Z",
+            "DOMICILIO": "Ecatepec donde ocurren cosas extrañas",
+            "FIRMA1_USER1": null,
+            "FIRMA1_USER2": null,
+            "FIRMA2_USER1": null,
+            "FIRMA2_USER2": null,
+            "ID_STATUS": 1,
+            "METAINFO_FECHA_CREACION": "2018-01-19T00:00:00.000Z",
+            "METAINFO_IP": "10.15.17.158",
+            "METAINFO_MAC_ADRR": " 00:00:00:a1:2b:cc",
+            "LLAVE_SISTEMA": "wdasdasdasdasd",
+            "CIERRE_TOTAL": null,
+            "ID_CREDENCIAL": 1,
+            "NOMBRE": "Carlos Palacios",
+            "CARGO": "Desarrollador",
+            "TELEFONO": "555555555552",
+            "EXT": "55",
+            "EMAIL": "carlos.palacios@enclave.com.mx",
+            "PTT": "sss",
+            "MOVIL": "555555555555",
+            "USUARIO_NOMBRE": "carlos.palacios",
+            "USUARIO_PASSWORD": "12345",
+            "ID_ROL": 2,
+            "ID_CREDENCIAL_SUPERIOR": 2,
+            "ID_AUTORIDAD": 1,
+            "NOMBRE_AUTORIDAD": "Aduana Acapulco\r\n                                 ",
+            "ESTADO": "Acapulco                                          ",
+            "NIVEL": "SRyS                                              ",
+            "SERVICIO": "SRyS | Acapulco                                   ",
+            "ID_ZONA": 2
+        }
+    ],
+    "success": true
+}
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓[03]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[getOrdenServicio]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+Web service que  permite obtener toda la informacion  de una oden de servicio en particular
+retornara una Objeto JSON del tipo "orden de servicio"
+[!]Se requiere el id de la orden de servicio para encontrar la orden de servicio
+[!]Se requiere el tipo rol para en base a eso
+    Si es rol es 2 (AUTORIDAD ESTANDAR) Traera todas las Ordenes de servicio que sean de ese usuario y que pertenescan a su idAutoridad (Aduana)
+    Si es rol es 3 (AUTORIDAD SUPERVISOR) Traera todas las Ordenes de servicio que sean de ese usuario y de las ordenes de servicio de toda su gente a cargo que pertenescan a su idAutoridad (Aduana)
+    Si el rol es 4 (PRESTADOR DE SERVICIOS)Traera  todas las Ordenes de servicio que esten en estatus 7 (PREFACTURA)
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+http://localhost:3000/getOrdenServicio
+<-------------------------------------------
+{
+"idCredencial":"1",
+"idRol":"1",
+"idAutoridad":"2"
+"idOrdenServicio":"22"
+}
+
+------------------------------------------->
+{
+    "ordenServicio": {
+        "ID_ORDEN_SERVICIO": 22,
+        "NUM_ORDEN": 43,
+        "FECHA_SOLICITUD": "2018-01-29T19:38:00.000Z",
+        "DOMICILIO": "testa",
+        "FIRMA1_USER1": "xxx",
+        "FIRMA1_USER2": "xxx",
+        "FIRMA2_USER1": "xxx",
+        "FIRMA2_USER2": "xxx",
+        "ID_STATUS": 1,
+        "METAINFO_FECHA_CREACION": "2018-01-29T19:39:08.343Z",
+        "METAINFO_IP": "::1",
+        "METAINFO_MAC_ADRR": " ????????",
+        "LLAVE_SISTEMA": "TNRS-Acapulco -SRyS Acapulco -2018-43",
+        "CIERRE_TOTAL": null,
+        "ID_CREDENCIAL": 1,
+        "NOMBRE": "Carlos Palacios",
+        "CARGO": "Desarrollador",
+        "TELEFONO": "555555555552",
+        "EXT": "55",
+        "EMAIL": "carlos.palacios@enclave.com.mx",
+        "PTT": "sss",
+        "MOVIL": "555555555555",
+        "USUARIO_NOMBRE": "carlos.palacios",
+        "USUARIO_PASSWORD": "12345",
+        "ID_ROL": 2,
+        "ID_CREDENCIAL_SUPERIOR": 2,
+        "ID_AUTORIDAD": 1,
+        "NOMBRE_AUTORIDAD": "Aduana Acapulco\r\n                                 ",
+        "ESTADO": "Acapulco                                          ",
+        "NIVEL": "SRyS                                              ",
+        "SERVICIO": "SRyS | Acapulco                                   ",
+        "ID_ZONA": 2
+    },
+    "success": true
+}
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓[04]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[createOrdenServicio]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+Web service que permite abrir una nueva orden de servicio por lo que generara una nueva orden  de servicio en estatus 1(ALTA DE ORDEN)
+retorna  un objeto JSON con la informacion de  fecha de generacion  estatus exitoso o fallido y un objeto JSON con el registro creado
+[!]Se requiere la id de Autoridad(Aduana) de el usuario que solicito el alta de la orden de servicio
+[!]Se requiere la fecha de solicitud en formato string para ser añadida campo del registro
+[!]Se requiere la id del usuario quien solicito la creacion de la orden de servicio
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+http://localhost:3000/createOrdenServicio
+<-------------------------------------------
+{
+"idAutoridad":"1",
+"fechaSolicitud":"2012-06-18T10:34:09"
+"idCredencial"¨:"1"
+"domicilio":"otro lugar"
+}
+------------------------------------------->
+{
+    "metaFechaGeneracion": "2018-01-29T16:49:18.011Z",
+    "success": true,
+    "ordenServicio": {
+        "ID_ORDEN_SERVICIO": 16
+        "NUM_ORDEN": 42,
+        "FECHA_SOLICITUD": "2018-01-19T00:00:00.000Z",
+        "ID_CREDENCIAL": 1,
+        "DOMICILIO": "xxx",
+        "FIRMA1_USER1": null,
+        "FIRMA1_USER2": null,
+        "FIRMA2_USER1": null,
+        "FIRMA2_USER2": null,
+        "ID_STATUS": 1,
+        "METAINFO_FECHA_CREACION": "2018-01-29T16:49:18.010Z",
+        "METAINFO_IP": "::1",
+        "METAINFO_MAC_ADRR": " ????????",
+        "LLAVE_SISTEMA": "TNRS-Acapulco -SRyS Acapulco -2018-42"
+    }
+}
+
+
+
+
+
+
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓[05]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[addCotizacion]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+Web service que permite añadir un servicio a  una orden de Servicio
+retornara un objeto JSON con el estatus fallido o exitoso
+[!]Se requiere especificar la orden de servicio a la que estara asociada el servicio
+[!]Se requiere añadir la informacion del servicio
+    -que servicio
+    -que cantidad/unidad
+    -precio unitario
+    -el resultado del factor multiplicativo o de una especificacion de usuario del valor de cotizacion
+[!]Se requiere especificar  la zona /subzona del servicio que esta enlazado a que prestador de servicio efectuara la tarea
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+http://localhost:3000/addCotizacion
+<-------------------------------------------
+{
+"idOrdenServicio":"14",
+"idTipoServicio":"1"
+"idServicio"¨:"1001",
+"idUnidad":"1",
+"precioUnitario":"780",
+"cantidad":"2",
+"cotizacion":"1560",
+
+"idZona":"3",
+"idSubZona":"1",
+"idPestadorServicio":"1"
+}
+------------------------------------------->
+{
+    "success": true
+}
+
+
+
+
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓[06]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[updateServicio]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+Web service que permite actualizar una cotizacion en especifico para añadir cualquiera de los aspectos
+retornara un objeto JSON con el estatus fallido o exitoso 
+[!]Permite cambiar de Servicio
+    -idPestadorServicio
+    -idZona
+    -idSubZona
+    -idTipoServicio
+    -idServicio
+[!]Permite cambiar de Precio Unitario
+    -idTipoServicio
+    -idServicio
+    -idUnidad
+        [!]Permite cambiar aspectos de la cotizacion
+            -precioUnitario
+            -cantidad
+            -cotizacion
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+http://localhost:3000/updateServicio
+<-------------------------------------------
+{
+"idServicioCotizacion":"3",
+"idTipoServicio":"1"
+"idServicio"¨:"1002",
+"idUnidad":"1",
+"precioUnitario":"780",
+"cantidad":"4",
+"cotizacion":"15600"
+
+"idZona":"3",
+"idSubZona":"1",
+"idPestadorServicio":"1"
+
+
+}
+------------------------------------------->
+{
+    "success": true
+}
+
+
+
+
+
+
+
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓[07]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[getAllCotizacionXOrden]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+Web service que permite obtener un listado de todas las Cotizaciones  de una orden
+retorna un arreglo de objetos JSON del topo COTIZACION
+[!]Requiere saber de que orden se trata
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+http://localhost:3000/getAllCotizacionXOrden
+<-------------------------------------------
+{
+"idOrdenServicio":"14",
+}
+------------------------------------------->
+{
+    "cotizaciones": [
+        {
+            "ID_SERVICIO_COTIZACION": 3,
+            "ID_ORDEN_SERVICIO": 14,
+            "ID_TIPO_SERVICIO": 1,
+            "ID_SERVICIO": 1002,
+            "ID_UNIDAD": 1,
+            "PRECIO_UNITARIO": 780,
+            "CANTIDAD": 2,
+            "COTIZACION": 1560,
+            "DEDUCCION_CANTIDAD": 30,
+            "DEDUCCION_TIEMPO": 20,
+            "DEDUCCION": 400,
+            "DEDUCCION_JUSTIFICACION": "por que si",
+            "CANCELACION": 1,
+            "PRECIO_SERVICIO_FINAL": 1160,
+            "VALIDA_DISPONIBILIDAD": 0,
+            "ID_ZONA": 3,
+            "ID_SUBZONA": 1,
+            "ID_PRESTADOR_SERVICIO": 1
+        }
+    ],
+    "success": true
+}
+
+
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓[08]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[setDeduccionCotizacion]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+Web service que permite añadir una deduccion  a una cotizacion existente
+retornara un objeto JSON con el estatus fallido o exitoso 
+[!]Requiere informacion de la cotizacion para poder modificarla con una deduccion
+    -idOrdenServicio
+    -idServicioCotizacion
+[!]Requiere datos sobre la deduccion
+    -deduccionCantidad
+    -deduccionTiempo
+    -cancelacion
+    -deduccion
+    -deduccionJustificacion
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+http://localhost:3000/setDeduccionCotizacion
+<-------------------------------------------
+{
+"idOrdenServicio":"14",
+"idServicioCotizacion":"3",
+
+ "deduccionCantidad" = 1,
+ "deduccionTiempo" = 1;
+ "cancelacion" = 1;
+
+"deduccion"¨:"400",
+"deduccionJustificacion":"por que quiero"
+}
+------------------------------------------->
+{
+    "success": true
+}
+
+
+
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓[09]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[removeCotizacion]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+http://localhost:3000/removeCotizacion
+<-------------------------------------------
+{
+"idOrdenServicio":"14",
+"idServicioCotizacion":"3"
+}
+------------------------------------------->
+{
+    "success": true
+}
+
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓[10]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[removeCotizacion]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+http://localhost:3000/removeCotizacion
+<-------------------------------------------
+{
+        "idZona":3
+}
+------------------------------------------->
+{
+    "tipoServicio": [
+        {
+            "ID_TIPO_SERVICIO": 1,
+            "TIPO": "SERVICIO DE TRANSPORTES DE BIENES"
+        }
+    ],
+    "success": true
+}
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓[11]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[getAllSubZona]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+Web Service que  obtiene una lista de 
+http://localhost:3000/getAllSubZona
+<-------------------------------------------
+{
+        "idZona":3
+}
+------------------------------------------->
+{
+    "subZona": [
+        {
+            "ID_SUBZONA": 1,
+            "SUBZONA": "Ecatepec La  Lobera"
+        },
+        {
+            "ID_SUBZONA": 2,
+            "SUBZONA": "Nezayork Norte"
+        }
+    ],
+    "success": true
+}
+
+
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓[12]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[getAllServicios]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+http://localhost:3000/getAllServicios
+<-------------------------------------------
+{
+
+    idTipoServicio:1
+    idZona:3,
+    
+}
+------------------------------------------->
+{
+    "servicios": [
+        {
+            "ID_SERVICIO": 1001,
+            "NOMBRE_SERVICIO": "CAMION CON OPERADOR (MODELO 2010-2014)"
+        },
+        {
+            "ID_SERVICIO": 1002,
+            "NOMBRE_SERVICIO": "CAMION RABON CON OPERADOR (MODELO 2010- 2014)"
+        }
+    ],
+    "success": true
+}
+
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓[13]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[getUnidadYPrecioUnitarioXServicio]▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+http://localhost:3000/getUnidadYPrecioUnitarioXServicio
+<-------------------------------------------
+{
+idTipoServicio:1,
+idServicio:1001
+}
+------------------------------------------->
+{
+    "unidades": [
+        {
+            "ID_UNIDAD": 1,
+            "PRECIO_UNITARIO": 780,
+            "UNIDAD": "HORA"
+        },
+        {
+            "ID_UNIDAD": 2,
+            "PRECIO_UNITARIO": 90,
+            "UNIDAD": "KILOMETRO"
+        }
+    ],
+    "success": true
+}
+
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓[14]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[getAllProvedores]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+http://localhost:3000/getAllProvedores
+<-------------------------------------------
+{
+idZona:3,
+idSubZona:1
+idTipoServicio:1,
+idServicio:1001,
+}
+------------------------------------------->
+{
+    "provedores": [
+        {
+            "ID_PRESTADOR_SERVICIO": 1,
+            "NOMBRE": "La ponedoda"
+        }
+    ],
+    "success": true
+}
+
+
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓[15]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[firma1OrdenServicioGenerador]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+http://localhost:3000/firma1OrdenServicioGenerador
+<-------------------------------------------
+{
+idOrdenServicio:14,
+firma1UserId1:'esta es la firma'
+firma1UserName1:'juanito'
+}
+------------------------------------------->
+{
+    "success": true
+}
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓[16]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[firma1OrdenServicioSupervisor]▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+http://localhost:3000/firma1OrdenServicioSupervisor
+<-------------------------------------------
+{
+idOrdenServicio:14,
+firma1UserId2:'esta es la otra firma'
+firma1UserName2:'juanito'
+}
+------------------------------------------->
+{
+    "success": true
+}
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓[17]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[firma2OrdenServicioGenerador]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+http://localhost:3000/firma2OrdenServicioGenerador
+<-------------------------------------------
+{
+idOrdenServicio:14,
+firma2UserId1:'ddddddddddd firma final'
+firma2UserName1:'juanito'
+}
+------------------------------------------->
+{
+    "success": true
+}
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓[18]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[firma2OrdenServicioSupervisor]▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+http://localhost:3000/firma2OrdenServicioSupervisor
+<-------------------------------------------
+{
+idOrdenServicio:14,
+firma2UserId2:'rrrrrrrrrrr firma final'
+firma2UserName2:'juanito'
+}
+------------------------------------------->
+{
+    "success": true
+}
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓[19]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[closeOrdenServicio]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+http://localhost:3000/closeOrdenServicio
+<-------------------------------------------
+{
+idOrdenServicio:14
+}
+------------------------------------------->
+{
+    "success": true
+}
+
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓[20]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[setStatusOrdenServicio]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+http://localhost:3000/setStatusOrdenServicio
+<-------------------------------------------
+{
+idOrdenServicio:14,
+idStatus:3
+}
+------------------------------------------->
+{
+    "success": true
+}
+
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓[21]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[serviceConfirm]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+http://localhost:3000/serviceConfirm
+<-------------------------------------------
+{
+services:'9,8'
+}
+------------------------------------------->
+{
+    "success": true
+}
+
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓[22]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[sendMailConfirmacionProvedor]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+http://localhost:3000/sendMailConfirmacionProvedor
+<-------------------------------------------
+{
+idOrdenServicio:14
+}
+------------------------------------------->
+{
+    "success": true
+}
+
+
+
+
+
+
+
+
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓[23]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[getPrefacturaMensual]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+http://localhost:3000/getPrefacturaMensual
+<-------------------------------------------
+{
+    mensual:"#",      
+    idAutoridad:"#",
+    idOrden:"#"
+}
+
+ ▓   2casos
+
+
+1.-Botonazo en la lista de ordenes de servicio 
+{
+    mensual:"1", 
+    idAutoridad:"# idAutoridad de tu credencial",
+    idOrden:""
+}
+esto forzara a traer el reporte mensual de todas las ordenes de servicio que tengan idStatus7 de esa Autoridad
+
+
+
+
+2.-Botonazo dentro de la orden de servicio  (En los formularios en la Fase 7 (despues de las firmas solo 1 boton con generar prefactura))
+{
+    mensual:"",
+    idAutoridad:"# idAutoridad de tu credencial",
+    idOrden:"# id de la orden de Servicio"
+}
+esto generara la orden particular de servicio
+
+
+------------------------------------------->
+HTML RESPONSE
+
+
+
+
+
+
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓[24]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[getConsolidado]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+http://localhost:3000/getConsolidado?firma=ddddddddddddd&firmaNombre=rrrrrrrrrrrrrrrr
+
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓[25]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[getFactura]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+localhost:3000/getFactura?firma=ddddddddddddd&firmaNombre=rrrrrrrrrrrrrrrr&idAutoridad=1&factura=facccc&noIdPedido=idPedidooo&noIdRecepcion=noIdRecepcionn
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓[26]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[getAcuseAlta]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+http://localhost:3000/getAcuseAlta?firma=ddddddddddddd&firmaNombre=rrrrrrrrrrrrrrrr&idCredencial=1&_dc=dsadasas&callback=dsad
+
+
+
+
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓[27]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[getAllTipoServicio]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+Web service que permite obtener un listado mediante una coleccion de JSON del tipo (Tipo de Servicio)
+[!]requiere informacion acerca de la zona
+    -idZona
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+<-------------------------------------------
+{
+    idZona:1
+}
+
+------------------------------------------->
+{
+    "tipoServicio": [{
+        "ID_TIPO_SERVICIO": 1,
+        "TIPO": "SERVICIO DE TRANSPORTES DE BIENES"
+    }, {
+        "ID_TIPO_SERVICIO": 2,
+        "TIPO": "SERVICIO DE MANIOBRAS"
+    }, {
+        "ID_TIPO_SERVICIO": 3,
+        "TIPO": "SERVICIO DE MONTACARGAS, PATINES, DIABLOS Y BASCULAS (ALMACENES) "
+    }, {
+        "ID_TIPO_SERVICIO": 4,
+        "TIPO": "SERVICIO DE EMPAQUETADO PALETIZADO Y EMPLAYE"
+    }, {
+        "ID_TIPO_SERVICIO": 5,
+        "TIPO": "SERVICIO DE TRANSPORTE DE PERSONAL"
+    }, {
+        "ID_TIPO_SERVICIO": 6,
+        "TIPO": "SERVICIO OFICINA MOVIL"
+    }, {
+        "ID_TIPO_SERVICIO": 7,
+        "TIPO": "SERVICIO DE EQUIPO DE PROTECCION PARA OPERATIVOS"
+    }],
+    "success": true
+}
+
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓[28]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[getSigns]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+Web service que permite obtener las firmas digitales
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+<-------------------------------------------
+
+------------------------------------------->

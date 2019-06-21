@@ -919,6 +919,248 @@ var mailParameters1 = {
 
 //</editor-fold>
 
+//<editor-fold defaultstate="collapsed" desc="UTILS">
+//<editor-fold defaultstate="collapsed" desc="Numero a Texto">
+var numeroALetras = (function () {
+
+// Código basado en https://gist.github.com/alfchee/e563340276f89b22042a
+    function Unidades(num) {
+
+        switch (num)
+        {
+            case 1:
+                return 'UN';
+            case 2:
+                return 'DOS';
+            case 3:
+                return 'TRES';
+            case 4:
+                return 'CUATRO';
+            case 5:
+                return 'CINCO';
+            case 6:
+                return 'SEIS';
+            case 7:
+                return 'SIETE';
+            case 8:
+                return 'OCHO';
+            case 9:
+                return 'NUEVE';
+        }
+
+        return '';
+    }//Unidades()
+
+    function Decenas(num) {
+
+        let decena = Math.floor(num / 10);
+        let unidad = num - (decena * 10);
+
+        switch (decena)
+        {
+            case 1:
+            switch (unidad)
+            {
+                case 0:
+                    return 'DIEZ';
+                case 1:
+                    return 'ONCE';
+                case 2:
+                    return 'DOCE';
+                case 3:
+                    return 'TRECE';
+                case 4:
+                    return 'CATORCE';
+                case 5:
+                    return 'QUINCE';
+                default:
+                    return 'DIECI' + Unidades(unidad);
+            }
+            case 2:
+            switch (unidad)
+            {
+                case 0:
+                    return 'VEINTE';
+                default:
+                    return 'VEINTI' + Unidades(unidad);
+            }
+            case 3:
+                return DecenasY('TREINTA', unidad);
+            case 4:
+                return DecenasY('CUARENTA', unidad);
+            case 5:
+                return DecenasY('CINCUENTA', unidad);
+            case 6:
+                return DecenasY('SESENTA', unidad);
+            case 7:
+                return DecenasY('SETENTA', unidad);
+            case 8:
+                return DecenasY('OCHENTA', unidad);
+            case 9:
+                return DecenasY('NOVENTA', unidad);
+            case 0:
+                return Unidades(unidad);
+        }
+    }//Unidades()
+
+    function DecenasY(strSin, numUnidades) {
+        if (numUnidades > 0)
+            return strSin + ' Y ' + Unidades(numUnidades);
+
+        return strSin;
+    }//DecenasY()
+
+    function Centenas(num) {
+        let centenas = Math.floor(num / 100);
+        let decenas = num - (centenas * 100);
+
+        switch (centenas)
+        {
+            case 1:
+                if (decenas > 0)
+                    return 'CIENTO ' + Decenas(decenas);
+                return 'CIEN';
+            case 2:
+                return 'DOSCIENTOS ' + Decenas(decenas);
+            case 3:
+                return 'TRESCIENTOS ' + Decenas(decenas);
+            case 4:
+                return 'CUATROCIENTOS ' + Decenas(decenas);
+            case 5:
+                return 'QUINIENTOS ' + Decenas(decenas);
+            case 6:
+                return 'SEISCIENTOS ' + Decenas(decenas);
+            case 7:
+                return 'SETECIENTOS ' + Decenas(decenas);
+            case 8:
+                return 'OCHOCIENTOS ' + Decenas(decenas);
+            case 9:
+                return 'NOVECIENTOS ' + Decenas(decenas);
+        }
+
+        return Decenas(decenas);
+    }//Centenas()
+
+    function Seccion(num, divisor, strSingular, strPlural) {
+        let cientos = Math.floor(num / divisor);
+        let resto = num - (cientos * divisor);
+
+        let letras = '';
+
+        if (cientos > 0)
+            if (cientos > 1)
+                letras = Centenas(cientos) + ' ' + strPlural;
+            else
+                letras = strSingular;
+
+        if (resto > 0)
+            letras += '';
+
+        return letras;
+    }//Seccion()
+
+    function Miles(num) {
+        let divisor = 1000;
+        let cientos = Math.floor(num / divisor)
+        let resto = num - (cientos * divisor)
+
+        let strMiles = Seccion(num, divisor, 'UN MIL', 'MIL');
+        let strCentenas = Centenas(resto);
+
+        if (strMiles == '')
+            return strCentenas;
+
+        return strMiles + ' ' + strCentenas;
+    }//Miles()
+
+    function Millones(num) {
+        let divisor = 1000000;
+        let cientos = Math.floor(num / divisor);
+        let resto = num - (cientos * divisor);
+
+        let strMillones = Seccion(num, divisor, 'UN MILLON DE', 'MILLONES DE');
+        let strMiles = Miles(resto);
+
+        if (strMillones == '') {
+            return strMiles;
+        }
+
+        return strMillones + ' ' + strMiles;
+    }//Millones()
+
+    return function NumeroALetras(num, currency) {
+        currency = currency || {};
+        let data = {
+            numero: num,
+            enteros: Math.floor(num),
+            centavos: (((Math.round(num * 100)) - (Math.floor(num) * 100))),
+            letrasCentavos: '',
+            letrasMonedaPlural: currency.plural || 'PESOS CHILENOS', //'PESOS', 'Dólares', 'Bolívares', 'etcs'
+            letrasMonedaSingular: currency.singular || 'PESO CHILENO', //'PESO', 'Dólar', 'Bolivar', 'etc'
+            letrasMonedaCentavoPlural: currency.centPlural || 'CHIQUI PESOS CHILENOS',
+            letrasMonedaCentavoSingular: currency.centSingular || 'CHIQUI PESO CHILENO'
+        };
+
+        if (data.centavos > 0) {
+            data.letrasCentavos = 'CON ' + (function () {
+                if (data.centavos == 1)
+                    return Millones(data.centavos) + ' ' + data.letrasMonedaCentavoSingular;
+                else
+                    return Millones(data.centavos) + ' ' + data.letrasMonedaCentavoPlural;
+            })();
+        }
+        ;
+
+        if (data.enteros == 0)
+            return 'CERO ' + data.letrasMonedaPlural + ' ' + data.letrasCentavos;
+        if (data.enteros == 1)
+            return Millones(data.enteros) + ' ' + data.letrasMonedaSingular + ' ' + data.letrasCentavos;
+        else
+            return Millones(data.enteros) + ' ' + data.letrasMonedaPlural + ' ' + data.letrasCentavos;
+    };
+
+})();
+
+//// Modo de uso: 500,34 USD
+//console.log(numeroALetras(542.34, {
+//    plural: 'pesos',
+//    singular: 'peso',
+//    centPlural: 'centavos MN',
+//    centSingular: 'centavo MN'
+//}));
+//</editor-fold>
+
+//<editor-fold defaultstate="collapsed" desc="SumaDias">
+sumarDias = function (fecha, dias) {
+//        dia =,
+//        mes =  + 1,
+//        anio = ,
+    addTime = dias * 86400; //Tiempo en segundos
+    newDate = new Date(fecha.getFullYear(), fecha.getMonth(), fecha.getDate());
+    newDate.setSeconds(addTime); //Añado el tiempo
+    return newDate;
+};
+//</editor-fold>
+
+//<editor-fold defaultstate="collapsed" desc="Redondea a 2 Decimales">
+var roundToTwo = function (num) {
+    return +(Math.round(num + "e+2") + "e-2");
+};
+//</editor-fold>
+
+//<editor-fold defaultstate="collapsed" desc="Obtiene fecha formateada">
+var getFormattedDate = function (date) {
+    var year = date.getFullYear();
+    var month = (1 + date.getMonth()).toString();
+    month = month.length > 1 ? month : '0' + month;
+    var day = date.getDate().toString();
+    day = day.length > 1 ? day : '0' + day;
+    return day + '/' + month + '/' + year;
+};
+//</editor-fold>
+//</editor-fold>
+
+//▓[00]▓
 //<editor-fold defaultstate="collapsed" desc="defaultSelect">
 app.post('/defaultSelect', function (req, res) {
     var requestID = new Date().getTime();
@@ -957,6 +1199,7 @@ app.post('/defaultSelect', function (req, res) {
 });
 //</editor-fold>
 
+//▓[01]▓
 //<editor-fold defaultstate="collapsed" desc="login">
 app.get('/login', function (req, res) {
     var requestID = new Date().getTime();
@@ -1031,6 +1274,8 @@ app.get('/login', function (req, res) {
 });
 //</editor-fold>
 
+
+//▓[02]▓
 //<editor-fold defaultstate="collapsed" desc="getAllOrdenServicio">
 app.get('/getAllOrdenServicio', function (req, res) {
     var requestID = new Date().getTime();
@@ -1112,14 +1357,14 @@ app.get('/getAllOrdenServicio', function (req, res) {
 
                 if (dp.idRol === "2") {
                     if (dp.idCredencial !== "") {
-                        dp.query = dp.query + "   AND  [AUTH].[ID_AUTORIDAD]=" + dp.idCredencial + "\n ";
+                        dp.query = dp.query + "   AND  [AUTH].[ID_AUTORIDAD]=" + dp.idAutoridad + "\n ";
                         dp.query = dp.query + "   AND  [ORD].[ID_CREDENCIAL]=" + dp.idCredencial + "\n ";
                     }
                 }
 
                 if (dp.idRol === "3") {
                     if (dp.idCredencial !== "") {
-                        dp.query = dp.query + "   AND  [AUTH].[ID_AUTORIDAD]=" + dp.idCredencial + "\n ";
+                        dp.query = dp.query + "   AND  [AUTH].[ID_AUTORIDAD]=" + dp.idAutoridad + "\n ";
                         dp.query = dp.query + "   AND  ([CRED].[ID_CREDENCIAL]=" + dp.idCredencial + "   OR  [CRED].[ID_CREDENCIAL_SUPERIOR]=" + dp.idCredencial + "    )\n ";
                     }
                 }
@@ -1154,7 +1399,7 @@ app.get('/getAllOrdenServicio', function (req, res) {
             });
 });
 //</editor-fold>
-
+//▓[03]▓
 //<editor-fold defaultstate="collapsed" desc="getOrdenServicio">
 app.get('/getOrdenServicio', function (req, res) {
     var requestID = new Date().getTime();
@@ -1237,14 +1482,14 @@ app.get('/getOrdenServicio', function (req, res) {
 
                 if (dp.idRol === "2") {
                     if (dp.idCredencial !== "") {
-                        dp.query = dp.query + "   AND  [AUTH].[ID_AUTORIDAD]=" + dp.idCredencial + "\n ";
+                        dp.query = dp.query + "   AND  [AUTH].[ID_AUTORIDAD]=" + dp.idAutoridad + "\n ";
                         dp.query = dp.query + "   AND  [ORD].[ID_CREDENCIAL]=" + dp.idCredencial + "\n ";
                     }
                 }
 
                 if (dp.idRol === "3") {
                     if (dp.idCredencial !== "") {
-                        dp.query = dp.query + "   AND  [AUTH].[ID_AUTORIDAD]=" + dp.idCredencial + "\n ";
+                        dp.query = dp.query + "   AND  [AUTH].[ID_AUTORIDAD]=" + dp.idAutoridad + "\n ";
                         dp.query = dp.query + "   AND  ([CRED].[ID_CREDENCIAL]=" + dp.idCredencial + "   OR  [CRED].[ID_CREDENCIAL_SUPERIOR]=" + dp.idCredencial + "    )\n ";
                     }
                 }
@@ -1279,7 +1524,7 @@ app.get('/getOrdenServicio', function (req, res) {
             });
 });
 //</editor-fold>
-
+//▓[28]▓
 //<editor-fold defaultstate="collapsed" desc="getSigns">
 app.get('/getSigns', function (req, res) {
     var requestID = new Date().getTime();
@@ -1291,7 +1536,7 @@ app.get('/getSigns', function (req, res) {
     };
     mn.init(dataPacket)
             .then(function (dp) {
-                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/getAllOrdenServicio]');
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/getSigns]');
                 return dp;
             })
             .then(function (dp) {
@@ -1359,17 +1604,17 @@ app.get('/getSigns', function (req, res) {
                 return dp;
             })
             .then(function (dp) {
-                mc.info('RID:[' + requestID + ']-[REQUEST]-[END]:[/getAllOrdenServicio]');
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[END]:[/getSigns]');
                 res.jsonp(response);
             })
             .catch(function (err) {
-                mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/getAllOrdenServicio]');
+                mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/getSigns]');
                 response.error = err.message;
                 res.jsonp(response);
             });
 });
 //</editor-fold>
-
+//▓[04]▓
 //<editor-fold defaultstate="collapsed" desc="createOrdenServicio">
 app.get('/createOrdenServicio', function (req, res) {
     var requestID = new Date().getTime();
@@ -1579,8 +1824,8 @@ app.get('/createOrdenServicio', function (req, res) {
             });
 });
 //</editor-fold>
-
-//<editor-fold defaultstate="collapsed" desc="addServicio">
+//▓[05]▓
+//<editor-fold defaultstate="collapsed" desc="addCotizacion">
 app.get('/addCotizacion', function (req, res) {
     var requestID = new Date().getTime();
     var response = {};
@@ -1713,7 +1958,7 @@ app.get('/addCotizacion', function (req, res) {
             });
 });
 //</editor-fold>
-
+//▓[06]▓
 //<editor-fold defaultstate="collapsed" desc="updateServicio">
 app.get('/updateServicio', function (req, res) {
     var requestID = new Date().getTime();
@@ -1813,8 +2058,8 @@ app.get('/updateServicio', function (req, res) {
             });
 });
 //</editor-fold>
-
-//<editor-fold defaultstate="collapsed" desc="getAllServicioFromOrden">
+//▓[07]▓
+//<editor-fold defaultstate="collapsed" desc="getAllCotizacionXOrden">
 app.get('/getAllCotizacionXOrden', function (req, res) {
     var requestID = new Date().getTime();
     var response = {};
@@ -1868,7 +2113,7 @@ app.get('/getAllCotizacionXOrden', function (req, res) {
             });
 });
 //</editor-fold>
-
+//▓[08]▓
 //<editor-fold defaultstate="collapsed" desc="setDeduccionCotizacion">
 app.get('/setDeduccionCotizacion', function (req, res) {
     var requestID = new Date().getTime();
@@ -1947,7 +2192,7 @@ app.get('/setDeduccionCotizacion', function (req, res) {
             });
 });
 //</editor-fold>
-
+//▓[09]▓
 //<editor-fold defaultstate="collapsed" desc="removeCotizacion">
 app.get('/removeCotizacion', function (req, res) {
     var requestID = new Date().getTime();
@@ -2008,63 +2253,7 @@ app.get('/removeCotizacion', function (req, res) {
             });
 });
 //</editor-fold>
-
-//<editor-fold defaultstate="collapsed" desc="getAllSubZona">
-app.get('/getAllSubZona', function (req, res) {
-    var requestID = new Date().getTime();
-    var response = {};
-    var dataPacket = {
-        requestID: requestID,
-        connectionParameters: SQLServerConnectionParameters,
-        looked: 0
-    };
-    mn.init(dataPacket)
-            .then(function (dp) {
-                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/getAllSubZona]');
-                return dp;
-            })
-            .then(function (dp) {
-
-                inputValidation(response, req.query, [
-                    new FieldValidation('idZona', ENC.STRING()),
-                    new FieldValidation('_dc', ENC.STRING()),
-                    new FieldValidation('query', ENC.STRING()),
-                    new FieldValidation('page', ENC.STRING()),
-                    new FieldValidation('start', ENC.STRING()),
-                    new FieldValidation('limit', ENC.STRING()),
-                    new FieldValidation('callback', ENC.STRING()),
-                ]);
-                dp.idZona = req.query.idZona;
-                return dp;
-            })
-            .then(function (dp) {
-                dp.query = "SELECT [ID_SUBZONA],[SUBZONA] FROM [SLOAA_TC_SUBZONA] WHERE 1=1 " +
-                        "AND [ID_ZONA]=" + dp.idZona;
-                return dp;
-            })
-            .then(msql.selectPromise)
-            .then(function (dp) {
-                //response = dp.queryResult;
-                if (dp.queryResult.rows !== null) {
-                    response.subZona = dp.queryResult.rows;
-                    response.success = true;
-                } else {
-                    response.success = false;
-                }
-                return dp;
-            })
-            .then(function (dp) {
-                mc.info('RID:[' + requestID + ']-[REQUEST]-[END]:[/getAllSubZona]');
-                res.jsonp(response);
-            })
-            .catch(function (err) {
-                mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/getAllSubZona]');
-                response.error = err.message;
-                res.jsonp(response);
-            });
-});
-//</editor-fold>
-
+//▓[10]▓
 //<editor-fold defaultstate="collapsed" desc="getAllTipoServicio">
 app.get('/getAllTipoServicio', function (req, res) {
     var requestID = new Date().getTime();
@@ -2134,7 +2323,63 @@ app.get('/getAllTipoServicio', function (req, res) {
             });
 });
 //</editor-fold>
+//▓[11]▓
+//<editor-fold defaultstate="collapsed" desc="getAllSubZona">
+app.get('/getAllSubZona', function (req, res) {
+    var requestID = new Date().getTime();
+    var response = {};
+    var dataPacket = {
+        requestID: requestID,
+        connectionParameters: SQLServerConnectionParameters,
+        looked: 0
+    };
+    mn.init(dataPacket)
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/getAllSubZona]');
+                return dp;
+            })
+            .then(function (dp) {
 
+                inputValidation(response, req.query, [
+                    new FieldValidation('idZona', ENC.STRING()),
+                    new FieldValidation('_dc', ENC.STRING()),
+                    new FieldValidation('query', ENC.STRING()),
+                    new FieldValidation('page', ENC.STRING()),
+                    new FieldValidation('start', ENC.STRING()),
+                    new FieldValidation('limit', ENC.STRING()),
+                    new FieldValidation('callback', ENC.STRING()),
+                ]);
+                dp.idZona = req.query.idZona;
+                return dp;
+            })
+            .then(function (dp) {
+                dp.query = "SELECT [ID_SUBZONA],[SUBZONA] FROM [SLOAA_TC_SUBZONA] WHERE 1=1 " +
+                        "AND [ID_ZONA]=" + dp.idZona;
+                return dp;
+            })
+            .then(msql.selectPromise)
+            .then(function (dp) {
+                //response = dp.queryResult;
+                if (dp.queryResult.rows !== null) {
+                    response.subZona = dp.queryResult.rows;
+                    response.success = true;
+                } else {
+                    response.success = false;
+                }
+                return dp;
+            })
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[END]:[/getAllSubZona]');
+                res.jsonp(response);
+            })
+            .catch(function (err) {
+                mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/getAllSubZona]');
+                response.error = err.message;
+                res.jsonp(response);
+            });
+});
+//</editor-fold>
+//▓[12]▓
 //<editor-fold defaultstate="collapsed" desc="getAllServicios">
 app.get('/getAllServicios', function (req, res) {
     var requestID = new Date().getTime();
@@ -2210,7 +2455,76 @@ app.get('/getAllServicios', function (req, res) {
             });
 });
 //</editor-fold>
+//▓[13]▓
+//<editor-fold defaultstate="collapsed" desc="getUnidadYPrecioUnitarioXServicio">
+app.get('/getUnidadYPrecioUnitarioXServicio', function (req, res) {
+    var requestID = new Date().getTime();
+    var response = {};
+    var dataPacket = {
+        requestID: requestID,
+        connectionParameters: SQLServerConnectionParameters,
+        looked: 0
+    };
+    mn.init(dataPacket)
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/getUnidadYPrecioUnitarioXServicio]');
+                return dp;
+            })
+            .then(function (dp) {
 
+                inputValidation(response, req.query, [
+                    new FieldValidation('idTipoServicio', ENC.STRING()),
+                    new FieldValidation('idServicio', ENC.STRING()),
+                    new FieldValidation('_dc', ENC.STRING()),
+                    new FieldValidation('query', ENC.STRING()),
+                    new FieldValidation('page', ENC.STRING()),
+                    new FieldValidation('start', ENC.STRING()),
+                    new FieldValidation('limit', ENC.STRING()),
+                    new FieldValidation('callback', ENC.STRING())
+                ]);
+                dp.idTipoServicio = req.query.idTipoServicio;
+                dp.idServicio = req.query.idServicio;
+                return dp;
+            })
+            .then(function (dp) {
+                dp.query = "SELECT [QRY].*,\n" +
+                        "	  [UNI].[UNIDAD]\n" +
+                        "	   FROM\n" +
+                        "(\n" +
+                        "  SELECT \n" +
+                        "      DISTINCT([PU].[ID_UNIDAD]),\n" +
+                        "	  [PU].[PRECIO_UNITARIO]\n" +
+                        "  FROM [dbo].[SLOAA_TR_PRECIO_UNITARIO] [PU]\n" +
+                        "  WHERE 1=1 \n" +
+                        "  AND [PU].[ID_TIPO_SERVICIO]=" + dp.idTipoServicio + "\n" +
+                        "  AND  [PU].[ID_SERVICIO]=" + dp.idServicio + "\n" +
+                        ")[QRY]\n" +
+                        "LEFT JOIN [dbo].[SLOAA_TC_UNIDAD] [UNI] ON [QRY].[ID_UNIDAD]=[UNI].[ID_UNIDAD]";
+                return dp;
+            })
+            .then(msql.selectPromise)
+            .then(function (dp) {
+                //response = dp.queryResult;
+                if (dp.queryResult.rows !== null) {
+                    response.unidades = dp.queryResult.rows;
+                    response.success = true;
+                } else {
+                    response.success = false;
+                }
+                return dp;
+            })
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[END]:[/getUnidadYPrecioUnitarioXServicio]');
+                res.jsonp(response);
+            })
+            .catch(function (err) {
+                mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/getUnidadYPrecioUnitarioXServicio]');
+                response.error = err.message;
+                res.jsonp(response);
+            });
+});
+//</editor-fold>
+//▓[14]▓
 //<editor-fold defaultstate="collapsed" desc="getAllProvedores">
 app.get('/getAllProvedores', function (req, res) {
     var requestID = new Date().getTime();
@@ -2291,75 +2605,8 @@ app.get('/getAllProvedores', function (req, res) {
 });
 //</editor-fold>
 
-//<editor-fold defaultstate="collapsed" desc="getUnidadYPrecioUnitarioXServicio">
-app.get('/getUnidadYPrecioUnitarioXServicio', function (req, res) {
-    var requestID = new Date().getTime();
-    var response = {};
-    var dataPacket = {
-        requestID: requestID,
-        connectionParameters: SQLServerConnectionParameters,
-        looked: 0
-    };
-    mn.init(dataPacket)
-            .then(function (dp) {
-                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/getUnidadYPrecioUnitarioXServicio]');
-                return dp;
-            })
-            .then(function (dp) {
 
-                inputValidation(response, req.query, [
-                    new FieldValidation('idTipoServicio', ENC.STRING()),
-                    new FieldValidation('idServicio', ENC.STRING()),
-                    new FieldValidation('_dc', ENC.STRING()),
-                    new FieldValidation('query', ENC.STRING()),
-                    new FieldValidation('page', ENC.STRING()),
-                    new FieldValidation('start', ENC.STRING()),
-                    new FieldValidation('limit', ENC.STRING()),
-                    new FieldValidation('callback', ENC.STRING())
-                ]);
-                dp.idTipoServicio = req.query.idTipoServicio;
-                dp.idServicio = req.query.idServicio;
-                return dp;
-            })
-            .then(function (dp) {
-                dp.query = "SELECT [QRY].*,\n" +
-                        "	  [UNI].[UNIDAD]\n" +
-                        "	   FROM\n" +
-                        "(\n" +
-                        "  SELECT \n" +
-                        "      DISTINCT([PU].[ID_UNIDAD]),\n" +
-                        "	  [PU].[PRECIO_UNITARIO]\n" +
-                        "  FROM [dbo].[SLOAA_TR_PRECIO_UNITARIO] [PU]\n" +
-                        "  WHERE 1=1 \n" +
-                        "  AND [PU].[ID_TIPO_SERVICIO]=" + dp.idTipoServicio + "\n" +
-                        "  AND  [PU].[ID_SERVICIO]=" + dp.idServicio + "\n" +
-                        ")[QRY]\n" +
-                        "LEFT JOIN [dbo].[SLOAA_TC_UNIDAD] [UNI] ON [QRY].[ID_UNIDAD]=[UNI].[ID_UNIDAD]";
-                return dp;
-            })
-            .then(msql.selectPromise)
-            .then(function (dp) {
-                //response = dp.queryResult;
-                if (dp.queryResult.rows !== null) {
-                    response.unidades = dp.queryResult.rows;
-                    response.success = true;
-                } else {
-                    response.success = false;
-                }
-                return dp;
-            })
-            .then(function (dp) {
-                mc.info('RID:[' + requestID + ']-[REQUEST]-[END]:[/getUnidadYPrecioUnitarioXServicio]');
-                res.jsonp(response);
-            })
-            .catch(function (err) {
-                mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/getUnidadYPrecioUnitarioXServicio]');
-                response.error = err.message;
-                res.jsonp(response);
-            });
-});
-//</editor-fold>
-
+//▓[15]▓
 //<editor-fold defaultstate="collapsed" desc="firma1OrdenServicioGenerador">
 app.get('/firma1OrdenServicioGenerador', function (req, res) {
     var requestID = new Date().getTime();
@@ -2431,6 +2678,7 @@ app.get('/firma1OrdenServicioGenerador', function (req, res) {
             });
 });
 //</editor-fold>
+//▓[16]▓
 //<editor-fold defaultstate="collapsed" desc="firma1OrdenServicioSupervisor">
 app.get('/firma1OrdenServicioSupervisor', function (req, res) {
     var requestID = new Date().getTime();
@@ -2502,6 +2750,7 @@ app.get('/firma1OrdenServicioSupervisor', function (req, res) {
             });
 });
 //</editor-fold>
+//▓[17]▓
 //<editor-fold defaultstate="collapsed" desc="firma2OrdenServicioGenerador">
 app.get('/firma2OrdenServicioGenerador', function (req, res) {
     var requestID = new Date().getTime();
@@ -2573,6 +2822,7 @@ app.get('/firma2OrdenServicioGenerador', function (req, res) {
             });
 });
 //</editor-fold>
+//▓[18]▓
 //<editor-fold defaultstate="collapsed" desc="firma2OrdenServicioSupervisor">
 app.get('/firma2OrdenServicioSupervisor', function (req, res) {
     var requestID = new Date().getTime();
@@ -2645,6 +2895,8 @@ app.get('/firma2OrdenServicioSupervisor', function (req, res) {
 });
 //</editor-fold>
 
+
+//▓[19]▓
 //<editor-fold defaultstate="collapsed" desc="closeOrdenServicio">
 app.get('/closeOrdenServicio', function (req, res) {
     var requestID = new Date().getTime();
@@ -2741,7 +2993,7 @@ app.get('/closeOrdenServicio', function (req, res) {
             });
 });
 //</editor-fold>
-
+//▓[20]▓
 //<editor-fold defaultstate="collapsed" desc="setStatusOrdenServicio">
 app.get('/setStatusOrdenServicio', function (req, res) {
     var requestID = new Date().getTime();
@@ -2791,6 +3043,7 @@ app.get('/setStatusOrdenServicio', function (req, res) {
                 }
                 return dp;
             })
+            //</editor-fold>
             //<editor-fold defaultstate="collapsed" desc="UPDATE">
             .then(function (dp) {
 
@@ -2830,7 +3083,7 @@ app.get('/setStatusOrdenServicio', function (req, res) {
             });
 });
 //</editor-fold>
-
+//▓[21]▓
 //<editor-fold defaultstate="collapsed" desc="serviceConfirm">
 app.get('/serviceConfirm', function (req, res) {
     var requestID = new Date().getTime();
@@ -2909,11 +3162,10 @@ app.get('/serviceConfirm', function (req, res) {
             });
 });
 //</editor-fold>
-
+//▓[22]▓
+//<editor-fold defaultstate="collapsed" desc="sendMailConfirmacionProvedor">
 var ip = '10.15.17.158';
 var port = '3000';
-
-//<editor-fold defaultstate="collapsed" desc="sendMailConfirmacionProvedor">
 app.get('/sendMailConfirmacionProvedor', function (req, res) {
     var requestID = new Date().getTime();
     var response = {};
@@ -3371,539 +3623,10 @@ app.get('/sendMailConfirmacionProvedor', function (req, res) {
 });
 //</editor-fold>
 
-//<editor-fold defaultstate="collapsed" desc="getReport">
-app.get('/getReport', function (req, res) {
-    var requestID = new Date().getTime();
-    var response = {};
-    var dataPacket = {
-        requestID: requestID,
-        connectionParameters: SQLServerConnectionParameters,
-        looked: 0
-    };
-    mn.init(dataPacket)
-            .then(function (dp) {
-                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/getReport]');
-                return dp;
-            })
-            .then(function (dp) {
-
-                inputValidation(response, req.query, [
-                    new FieldValidation('idAutoridad', ENC.STRING()),
-                    new FieldValidation('idOrden', ENC.STRING()),
-                    new FieldValidation('mensual', ENC.STRING()),
-                    new FieldValidation('userName', ENC.STRING()),
-                    new FieldValidation('eFirma', ENC.STRING())
-                ]);
-                dp.idAutoridad = req.query.idAutoridad;
-                dp.idOrden = req.query.idOrden;
-                dp.mensual = req.query.mensual;
-                dp.mailList = {};
-                dp.userName = req.query.userName;
-                dp.eFirma = req.query.eFirma;
-                return dp;
-            })
-            .then(function (dp) {
-                var now = new Date();
-                var month = now.getMonth() + 1;
-                var year = now.getFullYear();
-                var fMonth = month - 1;
-                var fYear = year;
-                if (fMonth === 0) {
-                    fMonth = 12;
-                    fYear = fYear - 1;
-                }
-
-                dp.fMonth = fMonth;
-                dp.fYear = fYear;
-                dp.query = "SELECT \n" +
-                        "	  [TS].[TIPO]\n" +
-                        "	, [SERV].*\n" +
-                        "	, [ORD].* \n" +
-                        "	, [UNI].* \n" +
-                        "	, [SS].* \n" +
-                        "	, [CRED].* \n" +
-                        "	, [AUTH].* \n" +
-                        //"       , "
-                        "FROM [SLOAA_TR_SERVICIO_COTIZACION] [SERV]\n" +
-                        "LEFT JOIN [SLOAA_TR_ORDEN_SERVICIO] [ORD] ON  [SERV].[ID_ORDEN_SERVICIO]=[ORD].[ID_ORDEN_SERVICIO]\n" +
-                        "LEFT JOIN [SLOAA_TC_UNIDAD] [UNI] ON  [SERV].[ID_UNIDAD]=[UNI].[ID_UNIDAD]\n" +
-                        "LEFT JOIN [SLOAA_TC_TIPO_SERVICIO] [TS] ON  [SERV].[ID_TIPO_SERVICIO]=[TS].[ID_TIPO_SERVICIO]\n" +
-                        "LEFT JOIN [SLOAA_TC_SERVICIO] [SS] ON  [SERV].[ID_SERVICIO]=[SS].[ID_SERVICIO] and [SERV].[ID_TIPO_SERVICIO]=[SS].[ID_TIPO_SERVICIO]\n" +
-                        "LEFT JOIN [SLOAA_TR_CREDENCIAL] [CRED] ON  [CRED].[ID_CREDENCIAL]=[ORD].[ID_CREDENCIAL]\n" +
-                        "LEFT JOIN [SLOAA_TC_AUTORIDAD] [AUTH] ON  [AUTH].[ID_AUTORIDAD]=[CRED].[ID_AUTORIDAD]\n" +
-                        "\n" +
-                        "WHERE \n" +
-                        "1=1\n";
-                if (dp.mensual !== "") {
-                    dp.query = dp.query + " AND [SERV].[CANCELACION]=0  \n";
-                    dp.query = dp.query + " AND [ORD].[ID_STATUS]=7 \n";
-                    //dp.query = dp.query + " AND MONTH([ORD].[FECHA_SOLICITUD])=MONTH(GetDate()) \n";
-                    //dp.query = dp.query + " AND YEAR([ORD].[FECHA_SOLICITUD])=YEAR(GetDate()) \n";
-                    dp.query = dp.query + " AND MONTH([ORD].[FECHA_SOLICITUD])=" + fMonth + " \n";
-                    dp.query = dp.query + " AND YEAR([ORD].[FECHA_SOLICITUD])=" + fYear + " \n";
-                    dp.tipoReporte = "MENSUAL";
-                } else {
-                    dp.tipoReporte = "";
-                }
-
-                if (dp.idAutoridad !== "") {
-                    dp.query = dp.query + " AND [AUTH].[ID_AUTORIDAD]=" + dp.idAutoridad + " \n";
-                }
-                if (dp.idOrden !== "") {
-                    dp.query = dp.query + " AND [ORD].[ID_ORDEN_SERVICIO]=" + dp.idOrden + " \n";
-                }
-
-                dp.query = dp.query + "\n" +
-                        "ORDER BY\n" +
-                        "[ORD].[FECHA_SOLICITUD],\n" +
-                        "[ORD].[ID_ORDEN_SERVICIO],\n" +
-                        "[SERV].[ID_SERVICIO]";
-                return dp;
-            })
-            .then(msql.selectPromise)
-            .then(function (dp) {
-                //response = dp.queryResult;
-                if (dp.queryResult.rows !== null) {
-                    dp.servicios = dp.queryResult.rows;
-                    dp.success = true;
-                } else {
-                    throw new Error("Error de parametros");
-                }
-                return dp;
-            })
-            .then(function (dp) {
-
-                dp.ordenes = {};
-                for (var currentKey in dp.servicios) {
-                    currentRow = dp.servicios[currentKey];
-                    currentOrden = dp.ordenes[currentRow.LLAVE_SISTEMA];
-                    dp.nombreAutoridad = currentRow.NOMBRE_AUTORIDAD;
-                    dp.llaveOrdenMensual = "MX-SAT-TN-" + currentRow.SERVICIO + "-" + dp.fYear + "-" + dp.fMonth;
-                    dp.llaveOrdenMensual = dp.llaveOrdenMensual.replace(/\|/g, "");
-                    dp.llaveOrdenMensual = dp.llaveOrdenMensual.replace(/\s+/g, ' ');
-                    if (typeof currentOrden === "undefined") {
-
-                        var textoFirmaRevisor = '';
-                        var textoFirmaGenerador = '';
-                        var firmaGenerador = '';
-                        var firmaRevisor = '';
-                        var firmaGeneradorNombre = '';
-                        var firmaRevisorNombre = '';
-                        if (currentRow.FIRMA1_USER1 !== null && currentRow.FIRMA1_USER1 !== '') {
-                            firmaGenerador = currentRow.FIRMA1_USER1;
-                            firmaGeneradorNombre = currentRow.FIRMA1_USERNAME1;
-                            textoFirmaGenerador = "Firma inicial Generador ";
-                        }
-                        if (currentRow.FIRMA1_USER2 !== null && currentRow.FIRMA1_USER2 !== '') {
-                            firmaRevisor = currentRow.FIRMA1_USER2;
-                            firmaRevisorNombre = currentRow.FIRMA1_USERNAME2;
-                            textoFirmaRevisor = "Firma inicial Revisor ";
-                        }
-                        if (currentRow.FIRMA2_USER1 !== null && currentRow.FIRMA2_USER1 !== '') {
-                            firmaGenerador = currentRow.FIRMA2_USER1;
-                            firmaGeneradorNombre = currentRow.FIRMA2_USERNAME1;
-                            textoFirmaGenerador = "Firma final Generador ";
-                        }
-                        if (currentRow.FIRMA2_USER2 !== null && currentRow.FIRMA2_USER2 !== '') {
-                            firmaRevisor = currentRow.FIRMA2_USER2;
-                            firmaRevisorNombre = currentRow.FIRMA2_USERNAME2;
-                            textoFirmaRevisor = "Firma final Revisor ";
-                        }
 
 
-                        currentOrden = {
-                            llaveSistema: currentRow.LLAVE_SISTEMA,
-                            idOrdenServicio: currentRow.ID_ORDEN_SERVICIO,
-                            fechaSolicitud: getFormattedDate(currentRow.FECHA_SOLICITUD),
-                            fechaServicio: getFormattedDate(currentRow.FECHA_SERVICIO),
-                            fechaServicioDate: currentRow.FECHA_SERVICIO,
-                            domicilio: currentRow.DOMICILIO,
-                            firmaGenerador: firmaGenerador,
-                            firmaRevisor: firmaRevisor,
-                            firmaGeneradorNombre: firmaGeneradorNombre,
-                            firmaRevisorNombre: firmaRevisorNombre,
-                            textoFirmaGenerador: textoFirmaGenerador,
-                            textoFirmaRevisor: textoFirmaRevisor,
-                            cotizacion: 0,
-                            deducciones: 0,
-                            total: 0,
-                            cumplimiento: "[   ]",
-                            identificado: "[   ]",
-                            servicios: [],
-                            deduccionJustificacionAll: "",
-                            deduccionJustificacionAllCount: 0
-                        };
-                        dp.ordenes[currentRow.LLAVE_SISTEMA] = currentOrden;
-                    }
-                    var fechaServicio = currentRow.FECHA_SERVICIO;
-                    if (currentOrden.fechaServicioDate.getTime() > fechaServicio.getTime()) {
-                        currentOrden.fechaServicioDate = fechaServicio;
-                        currentOrden.fechaServicio = getFormattedDate(fechaServicio);
-                    }
 
-                    currentOrden.servicios.push(dp.servicios[currentKey]);
-
-                    cotizacion = Number(currentRow.COTIZACION);
-                    deduccion = Number(currentRow.DEDUCCION);
-
-                    if (!isNaN(cotizacion)) {
-                        currentOrden.cotizacion = currentOrden.cotizacion + cotizacion;
-                    }
-                    if (!isNaN(deduccion)) {
-                        currentOrden.deducciones = currentOrden.deducciones + deduccion;
-                    }
-
-                    currentOrden.total = currentOrden.cotizacion - currentOrden.deducciones;
-                    if (currentRow.CUMPLIMIENTO === 1) {
-                        currentOrden.cumplimiento = "[ X ]";
-                    }
-                    if (currentRow.IDENTIFICADO === 1) {
-                        currentOrden.identificado = "[ X ]";
-                    }
-
-                    nombreServicio = currentRow.NOMBRE_SERVICIO;
-                    deduccionJustificacion = currentRow.DEDUCCION_JUSTIFICACION;
-                    if (deduccionJustificacion !== null && deduccionJustificacion !== "") {
-                        currentOrden.deduccionJustificacionAllCount++;
-                        currentOrden.deduccionJustificacionAll = currentOrden.deduccionJustificacionAll + " " + currentOrden.deduccionJustificacionAllCount + ")" + nombreServicio + " : " + deduccionJustificacion + "  / Monto deducido: " + deduccion + "      ";
-                    }
-                }
-
-
-                return dp;
-            })
-            .then(function (dp) {
-                mc.info('RID:[' + requestID + ']-[REQUEST]-[END]:[/getReport]');
-                if (dp.idOrden !== '') {
-                    res.render("ordenServicio", {
-                        tipoReporte: dp.tipoReporte,
-                        nombreAutoridad: dp.nombreAutoridad,
-                        ordenes: dp.ordenes,
-                        servicios: dp.servicios,
-                        title: 'Orden de Servicio'
-                    });
-                } else {
-                    res.render("prefactura", {
-                        tipoReporte: dp.tipoReporte,
-                        nombreAutoridad: dp.nombreAutoridad,
-                        llaveOrdenMensual: dp.llaveOrdenMensual,
-                        ordenes: dp.ordenes,
-                        servicios: dp.servicios,
-                        title: 'Prefactura',
-                        userName: dp.userName,
-                        eFirma: dp.eFirma
-                    });
-                }
-
-                //res.jsonp(response);
-            })
-            .catch(function (err) {
-                mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/getReport]');
-                response.error = err.message;
-                res.render("error", {
-                    error: err.message,
-                    title: 'Prefactura'
-                });
-                //res.render("view1");
-                //res.jsonp(response);
-            });
-});
-//</editor-fold>
-
-//<editor-fold defaultstate="collapsed" desc="getCurDate">
-app.get('/getCurDate', function (req, res) {
-    var requestID = new Date().getTime();
-    var response = {};
-    var dataPacket = {
-        requestID: requestID,
-        connectionParameters: SQLServerConnectionParameters,
-        looked: 0
-    };
-    mn.init(dataPacket)
-            .then(function (dp) {
-                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/getCurDate]');
-                return dp;
-            })
-            .then(function (dp) {
-                inputValidation(response, req.query, [
-                    new FieldValidation('_dc', ENC.STRING()),
-                    new FieldValidation('callback', ENC.STRING())
-                ]);
-                response.success = false;
-                return dp;
-            })
-            .then(function (dp) {
-
-                var now = new Date();
-                response.curDay = now.getDay();
-                response.curMonth = now.getMonth() + 1;
-                response.curYear = now.getFullYear();
-                response.avalibleTen = false;
-                response.avalibleFifteen = false;
-                if (response.curDay <= 10) {
-                    response.avalibleTen = true;
-                }
-                if (response.curDay <= 15) {
-                    response.avalibleFifteen = true;
-                }
-                response.leftDayTen = 10 - response.curDay;
-                response.leftDayFifteen = 15 - response.curDay;
-                response.success = true;
-                return dp;
-            })
-            .then(function (dp) {
-                mc.info('RID:[' + requestID + ']-[REQUEST]-[END]:[/getCurDate]');
-                res.jsonp(response);
-            })
-            .catch(function (err) {
-                mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/getCurDate]');
-                response.error = err.message;
-                res.jsonp(response);
-            });
-});
-//</editor-fold>
-
-//<editor-fold defaultstate="collapsed" desc="UTILS">
-//<editor-fold defaultstate="collapsed" desc="Numero a Texto">
-var numeroALetras = (function () {
-
-// Código basado en https://gist.github.com/alfchee/e563340276f89b22042a
-    function Unidades(num) {
-
-        switch (num)
-        {
-            case 1:
-                return 'UN';
-            case 2:
-                return 'DOS';
-            case 3:
-                return 'TRES';
-            case 4:
-                return 'CUATRO';
-            case 5:
-                return 'CINCO';
-            case 6:
-                return 'SEIS';
-            case 7:
-                return 'SIETE';
-            case 8:
-                return 'OCHO';
-            case 9:
-                return 'NUEVE';
-        }
-
-        return '';
-    }//Unidades()
-
-    function Decenas(num) {
-
-        let decena = Math.floor(num / 10);
-        let unidad = num - (decena * 10);
-
-        switch (decena)
-        {
-            case 1:
-            switch (unidad)
-            {
-                case 0:
-                    return 'DIEZ';
-                case 1:
-                    return 'ONCE';
-                case 2:
-                    return 'DOCE';
-                case 3:
-                    return 'TRECE';
-                case 4:
-                    return 'CATORCE';
-                case 5:
-                    return 'QUINCE';
-                default:
-                    return 'DIECI' + Unidades(unidad);
-            }
-            case 2:
-            switch (unidad)
-            {
-                case 0:
-                    return 'VEINTE';
-                default:
-                    return 'VEINTI' + Unidades(unidad);
-            }
-            case 3:
-                return DecenasY('TREINTA', unidad);
-            case 4:
-                return DecenasY('CUARENTA', unidad);
-            case 5:
-                return DecenasY('CINCUENTA', unidad);
-            case 6:
-                return DecenasY('SESENTA', unidad);
-            case 7:
-                return DecenasY('SETENTA', unidad);
-            case 8:
-                return DecenasY('OCHENTA', unidad);
-            case 9:
-                return DecenasY('NOVENTA', unidad);
-            case 0:
-                return Unidades(unidad);
-        }
-    }//Unidades()
-
-    function DecenasY(strSin, numUnidades) {
-        if (numUnidades > 0)
-            return strSin + ' Y ' + Unidades(numUnidades);
-
-        return strSin;
-    }//DecenasY()
-
-    function Centenas(num) {
-        let centenas = Math.floor(num / 100);
-        let decenas = num - (centenas * 100);
-
-        switch (centenas)
-        {
-            case 1:
-                if (decenas > 0)
-                    return 'CIENTO ' + Decenas(decenas);
-                return 'CIEN';
-            case 2:
-                return 'DOSCIENTOS ' + Decenas(decenas);
-            case 3:
-                return 'TRESCIENTOS ' + Decenas(decenas);
-            case 4:
-                return 'CUATROCIENTOS ' + Decenas(decenas);
-            case 5:
-                return 'QUINIENTOS ' + Decenas(decenas);
-            case 6:
-                return 'SEISCIENTOS ' + Decenas(decenas);
-            case 7:
-                return 'SETECIENTOS ' + Decenas(decenas);
-            case 8:
-                return 'OCHOCIENTOS ' + Decenas(decenas);
-            case 9:
-                return 'NOVECIENTOS ' + Decenas(decenas);
-        }
-
-        return Decenas(decenas);
-    }//Centenas()
-
-    function Seccion(num, divisor, strSingular, strPlural) {
-        let cientos = Math.floor(num / divisor);
-        let resto = num - (cientos * divisor);
-
-        let letras = '';
-
-        if (cientos > 0)
-            if (cientos > 1)
-                letras = Centenas(cientos) + ' ' + strPlural;
-            else
-                letras = strSingular;
-
-        if (resto > 0)
-            letras += '';
-
-        return letras;
-    }//Seccion()
-
-    function Miles(num) {
-        let divisor = 1000;
-        let cientos = Math.floor(num / divisor)
-        let resto = num - (cientos * divisor)
-
-        let strMiles = Seccion(num, divisor, 'UN MIL', 'MIL');
-        let strCentenas = Centenas(resto);
-
-        if (strMiles == '')
-            return strCentenas;
-
-        return strMiles + ' ' + strCentenas;
-    }//Miles()
-
-    function Millones(num) {
-        let divisor = 1000000;
-        let cientos = Math.floor(num / divisor);
-        let resto = num - (cientos * divisor);
-
-        let strMillones = Seccion(num, divisor, 'UN MILLON DE', 'MILLONES DE');
-        let strMiles = Miles(resto);
-
-        if (strMillones == '') {
-            return strMiles;
-        }
-
-        return strMillones + ' ' + strMiles;
-    }//Millones()
-
-    return function NumeroALetras(num, currency) {
-        currency = currency || {};
-        let data = {
-            numero: num,
-            enteros: Math.floor(num),
-            centavos: (((Math.round(num * 100)) - (Math.floor(num) * 100))),
-            letrasCentavos: '',
-            letrasMonedaPlural: currency.plural || 'PESOS CHILENOS', //'PESOS', 'Dólares', 'Bolívares', 'etcs'
-            letrasMonedaSingular: currency.singular || 'PESO CHILENO', //'PESO', 'Dólar', 'Bolivar', 'etc'
-            letrasMonedaCentavoPlural: currency.centPlural || 'CHIQUI PESOS CHILENOS',
-            letrasMonedaCentavoSingular: currency.centSingular || 'CHIQUI PESO CHILENO'
-        };
-
-        if (data.centavos > 0) {
-            data.letrasCentavos = 'CON ' + (function () {
-                if (data.centavos == 1)
-                    return Millones(data.centavos) + ' ' + data.letrasMonedaCentavoSingular;
-                else
-                    return Millones(data.centavos) + ' ' + data.letrasMonedaCentavoPlural;
-            })();
-        }
-        ;
-
-        if (data.enteros == 0)
-            return 'CERO ' + data.letrasMonedaPlural + ' ' + data.letrasCentavos;
-        if (data.enteros == 1)
-            return Millones(data.enteros) + ' ' + data.letrasMonedaSingular + ' ' + data.letrasCentavos;
-        else
-            return Millones(data.enteros) + ' ' + data.letrasMonedaPlural + ' ' + data.letrasCentavos;
-    };
-
-})();
-
-//// Modo de uso: 500,34 USD
-//console.log(numeroALetras(542.34, {
-//    plural: 'pesos',
-//    singular: 'peso',
-//    centPlural: 'centavos MN',
-//    centSingular: 'centavo MN'
-//}));
-//</editor-fold>
-
-//<editor-fold defaultstate="collapsed" desc="SumaDias">
-sumarDias = function (fecha, dias) {
-//        dia =,
-//        mes =  + 1,
-//        anio = ,
-    addTime = dias * 86400; //Tiempo en segundos
-    newDate = new Date(fecha.getFullYear(), fecha.getMonth(), fecha.getDate());
-    newDate.setSeconds(addTime); //Añado el tiempo
-    return newDate;
-};
-//</editor-fold>
-
-//<editor-fold defaultstate="collapsed" desc="Redondea a 2 Decimales">
-var roundToTwo = function (num) {
-    return +(Math.round(num + "e+2") + "e-2");
-};
-//</editor-fold>
-
-//<editor-fold defaultstate="collapsed" desc="Obtiene fecha formateada">
-var getFormattedDate = function (date) {
-    var year = date.getFullYear();
-    var month = (1 + date.getMonth()).toString();
-    month = month.length > 1 ? month : '0' + month;
-    var day = date.getDate().toString();
-    day = day.length > 1 ? day : '0' + day;
-    return day + '/' + month + '/' + year;
-};
-//</editor-fold>
-//</editor-fold>
-
+//▓[23]▓
 //<editor-fold defaultstate="collapsed" desc="getFactura">
 app.get('/getFactura', function (req, res) {
     var requestID = new Date().getTime();
@@ -4320,7 +4043,7 @@ app.get('/getFactura', function (req, res) {
             });
 });
 //</editor-fold>
-
+//▓[24]▓
 //<editor-fold defaultstate="collapsed" desc="getConsolidado">
 var iva = 0.16;
 app.get('/getConsolidado', function (req, res) {
@@ -4619,7 +4342,302 @@ app.get('/getConsolidado', function (req, res) {
             });
 });
 //</editor-fold>
+//▓[25]▓
+//<editor-fold defaultstate="collapsed" desc="getReport">
+app.get('/getReport', function (req, res) {
+    var requestID = new Date().getTime();
+    var response = {};
+    var dataPacket = {
+        requestID: requestID,
+        connectionParameters: SQLServerConnectionParameters,
+        looked: 0
+    };
+    mn.init(dataPacket)
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/getReport]');
+                return dp;
+            })
+            .then(function (dp) {
 
+                inputValidation(response, req.query, [
+                    new FieldValidation('idAutoridad', ENC.STRING()),
+                    new FieldValidation('idOrden', ENC.STRING()),
+                    new FieldValidation('mensual', ENC.STRING()),
+                    new FieldValidation('userName', ENC.STRING()),
+                    new FieldValidation('eFirma', ENC.STRING())
+                ]);
+                dp.idAutoridad = req.query.idAutoridad;
+                dp.idOrden = req.query.idOrden;
+                dp.mensual = req.query.mensual;
+                dp.mailList = {};
+                dp.userName = req.query.userName;
+                dp.eFirma = req.query.eFirma;
+                return dp;
+            })
+            .then(function (dp) {
+                var now = new Date();
+                var month = now.getMonth() + 1;
+                var year = now.getFullYear();
+                var fMonth = month - 1;
+                var fYear = year;
+                if (fMonth === 0) {
+                    fMonth = 12;
+                    fYear = fYear - 1;
+                }
+
+                dp.fMonth = fMonth;
+                dp.fYear = fYear;
+                dp.query = "SELECT \n" +
+                        "	  [TS].[TIPO]\n" +
+                        "	, [SERV].*\n" +
+                        "	, [ORD].* \n" +
+                        "	, [UNI].* \n" +
+                        "	, [SS].* \n" +
+                        "	, [CRED].* \n" +
+                        "	, [AUTH].* \n" +
+                        //"       , "
+                        "FROM [SLOAA_TR_SERVICIO_COTIZACION] [SERV]\n" +
+                        "LEFT JOIN [SLOAA_TR_ORDEN_SERVICIO] [ORD] ON  [SERV].[ID_ORDEN_SERVICIO]=[ORD].[ID_ORDEN_SERVICIO]\n" +
+                        "LEFT JOIN [SLOAA_TC_UNIDAD] [UNI] ON  [SERV].[ID_UNIDAD]=[UNI].[ID_UNIDAD]\n" +
+                        "LEFT JOIN [SLOAA_TC_TIPO_SERVICIO] [TS] ON  [SERV].[ID_TIPO_SERVICIO]=[TS].[ID_TIPO_SERVICIO]\n" +
+                        "LEFT JOIN [SLOAA_TC_SERVICIO] [SS] ON  [SERV].[ID_SERVICIO]=[SS].[ID_SERVICIO] and [SERV].[ID_TIPO_SERVICIO]=[SS].[ID_TIPO_SERVICIO]\n" +
+                        "LEFT JOIN [SLOAA_TR_CREDENCIAL] [CRED] ON  [CRED].[ID_CREDENCIAL]=[ORD].[ID_CREDENCIAL]\n" +
+                        "LEFT JOIN [SLOAA_TC_AUTORIDAD] [AUTH] ON  [AUTH].[ID_AUTORIDAD]=[CRED].[ID_AUTORIDAD]\n" +
+                        "\n" +
+                        "WHERE \n" +
+                        "1=1\n";
+                if (dp.mensual !== "") {
+                    dp.query = dp.query + " AND [SERV].[CANCELACION]=0  \n";
+                    dp.query = dp.query + " AND [ORD].[ID_STATUS]=7 \n";
+                    //dp.query = dp.query + " AND MONTH([ORD].[FECHA_SOLICITUD])=MONTH(GetDate()) \n";
+                    //dp.query = dp.query + " AND YEAR([ORD].[FECHA_SOLICITUD])=YEAR(GetDate()) \n";
+                    dp.query = dp.query + " AND MONTH([ORD].[FECHA_SOLICITUD])=" + fMonth + " \n";
+                    dp.query = dp.query + " AND YEAR([ORD].[FECHA_SOLICITUD])=" + fYear + " \n";
+                    dp.tipoReporte = "MENSUAL";
+                } else {
+                    dp.tipoReporte = "";
+                }
+
+                if (dp.idAutoridad !== "") {
+                    dp.query = dp.query + " AND [AUTH].[ID_AUTORIDAD]=" + dp.idAutoridad + " \n";
+                }
+                if (dp.idOrden !== "") {
+                    dp.query = dp.query + " AND [ORD].[ID_ORDEN_SERVICIO]=" + dp.idOrden + " \n";
+                }
+
+                dp.query = dp.query + "\n" +
+                        "ORDER BY\n" +
+                        "[ORD].[FECHA_SOLICITUD],\n" +
+                        "[ORD].[ID_ORDEN_SERVICIO],\n" +
+                        "[SERV].[ID_SERVICIO]";
+                return dp;
+            })
+            .then(msql.selectPromise)
+            .then(function (dp) {
+                //response = dp.queryResult;
+                if (dp.queryResult.rows !== null) {
+                    dp.servicios = dp.queryResult.rows;
+                    dp.success = true;
+                } else {
+                    throw new Error("Error de parametros");
+                }
+                return dp;
+            })
+            .then(function (dp) {
+
+                dp.ordenes = {};
+                for (var currentKey in dp.servicios) {
+                    currentRow = dp.servicios[currentKey];
+                    currentOrden = dp.ordenes[currentRow.LLAVE_SISTEMA];
+                    dp.nombreAutoridad = currentRow.NOMBRE_AUTORIDAD;
+                    dp.llaveOrdenMensual = "MX-SAT-TN-" + currentRow.SERVICIO + "-" + dp.fYear + "-" + dp.fMonth;
+                    dp.llaveOrdenMensual = dp.llaveOrdenMensual.replace(/\|/g, "");
+                    dp.llaveOrdenMensual = dp.llaveOrdenMensual.replace(/\s+/g, ' ');
+                    if (typeof currentOrden === "undefined") {
+
+                        var textoFirmaRevisor = '';
+                        var textoFirmaGenerador = '';
+                        var firmaGenerador = '';
+                        var firmaRevisor = '';
+                        var firmaGeneradorNombre = '';
+                        var firmaRevisorNombre = '';
+                        if (currentRow.FIRMA1_USER1 !== null && currentRow.FIRMA1_USER1 !== '') {
+                            firmaGenerador = currentRow.FIRMA1_USER1;
+                            firmaGeneradorNombre = currentRow.FIRMA1_USERNAME1;
+                            textoFirmaGenerador = "Firma inicial Generador ";
+                        }
+                        if (currentRow.FIRMA1_USER2 !== null && currentRow.FIRMA1_USER2 !== '') {
+                            firmaRevisor = currentRow.FIRMA1_USER2;
+                            firmaRevisorNombre = currentRow.FIRMA1_USERNAME2;
+                            textoFirmaRevisor = "Firma inicial Revisor ";
+                        }
+                        if (currentRow.FIRMA2_USER1 !== null && currentRow.FIRMA2_USER1 !== '') {
+                            firmaGenerador = currentRow.FIRMA2_USER1;
+                            firmaGeneradorNombre = currentRow.FIRMA2_USERNAME1;
+                            textoFirmaGenerador = "Firma final Generador ";
+                        }
+                        if (currentRow.FIRMA2_USER2 !== null && currentRow.FIRMA2_USER2 !== '') {
+                            firmaRevisor = currentRow.FIRMA2_USER2;
+                            firmaRevisorNombre = currentRow.FIRMA2_USERNAME2;
+                            textoFirmaRevisor = "Firma final Revisor ";
+                        }
+
+
+                        currentOrden = {
+                            llaveSistema: currentRow.LLAVE_SISTEMA,
+                            idOrdenServicio: currentRow.ID_ORDEN_SERVICIO,
+                            fechaSolicitud: getFormattedDate(currentRow.FECHA_SOLICITUD),
+                            fechaServicio: getFormattedDate(currentRow.FECHA_SERVICIO),
+                            fechaServicioDate: currentRow.FECHA_SERVICIO,
+                            domicilio: currentRow.DOMICILIO,
+                            firmaGenerador: firmaGenerador,
+                            firmaRevisor: firmaRevisor,
+                            firmaGeneradorNombre: firmaGeneradorNombre,
+                            firmaRevisorNombre: firmaRevisorNombre,
+                            textoFirmaGenerador: textoFirmaGenerador,
+                            textoFirmaRevisor: textoFirmaRevisor,
+                            cotizacion: 0,
+                            deducciones: 0,
+                            total: 0,
+                            cumplimiento: "[   ]",
+                            identificado: "[   ]",
+                            servicios: [],
+                            deduccionJustificacionAll: "",
+                            deduccionJustificacionAllCount: 0
+                        };
+                        dp.ordenes[currentRow.LLAVE_SISTEMA] = currentOrden;
+                    }
+                    var fechaServicio = currentRow.FECHA_SERVICIO;
+                    if (currentOrden.fechaServicioDate.getTime() > fechaServicio.getTime()) {
+                        currentOrden.fechaServicioDate = fechaServicio;
+                        currentOrden.fechaServicio = getFormattedDate(fechaServicio);
+                    }
+
+                    currentOrden.servicios.push(dp.servicios[currentKey]);
+
+                    cotizacion = Number(currentRow.COTIZACION);
+                    deduccion = Number(currentRow.DEDUCCION);
+
+                    if (!isNaN(cotizacion)) {
+                        currentOrden.cotizacion = currentOrden.cotizacion + cotizacion;
+                    }
+                    if (!isNaN(deduccion)) {
+                        currentOrden.deducciones = currentOrden.deducciones + deduccion;
+                    }
+
+                    currentOrden.total = currentOrden.cotizacion - currentOrden.deducciones;
+                    if (currentRow.CUMPLIMIENTO === 1) {
+                        currentOrden.cumplimiento = "[ X ]";
+                    }
+                    if (currentRow.IDENTIFICADO === 1) {
+                        currentOrden.identificado = "[ X ]";
+                    }
+
+                    nombreServicio = currentRow.NOMBRE_SERVICIO;
+                    deduccionJustificacion = currentRow.DEDUCCION_JUSTIFICACION;
+                    if (deduccionJustificacion !== null && deduccionJustificacion !== "") {
+                        currentOrden.deduccionJustificacionAllCount++;
+                        currentOrden.deduccionJustificacionAll = currentOrden.deduccionJustificacionAll + " " + currentOrden.deduccionJustificacionAllCount + ")" + nombreServicio + " : " + deduccionJustificacion + "  / Monto deducido: " + deduccion + "      ";
+                    }
+                }
+
+
+                return dp;
+            })
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[END]:[/getReport]');
+                if (dp.idOrden !== '') {
+                    res.render("ordenServicio", {
+                        tipoReporte: dp.tipoReporte,
+                        nombreAutoridad: dp.nombreAutoridad,
+                        ordenes: dp.ordenes,
+                        servicios: dp.servicios,
+                        title: 'Orden de Servicio'
+                    });
+                } else {
+                    res.render("prefactura", {
+                        tipoReporte: dp.tipoReporte,
+                        nombreAutoridad: dp.nombreAutoridad,
+                        llaveOrdenMensual: dp.llaveOrdenMensual,
+                        ordenes: dp.ordenes,
+                        servicios: dp.servicios,
+                        title: 'Prefactura',
+                        userName: dp.userName,
+                        eFirma: dp.eFirma
+                    });
+                }
+
+                //res.jsonp(response);
+            })
+            .catch(function (err) {
+                mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/getReport]');
+                response.error = err.message;
+                res.render("error", {
+                    error: err.message,
+                    title: 'Prefactura'
+                });
+                //res.render("view1");
+                //res.jsonp(response);
+            });
+});
+//</editor-fold>
+
+
+
+//▓[30]▓
+//<editor-fold defaultstate="collapsed" desc="getCurDate">
+app.get('/getCurDate', function (req, res) {
+    var requestID = new Date().getTime();
+    var response = {};
+    var dataPacket = {
+        requestID: requestID,
+        connectionParameters: SQLServerConnectionParameters,
+        looked: 0
+    };
+    mn.init(dataPacket)
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/getCurDate]');
+                return dp;
+            })
+            .then(function (dp) {
+                inputValidation(response, req.query, [
+                    new FieldValidation('_dc', ENC.STRING()),
+                    new FieldValidation('callback', ENC.STRING())
+                ]);
+                response.success = false;
+                return dp;
+            })
+            .then(function (dp) {
+
+                var now = new Date();
+                response.curDay = now.getDay();
+                response.curMonth = now.getMonth() + 1;
+                response.curYear = now.getFullYear();
+                response.avalibleTen = false;
+                response.avalibleFifteen = false;
+                if (response.curDay <= 10) {
+                    response.avalibleTen = true;
+                }
+                if (response.curDay <= 15) {
+                    response.avalibleFifteen = true;
+                }
+                response.leftDayTen = 10 - response.curDay;
+                response.leftDayFifteen = 15 - response.curDay;
+                response.success = true;
+                return dp;
+            })
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[END]:[/getCurDate]');
+                res.jsonp(response);
+            })
+            .catch(function (err) {
+                mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/getCurDate]');
+                response.error = err.message;
+                res.jsonp(response);
+            });
+});
+//</editor-fold>
+//▓[31]▓
 //<editor-fold defaultstate="collapsed" desc="registry">
 app.get('/registry', function (req, res) {
     var requestID = new Date().getTime();
@@ -4709,7 +4727,7 @@ app.get('/registry', function (req, res) {
             });
 });
 //</editor-fold>
-
+//▓[32]▓
 //<editor-fold defaultstate="collapsed" desc="getAllPlaces">
 app.get('/getAllPlaces', function (req, res) {
     var requestID = new Date().getTime();
@@ -4763,7 +4781,7 @@ app.get('/getAllPlaces', function (req, res) {
             });
 });
 //</editor-fold>
-
+//▓[33]▓
 //<editor-fold defaultstate="collapsed" desc="getAllAuthorities">
 app.get('/getAllAuthorities', function (req, res) {
     var requestID = new Date().getTime();
@@ -4817,7 +4835,7 @@ app.get('/getAllAuthorities', function (req, res) {
             });
 });
 //</editor-fold>
-
+//▓[34]▓
 //<editor-fold defaultstate="collapsed" desc="getAllRoles">
 app.get('/getAllRoles', function (req, res) {
     var requestID = new Date().getTime();
@@ -4871,7 +4889,7 @@ app.get('/getAllRoles', function (req, res) {
             });
 });
 //</editor-fold>
-
+//▓[35]▓
 //<editor-fold defaultstate="collapsed" desc="getAcuseAlta">
 app.get('/getAcuseAlta', function (req, res) {
     var requestID = new Date().getTime();
@@ -4961,7 +4979,7 @@ app.get('/getAcuseAlta', function (req, res) {
             });
 });
 //</editor-fold>
-
+//▓[36]▓
 //<editor-fold defaultstate="collapsed" desc="getAddress">
 app.get('/getAddress', function (req, res) {
     var requestID = new Date().getTime();
