@@ -63,6 +63,7 @@ http://localhost:3000/getAllOrdenServicio
 "idCredencial":"1",
 "idRol":"1",
 "idAutoridad":"2"
+"vi":"false"
 }
 
 ------------------------------------------->
@@ -1006,5 +1007,26 @@ HTML RESPONSE
 ▓▓▓[35]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓[getAddress]▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+Web Services que obtiene la lista de todas las direcciones para asistir a la escritura de la direccion 
+Retorna un arreglo de Objetos JSON del tipo  (Direccion)
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 <-------------------------------------------
+{
+    "_dc":"",
+    "page":"",
+    "start":"",
+    "limit":"",
+    "callback":""
+}
 ------------------------------------------->
+{
+  "direcciones": [
+    {
+      "DIRECCION": "Estado de Mex-Ecatepec-Ciudad Gasolina-Chapusal-10-5"
+    },
+    {
+      "DIRECCION": "CDMX-Miguel Hidalgo-Cartonlandia-Penajena-30-80"
+    }
+  ],
+  "success": true
+}

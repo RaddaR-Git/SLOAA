@@ -1,4 +1,5 @@
-var serviceUrl = 'http://localhost:3000/'
+//var serviceUrl = 'http://localhost:3000/'
+var serviceUrl = 'http://10.15.15.61:3000/'
 
 var login = Ext.create('Ext.window.Window', {
     title: 'Ingreso',
@@ -547,7 +548,8 @@ var createViewport = function () {
                                     extraParams: {
                                         idCredencial: login.credential.ID_CREDENCIAL,
                                         idRol: login.credential.idRol,
-                                        idAutoridad: login.credential.idAutoridad
+                                        idAutoridad: login.credential.idAutoridad,
+                                        vi: login.privilegios.vi
                                     }
                                 },
                                 listeners: {
@@ -581,21 +583,21 @@ var createViewport = function () {
                                                     //muestra botones
                                                     viewPort.down('toolbar #reportB').setHidden(false);
                                                     viewPort.down('toolbar #leftDaysB').setHidden(false);
-                                                    viewPort.down('toolbar #reportC').setHidden(false);
+//                                                    viewPort.down('toolbar #reportC').setHidden(false);
                                                     viewPort.down('toolbar #leftDaysC').setHidden(false);
                                                     //configura botones
                                                     viewPort.down('toolbar #reportB').setDisabled(!avalibleFifteen);
                                                     viewPort.down('toolbar #leftDaysB').setValue(avalibleFifteen ? '<span style="color:gray;">(' + result.leftDayFifteen + ' días restantes)</span>' : '');
-                                                    viewPort.down('toolbar #reportC').setDisabled(!availableTen);
+//                                                    viewPort.down('toolbar #reportC').setDisabled(!availableTen);
                                                     viewPort.down('toolbar #leftDaysC').setValue(availableTen ? '<span style="color:gray;">(' + result.leftDayTen + ' días restantes)</span>' : '');
                                                 } else {
                                                     //quita botones
                                                     viewPort.down('toolbar #reportB').setHidden(true);
                                                     viewPort.down('toolbar #leftDaysB').setHidden(true);
-                                                    viewPort.down('toolbar #reportC').setHidden(true);
+//                                                    viewPort.down('toolbar #reportC').setHidden(true);
                                                     viewPort.down('toolbar #leftDaysC').setHidden(true);
                                                 }
-
+                                                viewPort.down('toolbar #reportC').setHidden(!login.privilegios.cons);
                                             }
                                         });
 

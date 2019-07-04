@@ -879,7 +879,7 @@ var server;
 var SQLServerConnectionParameters = {
     user: 'sa',
     password: 'Pass01011',
-    server: '10.15.17.29',
+    server: '10.15.15.61',
     database: 'SOA_db'
 };
 ////var connectionParameters1 = {
@@ -1198,7 +1198,6 @@ app.post('/defaultSelect', function (req, res) {
             });
 });
 //</editor-fold>
-
 //▓[01]▓
 //<editor-fold defaultstate="collapsed" desc="login">
 app.get('/login', function (req, res) {
@@ -1296,6 +1295,7 @@ app.get('/getAllOrdenServicio', function (req, res) {
                     new FieldValidation('idCredencial', ENC.STRING()),
                     new FieldValidation('idRol', ENC.STRING()),
                     new FieldValidation('idAutoridad', ENC.STRING()),
+                    new FieldValidation('vi', ENC.STRING()),
                     new FieldValidation('_dc', ENC.STRING()),
                     new FieldValidation('page', ENC.STRING()),
                     new FieldValidation('start', ENC.STRING()),
@@ -1305,6 +1305,13 @@ app.get('/getAllOrdenServicio', function (req, res) {
                 dp.idCredencial = req.query.idCredencial;
                 dp.idRol = req.query.idRol;
                 dp.idAutoridad = req.query.idAutoridad;
+                dp.vi = req.query.vi;
+                if (dp.vi === 'true') {
+                    dp.vi = true;
+                } else {
+                    dp.vi = false;
+                }
+
                 return dp;
             })
             .then(function (dp) {
@@ -1352,26 +1359,31 @@ app.get('/getAllOrdenServicio', function (req, res) {
                         " LEFT JOIN [dbo].[SLOAA_TC_STATUS] [STATUS] ON  [ORD].[ID_STATUS]=[STATUS].[ID_STATUS]\n" +
                         "  WHERE\n" +
                         "  1=1\n ";
-                if (dp.idRol === "1") {
-                }
 
-                if (dp.idRol === "2") {
-                    if (dp.idCredencial !== "") {
-                        dp.query = dp.query + "   AND  [AUTH].[ID_AUTORIDAD]=" + dp.idAutoridad + "\n ";
-                        dp.query = dp.query + "   AND  [ORD].[ID_CREDENCIAL]=" + dp.idCredencial + "\n ";
+                
+                if (dp.vi === false) {
+                    
+                    if (dp.idRol === "1") {
                     }
-                }
 
-                if (dp.idRol === "3") {
-                    if (dp.idCredencial !== "") {
-                        dp.query = dp.query + "   AND  [AUTH].[ID_AUTORIDAD]=" + dp.idAutoridad + "\n ";
-                        dp.query = dp.query + "   AND  ([CRED].[ID_CREDENCIAL]=" + dp.idCredencial + "   OR  [CRED].[ID_CREDENCIAL_SUPERIOR]=" + dp.idCredencial + "    )\n ";
+                    if (dp.idRol === "2") {
+                        if (dp.idCredencial !== "") {
+                            dp.query = dp.query + "   AND  [AUTH].[ID_AUTORIDAD]=" + dp.idAutoridad + "\n ";
+                            dp.query = dp.query + "   AND  [ORD].[ID_CREDENCIAL]=" + dp.idCredencial + "\n ";
+                        }
                     }
-                }
 
-                if (dp.idRol === "4") {
-                    if (dp.idCredencial !== "") {
-                        dp.query = dp.query + "   AND  [ORD].[ID_STATUS]=7\n ";
+                    if (dp.idRol === "3") {
+                        if (dp.idCredencial !== "") {
+                            dp.query = dp.query + "   AND  [AUTH].[ID_AUTORIDAD]=" + dp.idAutoridad + "\n ";
+                            dp.query = dp.query + "   AND  ([CRED].[ID_CREDENCIAL]=" + dp.idCredencial + "   OR  [CRED].[ID_CREDENCIAL_SUPERIOR]=" + dp.idCredencial + "    )\n ";
+                        }
+                    }
+
+                    if (dp.idRol === "4") {
+                        if (dp.idCredencial !== "") {
+                            dp.query = dp.query + "   AND  [ORD].[ID_STATUS]=7\n ";
+                        }
                     }
                 }
 
@@ -4998,24 +5010,32 @@ app.get('/getAddress', function (req, res) {
 
                 inputValidation(response, req.query, [
                     new FieldValidation('_dc', ENC.STRING()),
-                    new FieldValidation('callback', ENC.STRING()),
-                    new FieldValidation('limit', ENC.STRING()),
                     new FieldValidation('page', ENC.STRING()),
-//                    new FieldValidation('query', ENC.STRING()),
-                    new FieldValidation('start', ENC.STRING())
+                    new FieldValidation('start', ENC.STRING()),
+                    new FieldValidation('limit', ENC.STRING()),
+                    new FieldValidation('callback', ENC.STRING())
                 ]);
-//                dp.idZona = req.query.idZona;
+               
                 return dp;
             })
             .then(function (dp) {
-                dp.query = "SELECT NOMBRE_ROL FROM SLOAA_TS_ROL";
+                dp.query =  "SELECT \n" +
+                        "[DIR].[ESTADO] +'-'+\n" +
+                        "[DIR].[MUNICIPIO] +'-'+\n" +
+                        "[DIR].[COLONIA] +'-'+\n" +
+                        "[DIR].[CALLE] +'-'+\n" +
+                        "[DIR].[NO_EXTERIOR] +'-'+\n" +
+                        "[DIR].[NO_INTERIOR] DIRECCION\n" +
+                        "FROM [SLOAA_TC_DIRECCION] [DIR]"+
+                        "  WHERE\n" +
+                        "  1=1\n ";
                 return dp;
             })
             .then(msql.selectPromise)
             .then(function (dp) {
                 //response = dp.queryResult;
                 if (dp.queryResult.rows !== null) {
-                    response.address = dp.queryResult.rows;
+                    response.direcciones = dp.queryResult.rows;
                     response.success = true;
                 } else {
                     response.success = false;
