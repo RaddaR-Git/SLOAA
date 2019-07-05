@@ -1352,6 +1352,9 @@ app.get('/getAllOrdenServicio', function (req, res) {
                         "      ,[AUTH].[ID_ZONA] \n" +
                         "       " +
                         "      ,[STATUS].[NOMBRE_STATUS]\n" +
+                        "      ,DATEDIFF(hour,[ORD].[FECHA_SOLICITUD],SYSDATETIME()) [CHECK24] \n" +
+                        "      ,[ORD].[MODIFICADO]\n" +
+                        "      ,[ORD].[CANCELADO]\n" +
                         "  FROM \n" +
                         "  [SLOAA_TR_ORDEN_SERVICIO] [ORD]\n" +
                         " LEFT JOIN [SLOAA_TR_CREDENCIAL] [CRED] ON  [CRED].[ID_CREDENCIAL]=[ORD].[ID_CREDENCIAL]\n" +
@@ -1482,6 +1485,9 @@ app.get('/getOrdenServicio', function (req, res) {
                         "      ,[AUTH].[NIVEL]\n" +
                         "      ,[AUTH].[SERVICIO]\n" +
                         "      ,[AUTH].[ID_ZONA] \n" +
+                        "      ,DATEDIFF(hour,[ORD].[FECHA_SOLICITUD],SYSDATETIME()) [CHECK24] \n" +
+                        "      ,[ORD].[MODIFICADO]\n" +
+                        "      ,[ORD].[CANCELADO]\n" +
                         "       " +
                         "  FROM \n" +
                         "  [SLOAA_TR_ORDEN_SERVICIO] [ORD]\n" +
@@ -1756,6 +1762,8 @@ app.get('/createOrdenServicio', function (req, res) {
                         "      ,[ORD].[METAINFO_MAC_ADRR]\n" +
                         "      ,[ORD].[LLAVE_SISTEMA]\n" +
                         "      ,[ORD].[JUSTIFICACION]\n" +
+                        "      ,[ORD].[MODIFICADO]\n" +
+                        "      ,[ORD].[CANCELADO]\n" +
                         "	  )\n" +
                         "	  VALUES\n" +
                         "	  (\n" +
@@ -1768,7 +1776,9 @@ app.get('/createOrdenServicio', function (req, res) {
                         "		'" + dp.ip + "',\n" +
                         "		' ????????',\n" +
                         "		'" + dp.key + "',\n" +
-                        "		'" + dp.justificacion + "'\n" +
+                        "		'" + dp.justificacion + "',\n" +
+                        "		0,\n" +
+                        "		0\n" +
                         "	  )";
                 return dp;
             })
@@ -5048,6 +5058,139 @@ app.get('/getAddress', function (req, res) {
             })
             .catch(function (err) {
                 mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/getAddress]');
+                response.error = err.message;
+                res.jsonp(response);
+            });
+});
+//</editor-fold>
+
+
+
+//▓[37]▓
+//<editor-fold defaultstate="collapsed" desc="updateOrdenServicioDate">
+app.get('/updateOrdenServicioDate', function (req, res) {
+    var requestID = new Date().getTime();
+    var response = {};
+    var dataPacket = {
+        requestID: requestID,
+        connectionParameters: SQLServerConnectionParameters,
+        looked: 0
+    };
+    mn.init(dataPacket)
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/updateOrdenServicioDate]');
+                return dp;
+            })
+            .then(function (dp) {
+
+                inputValidation(response, req.query, [
+                    new FieldValidation('idOrdenServicio', ENC.STRING()),
+                    new FieldValidation('fechaSolicitud', ENC.STRING()),
+                    new FieldValidation('_dc', ENC.STRING()),
+                    new FieldValidation('callback', ENC.STRING())
+                ]);
+                dp.idOrdenServicio = req.query.idOrdenServicio;
+                dp.fechaSolicitud = req.query.fechaSolicitud;
+                dp.looked = 1;
+                return dp;
+            })
+
+            //<editor-fold defaultstate="collapsed" desc="UPDATE">
+            .then(function (dp) {
+                dp.dml ="UPDATE [dbo].[SLOAA_TR_ORDEN_SERVICIO] SET [FECHA_SOLICITUD]='"+ dp.fechaSolicitud+"', [MODIFICADO]=1 WHERE [ID_ORDEN_SERVICIO]="+ dp.idOrdenServicio+" ";
+                console.log(dp);
+                return dp;
+            })
+            .then(msql.freeDMLPromise)
+            .then(function (dp) {
+                if (dp.resultDML !== null) {
+                    if (dp.resultDML.rowsAffected.length > 0) {
+
+                        response.success = true;
+                    } else {
+                        response.success = false;
+                        throw "No se pudo actualizar la orden de servicio";
+                    }
+                } else {
+                    response.success = false;
+                    throw "No se pudo actualizar la orden de servicio";
+                }
+                return dp;
+            })
+            //</editor-fold>
+
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[END]:[/updateOrdenServicioDate]');
+                res.jsonp(response);
+            })
+            .catch(function (err) {
+                mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/updateOrdenServicioDate]');
+                response.error = err.message;
+                res.jsonp(response);
+            });
+});
+//</editor-fold>
+
+
+//▓[38]▓
+//<editor-fold defaultstate="collapsed" desc="updateOrdenServicioCancelado">
+app.get('/updateOrdenServicioCancelado', function (req, res) {
+    var requestID = new Date().getTime();
+    var response = {};
+    var dataPacket = {
+        requestID: requestID,
+        connectionParameters: SQLServerConnectionParameters,
+        looked: 0
+    };
+    mn.init(dataPacket)
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/updateOrdenServicioCancelado]');
+                return dp;
+            })
+            .then(function (dp) {
+
+                inputValidation(response, req.query, [
+                    new FieldValidation('idOrdenServicio', ENC.STRING()),
+                    new FieldValidation('cancelado', ENC.STRING()),
+                    new FieldValidation('_dc', ENC.STRING()),
+                    new FieldValidation('callback', ENC.STRING())
+                ]);
+                dp.idOrdenServicio = req.query.idOrdenServicio;
+                dp.cancelado = req.query.cancelado;
+                dp.looked = 1;
+                return dp;
+            })
+
+            //<editor-fold defaultstate="collapsed" desc="UPDATE">
+            .then(function (dp) {
+                dp.dml ="UPDATE [dbo].[SLOAA_TR_ORDEN_SERVICIO] SET [CANCELADO]="+dp.cancelado+" WHERE [ID_ORDEN_SERVICIO]="+ dp.idOrdenServicio+" ";
+                console.log(dp);
+                return dp;
+            })
+            .then(msql.freeDMLPromise)
+            .then(function (dp) {
+                if (dp.resultDML !== null) {
+                    if (dp.resultDML.rowsAffected.length > 0) {
+
+                        response.success = true;
+                    } else {
+                        response.success = false;
+                        throw "No se pudo actualizar la orden de servicio";
+                    }
+                } else {
+                    response.success = false;
+                    throw "No se pudo actualizar la orden de servicio";
+                }
+                return dp;
+            })
+            //</editor-fold>
+
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[END]:[/updateOrdenServicioCancelado]');
+                res.jsonp(response);
+            })
+            .catch(function (err) {
+                mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/updateOrdenServicioCancelado]');
                 response.error = err.message;
                 res.jsonp(response);
             });
