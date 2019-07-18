@@ -1355,6 +1355,7 @@ app.get('/getAllOrdenServicio', function (req, res) {
                         "      ,DATEDIFF(hour,[ORD].[FECHA_SOLICITUD],SYSDATETIME()) [CHECK24] \n" +
                         "      ,[ORD].[MODIFICADO]\n" +
                         "      ,[ORD].[CANCELADO]\n" +
+                        "      ,[ORD].[TIPO_ORDEN_SERVICIO]\n" +
                         "  FROM \n" +
                         "  [SLOAA_TR_ORDEN_SERVICIO] [ORD]\n" +
                         " LEFT JOIN [SLOAA_TR_CREDENCIAL] [CRED] ON  [CRED].[ID_CREDENCIAL]=[ORD].[ID_CREDENCIAL]\n" +
@@ -1363,9 +1364,9 @@ app.get('/getAllOrdenServicio', function (req, res) {
                         "  WHERE\n" +
                         "  1=1\n ";
 
-                
+
                 if (dp.vi === false) {
-                    
+
                     if (dp.idRol === "1") {
                     }
 
@@ -1488,6 +1489,7 @@ app.get('/getOrdenServicio', function (req, res) {
                         "      ,DATEDIFF(hour,[ORD].[FECHA_SOLICITUD],SYSDATETIME()) [CHECK24] \n" +
                         "      ,[ORD].[MODIFICADO]\n" +
                         "      ,[ORD].[CANCELADO]\n" +
+                        "      ,[ORD].[TIPO_ORDEN_SERVICIO]\n" +
                         "       " +
                         "  FROM \n" +
                         "  [SLOAA_TR_ORDEN_SERVICIO] [ORD]\n" +
@@ -1655,6 +1657,7 @@ app.get('/createOrdenServicio', function (req, res) {
                     new FieldValidation('idCredencial', ENC.STRING()),
                     new FieldValidation('domicilio', ENC.STRING()),
                     new FieldValidation('justificacion', ENC.STRING()),
+                    new FieldValidation('tipoOrdenServicio', ENC.STRING()),
                     new FieldValidation('_dc', ENC.STRING()),
                     new FieldValidation('callback', ENC.STRING())
                 ]);
@@ -1666,7 +1669,8 @@ app.get('/createOrdenServicio', function (req, res) {
                 dp.headers = req.headers;
                 dp.ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
                 dp.metaFechaGeneracion = new Date().toISOString();
-                dp.anio = new Date().getFullYear()
+                dp.anio = new Date().getFullYear();
+                dp.tipoOrdenServicio = req.query.tipoOrdenServicio;
                 return dp;
             })
 
@@ -1764,6 +1768,7 @@ app.get('/createOrdenServicio', function (req, res) {
                         "      ,[ORD].[JUSTIFICACION]\n" +
                         "      ,[ORD].[MODIFICADO]\n" +
                         "      ,[ORD].[CANCELADO]\n" +
+                        "      ,[ORD].[TIPO_ORDEN_SERVICIO]\n" +
                         "	  )\n" +
                         "	  VALUES\n" +
                         "	  (\n" +
@@ -1778,7 +1783,8 @@ app.get('/createOrdenServicio', function (req, res) {
                         "		'" + dp.key + "',\n" +
                         "		'" + dp.justificacion + "',\n" +
                         "		0,\n" +
-                        "		0\n" +
+                        "		0,\n" +
+                        "		'" + dp.tipoOrdenServicio + "'\n" +
                         "	  )";
                 return dp;
             })
@@ -5025,18 +5031,18 @@ app.get('/getAddress', function (req, res) {
                     new FieldValidation('limit', ENC.STRING()),
                     new FieldValidation('callback', ENC.STRING())
                 ]);
-               
+
                 return dp;
             })
             .then(function (dp) {
-                dp.query =  "SELECT \n" +
+                dp.query = "SELECT \n" +
                         "[DIR].[ESTADO] +'-'+\n" +
                         "[DIR].[MUNICIPIO] +'-'+\n" +
                         "[DIR].[COLONIA] +'-'+\n" +
                         "[DIR].[CALLE] +'-'+\n" +
                         "[DIR].[NO_EXTERIOR] +'-'+\n" +
                         "[DIR].[NO_INTERIOR] DIRECCION\n" +
-                        "FROM [SLOAA_TC_DIRECCION] [DIR]"+
+                        "FROM [SLOAA_TC_DIRECCION] [DIR]" +
                         "  WHERE\n" +
                         "  1=1\n ";
                 return dp;
@@ -5097,7 +5103,7 @@ app.get('/updateOrdenServicioDate', function (req, res) {
 
             //<editor-fold defaultstate="collapsed" desc="UPDATE">
             .then(function (dp) {
-                dp.dml ="UPDATE [dbo].[SLOAA_TR_ORDEN_SERVICIO] SET [FECHA_SOLICITUD]='"+ dp.fechaSolicitud+"', [MODIFICADO]=1 WHERE [ID_ORDEN_SERVICIO]="+ dp.idOrdenServicio+" ";
+                dp.dml = "UPDATE [dbo].[SLOAA_TR_ORDEN_SERVICIO] SET [FECHA_SOLICITUD]='" + dp.fechaSolicitud + "', [MODIFICADO]=1 WHERE [ID_ORDEN_SERVICIO]=" + dp.idOrdenServicio + " ";
                 console.log(dp);
                 return dp;
             })
@@ -5151,19 +5157,17 @@ app.get('/updateOrdenServicioCancelado', function (req, res) {
 
                 inputValidation(response, req.query, [
                     new FieldValidation('idOrdenServicio', ENC.STRING()),
-                    new FieldValidation('cancelado', ENC.STRING()),
                     new FieldValidation('_dc', ENC.STRING()),
                     new FieldValidation('callback', ENC.STRING())
                 ]);
                 dp.idOrdenServicio = req.query.idOrdenServicio;
-                dp.cancelado = req.query.cancelado;
                 dp.looked = 1;
                 return dp;
             })
 
             //<editor-fold defaultstate="collapsed" desc="UPDATE">
             .then(function (dp) {
-                dp.dml ="UPDATE [dbo].[SLOAA_TR_ORDEN_SERVICIO] SET [CANCELADO]="+dp.cancelado+" WHERE [ID_ORDEN_SERVICIO]="+ dp.idOrdenServicio+" ";
+                dp.dml = "UPDATE [dbo].[SLOAA_TR_ORDEN_SERVICIO] SET [CANCELADO]=1 WHERE [ID_ORDEN_SERVICIO]=" + dp.idOrdenServicio + " ";
                 console.log(dp);
                 return dp;
             })
@@ -5196,6 +5200,535 @@ app.get('/updateOrdenServicioCancelado', function (req, res) {
             });
 });
 //</editor-fold>
+
+
+
+
+//▓[40]▓
+//<editor-fold defaultstate="collapsed" desc="getInformeMovimientoAlmacen">
+app.get('/getInformeMovimientoAlmacen', function (req, res) {
+    var requestID = new Date().getTime();
+    var response = {};
+    var dataPacket = {
+        requestID: requestID,
+        connectionParameters: SQLServerConnectionParameters,
+        looked: 0
+    };
+    mn.init(dataPacket)
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/getInformeMovimientoAlmacen]');
+                return dp;
+            })
+            .then(function (dp) {
+
+                inputValidation(response, req.query, [
+                    new FieldValidation('tipoOrdenServicio', ENC.STRING())
+                ]);
+                dp.tipoOrdenServicio = req.query.tipoOrdenServicio;
+
+                return dp;
+            })
+            .then(function (dp) {
+                dp.query = "SELECT  \n" +
+                        "	    [ORD].[ID_ORDEN_SERVICIO]\n" +
+                        "      ,[ORD].[NUM_ORDEN]\n" +
+                        "      ,[ORD].[FECHA_SOLICITUD]\n" +
+                        "      ,[ORD].[DOMICILIO]\n" +
+                        "      ,[ORD].[FIRMA1_USER1]\n" +
+                        "      ,[ORD].[FIRMA1_USER2]\n" +
+                        "      ,[ORD].[FIRMA2_USER1]\n" +
+                        "      ,[ORD].[FIRMA2_USER2]\n" +
+                        "      ,[ORD].[ID_STATUS]\n" +
+                        "      ,[ORD].[METAINFO_FECHA_CREACION]\n" +
+                        "      ,[ORD].[METAINFO_IP]\n" +
+                        "      ,[ORD].[METAINFO_MAC_ADRR]\n" +
+                        "      ,[ORD].[LLAVE_SISTEMA]\n" +
+                        "      ,[ORD].[CIERRE_TOTAL]\n" +
+                        "      ,[ORD].[JUSTIFICACION]\n" +
+                        "	  \n" +
+                        "	   ,[CRED].[ID_CREDENCIAL]\n" +
+                        "      ,[CRED].[NOMBRE]\n" +
+                        "      ,[CRED].[CARGO]\n" +
+                        "      ,[CRED].[TELEFONO]\n" +
+                        "      ,[CRED].[EXT]\n" +
+                        "      ,[CRED].[EMAIL]\n" +
+                        "      ,[CRED].[PTT]\n" +
+                        "      ,[CRED].[MOVIL]\n" +
+                        "      ,[CRED].[USUARIO_NOMBRE]\n" +
+                        "      ,[CRED].[ID_ROL]\n" +
+                        "      ,[CRED].[ID_CREDENCIAL_SUPERIOR]\n" +
+                        "\n" +
+                        "	   ,[AUTH].[ID_AUTORIDAD]\n" +
+                        "      ,[AUTH].[NOMBRE_AUTORIDAD]\n" +
+                        "      ,[AUTH].[ESTADO]\n" +
+                        "      ,[AUTH].[NIVEL]\n" +
+                        "      ,[AUTH].[SERVICIO]\n" +
+                        "      ,[AUTH].[ID_ZONA] \n" +
+                        "       " +
+                        "      ,[STATUS].[NOMBRE_STATUS]\n" +
+                        "      ,DATEDIFF(hour,[ORD].[FECHA_SOLICITUD],SYSDATETIME()) [CHECK24] \n" +
+                        "      ,[ORD].[MODIFICADO]\n" +
+                        "      ,[ORD].[CANCELADO]\n" +
+                        "      ,[ORD].[TIPO_ORDEN_SERVICIO]\n" +
+                        "  FROM \n" +
+                        "  [SLOAA_TR_ORDEN_SERVICIO] [ORD]\n" +
+                        " LEFT JOIN [SLOAA_TR_CREDENCIAL] [CRED] ON  [CRED].[ID_CREDENCIAL]=[ORD].[ID_CREDENCIAL]\n" +
+                        " LEFT JOIN [SLOAA_TC_AUTORIDAD] [AUTH] ON  [AUTH].[ID_AUTORIDAD]=[CRED].[ID_AUTORIDAD]\n" +
+                        " LEFT JOIN [dbo].[SLOAA_TC_STATUS] [STATUS] ON  [ORD].[ID_STATUS]=[STATUS].[ID_STATUS]\n" +
+                        "  WHERE\n" +
+                        "  1=1\n ";
+                if (dp.tipoOrdenServicio !== "AMBOS") {
+                    dp.query = dp.query + "   AND  [ORD].[TIPO_ORDEN_SERVICIO]='" + dp.tipoOrdenServicio + "'\n ";
+                }
+                return dp;
+            })
+            .then(msql.selectPromise)
+            .then(function (dp) {
+                //response = dp.queryResult;
+                if (dp.queryResult.rows !== null) {
+                    response.ordenesServicio = dp.queryResult.rows;
+                    response.success = true;
+                } else {
+                    response.success = false;
+                }
+                return dp;
+            })
+            .then(function (dp) {
+
+                //<editor-fold defaultstate="collapsed" desc="ESTILOS">
+                var styles = {
+                    headerTitle: {
+                        font: {
+                            color: {
+                                rgb: '595959'
+                            },
+                            sz: 14,
+                            bold: true,
+                            underline: true
+                        }
+                    },
+
+                    headerDark: {
+                        fill: {
+                            fgColor: {
+                                rgb: 'FF000000'
+                            }
+                        },
+                        font: {
+                            color: {
+                                rgb: 'FFFFFFFF'
+                            },
+                            sz: 14,
+                            bold: true,
+                            underline: true
+                        }
+                    },
+                    cellGreen: {
+                        fill: {
+                            fgColor: {
+                                rgb: 'FF00FF00'
+                            }
+                        }
+                    },
+                    cellGrayHeavy: {
+                        fill: {
+                            fgColor: {
+                                rgb: '2A2A2A'
+                            }
+                        }
+                    },
+                    cellGrayHard: {
+                        fill: {
+                            fgColor: {
+                                rgb: '626262'
+                            }
+                        }
+                    },
+                    cellGraySoft: {
+                        fill: {
+                            fgColor: {
+                                rgb: '666666'
+                            }
+                        }
+                    }
+                };
+                //</editor-fold>
+
+                //<editor-fold defaultstate="collapsed" desc="TITULOS">
+                var heading = [
+                    [{value: 'Reporte de Ordenes de Servicio', style: styles.headerTitle}],
+                    [{value: 'Orden de servicio tipo:', style: styles.headerTitle}, {value: dp.tipoOrdenServicio, style: styles.headerTitle}],
+                    [{value: '', style: styles.headerTitle}],
+                    [{value: '', style: styles.headerTitle}]
+                ];
+                //</editor-fold>
+
+
+                //<editor-fold defaultstate="collapsed" desc="CELL-UNIONS">
+                var merges = [
+                    {start: {row: 1, column: 1}, end: {row: 1, column: 3}}
+                ];
+                //</editor-fold>
+
+                //<editor-fold defaultstate="collapsed" desc="COLUMNS">
+
+
+
+                var specification = {
+                    TIPO_ORDEN_SERVICIO: {// <- the key should match the actual data key
+                        displayName: 'Tipo de Servicio', // <- Here you specify the column header
+                        headerStyle: styles.cellGrayHeavy, // <- Header style
+                        cellStyle: function (value, row) { // <- style renderer function
+                            var numeral = row.numeral;
+                            if (numeral % 2 === 0) {
+                                return  styles.cellGrayHard;
+                            } else {
+                                return  styles.cellGraySoft;
+                            }
+                        },
+                        width: 120 // <- width in pixels
+                    },
+                    NIVEL: {// <- the key should match the actual data key
+                        displayName: 'AORS/SRyS', // <- Here you specify the column header
+                        headerStyle: styles.cellGrayHeavy, // <- Header style
+                        cellStyle: function (value, row) { // <- style renderer function
+                            var numeral = row.numeral;
+                            if (numeral % 2 === 0) {
+                                return  styles.cellGrayHard;
+                            } else {
+                                return  styles.cellGraySoft;
+                            }
+                        },
+                        width: 120 // <- width in pixels
+                    },
+
+                    NOMBRE_AUTORIDAD: {// <- the key should match the actual data key
+                        displayName: 'Autoridad', // <- Here you specify the column header
+                        headerStyle: styles.cellGrayHeavy, // <- Header style
+                        cellStyle: function (value, row) { // <- style renderer function
+                            var numeral = row.numeral;
+                            if (numeral % 2 === 0) {
+                                return  styles.cellGrayHard;
+                            } else {
+                                return  styles.cellGraySoft;
+                            }
+                        },
+                        width: 120 // <- width in pixels
+                    },
+                    CLAVE_ALMACEN: {// <- the key should match the actual data key
+                        displayName: 'Clave de almacén', // <- Here you specify the column header
+                        headerStyle: styles.cellGrayHeavy, // <- Header style
+                        cellStyle: function (value, row) { // <- style renderer function
+                            var numeral = row.numeral;
+                            if (numeral % 2 === 0) {
+                                return  styles.cellGrayHard;
+                            } else {
+                                return  styles.cellGraySoft;
+                            }
+                        },
+                        width: 120 // <- width in pixels
+                    }
+
+                };
+
+
+
+//
+//Servicio
+//Componentes
+//Cantidad
+//Costo del sevicio
+//Deductivas	
+
+                //</editor-fold>
+
+                //<editor-fold defaultstate="collapsed" desc="DATA_MATRIX">
+                var dataset = response.ordenesServicio;
+                //</editor-fold>
+
+                //<editor-fold defaultstate="collapsed" desc="REPORT">
+                // Create the excel report.
+                // This function will return Buffer
+                var report = excel.buildExport(
+                        [// <- Notice that this is an array. Pass multiple sheets to create multi sheet report
+                            {
+                                name: 'Report', // <- Specify sheet name (optional)
+                                heading: heading, // <- Raw heading array (optional)
+                                merges: merges, // <- Merge cell ranges
+                                specification: specification, // <- Report specification
+                                data: dataset // <-- Report data
+                            }
+                        ]
+                        );
+
+                res.attachment('report.xlsx'); // This is sails.js specific (in general you need to set headers)
+                return res.send(report);
+                //</editor-fold>
+
+
+            })
+            .catch(function (err) {
+                mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/getInformeMovimientoAlmacen]');
+                response.error = err.message;
+                res.jsonp(response);
+            });
+});
+//</editor-fold>
+
+
+
+
+//<editor-fold defaultstate="collapsed" desc="Example  Excel">
+var excel = require('node-excel-export');
+app.get('/Excel3', function (req, res) {
+    // You can define styles as json object
+    const styles = {
+        headerDark: {
+            fill: {
+                fgColor: {
+                    rgb: 'FF000000'
+                }
+            },
+            font: {
+                color: {
+                    rgb: 'FFFFFFFF'
+                },
+                sz: 14,
+                bold: true,
+                underline: true
+            }
+        },
+        cellPink: {
+            fill: {
+                fgColor: {
+                    rgb: 'FFFFCCFF'
+                }
+            }
+        },
+        cellGreen: {
+            fill: {
+                fgColor: {
+                    rgb: 'FF00FF00'
+                }
+            }
+        }
+    };
+
+    //Array of objects representing heading rows (very top)
+    const heading = [
+        [
+            {value: 'a1', style: styles.headerDark},
+            {value: 'b1', style: styles.headerDark},
+            {value: 'c1', style: styles.headerDark}],
+        ['a2', 'b2', 'c2'] // <-- It can be only values
+    ];
+
+    //Here you specify the export structure
+    const specification = {
+        customer_name: {// <- the key should match the actual data key
+            displayName: 'Customer', // <- Here you specify the column header
+            headerStyle: styles.headerDark, // <- Header style
+            cellStyle: function (value, row) { // <- style renderer function
+                // if the status is 1 then color in green else color in red
+                // Notice how we use another cell value to style the current one
+                return (row.status_id == 1) ? styles.cellGreen : {fill: {fgColor: {rgb: 'FFFF0000'}}}; // <- Inline cell style is possible 
+            },
+            width: 120 // <- width in pixels
+        },
+        status_id: {
+            displayName: 'Status',
+            headerStyle: styles.headerDark,
+            cellFormat: function (value, row) { // <- Renderer function, you can access also any row.property
+                return (value == 1) ? 'Active' : 'Inactive';
+            },
+            width: '10' // <- width in chars (when the number is passed as string)
+        },
+        note: {
+            displayName: 'Description',
+            headerStyle: styles.headerDark,
+            cellStyle: styles.cellPink, // <- Cell style
+            width: 220 // <- width in pixels
+        }
+    };
+
+    // The data set should have the following shape (Array of Objects)
+    // The order of the keys is irrelevant, it is also irrelevant if the
+    // dataset contains more fields as the report is build based on the
+    // specification provided above. But you should have all the fields
+    // that are listed in the report specification
+    const dataset = [
+        {customer_name: 'IBM', status_id: 1, note: 'some note', misc: 'not shown'},
+        {customer_name: 'HP', status_id: 0, note: 'some note'},
+        {customer_name: 'MS', status_id: 0, note: 'some note', misc: 'not shown'}
+    ]
+
+    // Define an array of merges. 1-1 = A:1
+    // The merges are independent of the data.
+    // A merge will overwrite all data _not_ in the top-left cell.
+    const merges = [
+        {start: {row: 1, column: 1}, end: {row: 1, column: 10}},
+        {start: {row: 2, column: 1}, end: {row: 2, column: 5}},
+        {start: {row: 2, column: 6}, end: {row: 2, column: 10}}
+    ]
+
+    // Create the excel report.
+    // This function will return Buffer
+    const report = excel.buildExport(
+            [// <- Notice that this is an array. Pass multiple sheets to create multi sheet report
+                {
+                    name: 'Report', // <- Specify sheet name (optional)
+                    heading: heading, // <- Raw heading array (optional)
+                    merges: merges, // <- Merge cell ranges
+                    specification: specification, // <- Report specification
+                    data: dataset // <-- Report data
+                }
+            ]
+            );
+
+    res.attachment('report.xlsx'); // This is sails.js specific (in general you need to set headers)
+    return res.send(report);
+});
+
+app.get('/Excel4', function (req, res) {
+
+    //<editor-fold defaultstate="collapsed" desc="ESTILOS">
+    var styles = {
+        headerDark: {
+            fill: {
+                fgColor: {
+                    rgb: 'FF000000'
+                }
+            },
+            font: {
+                color: {
+                    rgb: 'FFFFFFFF'
+                },
+                sz: 14,
+                bold: true,
+                underline: true
+            }
+        },
+        cellGreen: {
+            fill: {
+                fgColor: {
+                    rgb: 'FF00FF00'
+                }
+            }
+        },
+        cellGrayHeavy: {
+            fill: {
+                fgColor: {
+                    rgb: '2A2A2A'
+                }
+            }
+        },
+        cellGrayHard: {
+            fill: {
+                fgColor: {
+                    rgb: '626262'
+                }
+            }
+        },
+        cellGraySoft: {
+            fill: {
+                fgColor: {
+                    rgb: '666666'
+                }
+            }
+        }
+    };
+    //</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="TITULOS">
+    var heading = [
+        [{value: 'Gran Titulo', style: styles.headerDark}],
+        [{value: 'Dato importante 1', style: styles.headerDark}, {value: 'Dato importante 2', style: styles.headerDark}, {value: 'Dato importante 3', style: styles.headerDark}]
+    ];
+    //</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="CELL-UNIONS">
+    var merges = [
+        {start: {row: 1, column: 1}, end: {row: 1, column: 3}}
+    ];
+    //</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="COLUMNS">
+    var specification = {
+        nombre: {// <- the key should match the actual data key
+            displayName: 'Nombre', // <- Here you specify the column header
+            headerStyle: styles.cellGrayHeavy, // <- Header style
+            cellStyle: function (value, row) { // <- style renderer function
+                var numeral = row.numeral;
+                if (numeral % 2 == 0) {
+                    return  styles.cellGrayHard;
+                } else {
+                    return  styles.cellGraySoft;
+                }
+            },
+            width: 120 // <- width in pixels
+        },
+        apellidoP: {// <- the key should match the actual data key
+            displayName: 'ApellidoP', // <- Here you specify the column header
+            headerStyle: styles.cellGrayHeavy, // <- Header style
+            cellStyle: function (value, row) { // <- style renderer function
+                var numeral = row.numeral;
+                if (numeral % 2 == 0) {
+                    return  styles.cellGrayHard;
+                } else {
+                    return  styles.cellGraySoft;
+                }
+            },
+            width: 120 // <- width in pixels
+        },
+        apellidoM: {// <- the key should match the actual data key
+            displayName: 'ApellidoM', // <- Here you specify the column header
+            headerStyle: styles.cellGrayHeavy, // <- Header style
+            cellStyle: function (value, row) { // <- style renderer function
+                var numeral = row.numeral;
+                if (numeral % 2 == 0) {
+                    return  styles.cellGrayHard;
+                } else {
+                    return  styles.cellGraySoft;
+                }
+            },
+            width: 120 // <- width in pixels
+        }
+
+    };
+    //</editor-fold>
+
+
+
+
+
+    //MATRIZ DE DATOS
+    var dataset = [
+        {numeral: 1, nombre: 'Oscar', apellidoP: "Avila", apellidoM: 'Pérez'},
+        {numeral: 2, nombre: 'Adriana', apellidoP: "Sanchez", apellidoM: 'Pérez'},
+        {numeral: 3, nombre: 'Zabdi', apellidoP: "Rodriguez", apellidoM: 'Terres'}
+    ];
+
+    // Create the excel report.
+    // This function will return Buffer
+    var report = excel.buildExport(
+            [// <- Notice that this is an array. Pass multiple sheets to create multi sheet report
+                {
+                    name: 'Report', // <- Specify sheet name (optional)
+                    heading: heading, // <- Raw heading array (optional)
+                    merges: merges, // <- Merge cell ranges
+                    specification: specification, // <- Report specification
+                    data: dataset // <-- Report data
+                }
+            ]
+            );
+
+    res.attachment('report.xlsx'); // This is sails.js specific (in general you need to set headers)
+    return res.send(report);
+});
+//</editor-fold>
+
+
+
 
 app.set('port', (process.env.PORT || 3000));
 var server = app.listen(app.get('port'), function () {
