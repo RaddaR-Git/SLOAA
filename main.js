@@ -876,10 +876,16 @@ var msql = new ENCManagerSQLServer();
 var mm = new ENCManagerMail();
 var mcph = new ENCripto();
 var server;
+//var SQLServerConnectionParameters = {
+//    user: 'sa',
+//    password: 'Pass01011',
+//    server: '10.15.15.61',
+//    database: 'SOA_db'
+//};
 var SQLServerConnectionParameters = {
     user: 'sa',
-    password: 'Pass01011',
-    server: '10.15.15.61',
+    password: 'Lufiri01011',
+    server: 'localhost',
     database: 'SOA_db'
 };
 ////var connectionParameters1 = {
@@ -1332,7 +1338,7 @@ app.get('/getAllOrdenServicio', function (req, res) {
                         "      ,[ORD].[CIERRE_TOTAL]\n" +
                         "      ,[ORD].[JUSTIFICACION]\n" +
                         "	  \n" +
-                        "	   ,[CRED].[ID_CREDENCIAL]\n" +
+                        "      ,[CRED].[ID_CREDENCIAL]\n" +
                         "      ,[CRED].[NOMBRE]\n" +
                         "      ,[CRED].[CARGO]\n" +
                         "      ,[CRED].[TELEFONO]\n" +
@@ -1344,7 +1350,7 @@ app.get('/getAllOrdenServicio', function (req, res) {
                         "      ,[CRED].[ID_ROL]\n" +
                         "      ,[CRED].[ID_CREDENCIAL_SUPERIOR]\n" +
                         "\n" +
-                        "	   ,[AUTH].[ID_AUTORIDAD]\n" +
+                        "      ,[AUTH].[ID_AUTORIDAD]\n" +
                         "      ,[AUTH].[NOMBRE_AUTORIDAD]\n" +
                         "      ,[AUTH].[ESTADO]\n" +
                         "      ,[AUTH].[NIVEL]\n" +
@@ -1356,11 +1362,16 @@ app.get('/getAllOrdenServicio', function (req, res) {
                         "      ,[ORD].[MODIFICADO]\n" +
                         "      ,[ORD].[CANCELADO]\n" +
                         "      ,[ORD].[TIPO_ORDEN_SERVICIO]\n" +
+                        
+                        "      ,[ALMACEN].[CLAVE_ALMACEN]\n" +
+                        "      ,[ALMACEN].[ETIQUETA]\n" +
+                        
                         "  FROM \n" +
                         "  [SLOAA_TR_ORDEN_SERVICIO] [ORD]\n" +
                         " LEFT JOIN [SLOAA_TR_CREDENCIAL] [CRED] ON  [CRED].[ID_CREDENCIAL]=[ORD].[ID_CREDENCIAL]\n" +
                         " LEFT JOIN [SLOAA_TC_AUTORIDAD] [AUTH] ON  [AUTH].[ID_AUTORIDAD]=[CRED].[ID_AUTORIDAD]\n" +
-                        " LEFT JOIN [dbo].[SLOAA_TC_STATUS] [STATUS] ON  [ORD].[ID_STATUS]=[STATUS].[ID_STATUS]\n" +
+                        " LEFT JOIN [SLOAA_TC_STATUS] [STATUS] ON  [ORD].[ID_STATUS]=[STATUS].[ID_STATUS]\n" +
+                        " LEFT JOIN [SLOAA_TC_ALMACEN] [ALMACEN] ON  [ORD].[CLAVE_ALMACEN]=[ALMACEN].[CLAVE_ALMACEN]\n" +
                         "  WHERE\n" +
                         "  1=1\n ";
 
@@ -1491,10 +1502,14 @@ app.get('/getOrdenServicio', function (req, res) {
                         "      ,[ORD].[CANCELADO]\n" +
                         "      ,[ORD].[TIPO_ORDEN_SERVICIO]\n" +
                         "       " +
+                        "      ,[ALMACEN].[CLAVE_ALMACEN]\n" +
+                        "      ,[ALMACEN].[ETIQUETA]\n" +
+                        "       " +
                         "  FROM \n" +
                         "  [SLOAA_TR_ORDEN_SERVICIO] [ORD]\n" +
                         " LEFT JOIN [SLOAA_TR_CREDENCIAL] [CRED] ON  [CRED].[ID_CREDENCIAL]=[ORD].[ID_CREDENCIAL]\n" +
                         " LEFT JOIN [SLOAA_TC_AUTORIDAD] [AUTH] ON  [AUTH].[ID_AUTORIDAD]=[CRED].[ID_AUTORIDAD]\n" +
+                        " LEFT JOIN [SLOAA_TC_ALMACEN] [ALMACEN] ON  [ORD].[CLAVE_ALMACEN]=[ALMACEN].[CLAVE_ALMACEN]\n" +
                         "  WHERE\n" +
                         "  1=1 AND [ORD].[ID_ORDEN_SERVICIO]=" + dp.idOrdenServicio
                 if (dp.idRol === "1") {
@@ -1658,6 +1673,7 @@ app.get('/createOrdenServicio', function (req, res) {
                     new FieldValidation('domicilio', ENC.STRING()),
                     new FieldValidation('justificacion', ENC.STRING()),
                     new FieldValidation('tipoOrdenServicio', ENC.STRING()),
+                    new FieldValidation('claveAlmacen', ENC.STRING()),
                     new FieldValidation('_dc', ENC.STRING()),
                     new FieldValidation('callback', ENC.STRING())
                 ]);
@@ -1671,6 +1687,7 @@ app.get('/createOrdenServicio', function (req, res) {
                 dp.metaFechaGeneracion = new Date().toISOString();
                 dp.anio = new Date().getFullYear();
                 dp.tipoOrdenServicio = req.query.tipoOrdenServicio;
+                dp.claveAlmacen = req.query.claveAlmacen;
                 return dp;
             })
 
@@ -1769,6 +1786,7 @@ app.get('/createOrdenServicio', function (req, res) {
                         "      ,[ORD].[MODIFICADO]\n" +
                         "      ,[ORD].[CANCELADO]\n" +
                         "      ,[ORD].[TIPO_ORDEN_SERVICIO]\n" +
+                        "      ,[ORD].[CLAVE_ALMACEN]\n" +
                         "	  )\n" +
                         "	  VALUES\n" +
                         "	  (\n" +
@@ -1784,7 +1802,8 @@ app.get('/createOrdenServicio', function (req, res) {
                         "		'" + dp.justificacion + "',\n" +
                         "		0,\n" +
                         "		0,\n" +
-                        "		'" + dp.tipoOrdenServicio + "'\n" +
+                        "		'" + dp.tipoOrdenServicio + "',\n" +
+                        "		'" + dp.claveAlmacen + "'\n" +
                         "	  )";
                 return dp;
             })
@@ -5204,9 +5223,9 @@ app.get('/updateOrdenServicioCancelado', function (req, res) {
 
 
 
-//▓[40]▓
-//<editor-fold defaultstate="collapsed" desc="getInformeMovimientoAlmacen">
-app.get('/getInformeMovimientoAlmacen', function (req, res) {
+//▓[39]▓
+//<editor-fold defaultstate="collapsed" desc="getAllAlmacen">
+app.get('/getAllAlmacen', function (req, res) {
     var requestID = new Date().getTime();
     var response = {};
     var dataPacket = {
@@ -5216,7 +5235,67 @@ app.get('/getInformeMovimientoAlmacen', function (req, res) {
     };
     mn.init(dataPacket)
             .then(function (dp) {
-                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/getInformeMovimientoAlmacen]');
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/getAllAlmacen]');
+                return dp;
+            })
+            .then(function (dp) {
+
+                inputValidation(response, req.query, [
+                    new FieldValidation('idZona', ENC.STRING()),
+                    new FieldValidation('_dc', ENC.STRING()),
+                    new FieldValidation('query', ENC.STRING()),
+                    new FieldValidation('page', ENC.STRING()),
+                    new FieldValidation('start', ENC.STRING()),
+                    new FieldValidation('limit', ENC.STRING()),
+                    new FieldValidation('callback', ENC.STRING()),
+                ]);
+                dp.idZona = req.query.idZona;
+                return dp;
+            })
+            .then(function (dp) {
+                dp.query = "SELECT [CLAVE_ALMACEN],[ID_ZONA],[ETIQUETA] FROM [SLOAA_TC_ALMACEN]  WHERE 1=1 " +
+                        "AND [ID_ZONA]=" + dp.idZona;
+                return dp;
+            })
+            .then(msql.selectPromise)
+            .then(function (dp) {
+                //response = dp.queryResult;
+                if (dp.queryResult.rows !== null) {
+                    response.subZona = dp.queryResult.rows;
+                    response.success = true;
+                } else {
+                    response.success = false;
+                }
+                return dp;
+            })
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[END]:[/getAllAlmacen]');
+                res.jsonp(response);
+            })
+            .catch(function (err) {
+                mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/getAllAlmacen]');
+                response.error = err.message;
+                res.jsonp(response);
+            });
+});
+//</editor-fold>
+
+
+
+
+//▓[40]▓
+//<editor-fold defaultstate="collapsed" desc="getInformeServicios">
+app.get('/getInformeServicios', function (req, res) {
+    var requestID = new Date().getTime();
+    var response = {};
+    var dataPacket = {
+        requestID: requestID,
+        connectionParameters: SQLServerConnectionParameters,
+        looked: 0
+    };
+    mn.init(dataPacket)
+            .then(function (dp) {
+                mc.info('RID:[' + requestID + ']-[REQUEST]-[START]:[/getInformeServicios]');
                 return dp;
             })
             .then(function (dp) {
@@ -5246,7 +5325,7 @@ app.get('/getInformeMovimientoAlmacen', function (req, res) {
                         "      ,[ORD].[CIERRE_TOTAL]\n" +
                         "      ,[ORD].[JUSTIFICACION]\n" +
                         "	  \n" +
-                        "	   ,[CRED].[ID_CREDENCIAL]\n" +
+                        "      ,[CRED].[ID_CREDENCIAL]\n" +
                         "      ,[CRED].[NOMBRE]\n" +
                         "      ,[CRED].[CARGO]\n" +
                         "      ,[CRED].[TELEFONO]\n" +
@@ -5258,7 +5337,7 @@ app.get('/getInformeMovimientoAlmacen', function (req, res) {
                         "      ,[CRED].[ID_ROL]\n" +
                         "      ,[CRED].[ID_CREDENCIAL_SUPERIOR]\n" +
                         "\n" +
-                        "	   ,[AUTH].[ID_AUTORIDAD]\n" +
+                        "      ,[AUTH].[ID_AUTORIDAD]\n" +
                         "      ,[AUTH].[NOMBRE_AUTORIDAD]\n" +
                         "      ,[AUTH].[ESTADO]\n" +
                         "      ,[AUTH].[NIVEL]\n" +
@@ -5270,11 +5349,16 @@ app.get('/getInformeMovimientoAlmacen', function (req, res) {
                         "      ,[ORD].[MODIFICADO]\n" +
                         "      ,[ORD].[CANCELADO]\n" +
                         "      ,[ORD].[TIPO_ORDEN_SERVICIO]\n" +
+                        
+                        "      ,[ALMACEN].[CLAVE_ALMACEN]\n" +
+                        "      ,[ALMACEN].[ETIQUETA]\n" +
+                        
                         "  FROM \n" +
                         "  [SLOAA_TR_ORDEN_SERVICIO] [ORD]\n" +
                         " LEFT JOIN [SLOAA_TR_CREDENCIAL] [CRED] ON  [CRED].[ID_CREDENCIAL]=[ORD].[ID_CREDENCIAL]\n" +
                         " LEFT JOIN [SLOAA_TC_AUTORIDAD] [AUTH] ON  [AUTH].[ID_AUTORIDAD]=[CRED].[ID_AUTORIDAD]\n" +
-                        " LEFT JOIN [dbo].[SLOAA_TC_STATUS] [STATUS] ON  [ORD].[ID_STATUS]=[STATUS].[ID_STATUS]\n" +
+                        " LEFT JOIN [SLOAA_TC_STATUS] [STATUS] ON  [ORD].[ID_STATUS]=[STATUS].[ID_STATUS]\n" +
+                        " LEFT JOIN [SLOAA_TC_ALMACEN] [ALMACEN] ON  [ORD].[CLAVE_ALMACEN]=[ALMACEN].[CLAVE_ALMACEN]\n" +
                         "  WHERE\n" +
                         "  1=1\n ";
                 if (dp.tipoOrdenServicio !== "AMBOS") {
@@ -5468,7 +5552,7 @@ app.get('/getInformeMovimientoAlmacen', function (req, res) {
 
             })
             .catch(function (err) {
-                mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/getInformeMovimientoAlmacen]');
+                mc.error('RID:[' + requestID + ']-[REQUEST]-[ERROR]:[' + err.message + ']:[/getInformeServicios]');
                 response.error = err.message;
                 res.jsonp(response);
             });

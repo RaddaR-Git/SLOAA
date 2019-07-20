@@ -1,5 +1,5 @@
-//var serviceUrl = 'http://localhost:3000/'
-var serviceUrl = 'http://10.15.15.61:3000/'
+var serviceUrl = 'http://localhost:3000/';
+//var serviceUrl = 'http://10.15.15.61:3000/';
 
 var login = Ext.create('Ext.window.Window', {
     title: 'Ingreso',
