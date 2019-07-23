@@ -1,5 +1,5 @@
-var serviceUrl = 'http://localhost:3000/';
-//var serviceUrl = 'http://10.15.15.61:3000/';
+//var serviceUrl = 'http://localhost:3000/'
+var serviceUrl = 'http://10.15.17.69:3000/'
 
 var login = Ext.create('Ext.window.Window', {
     title: 'Ingreso',
@@ -76,7 +76,7 @@ var createRegistry = function (button) {
         title: 'Registro',
         animateTarget: button,
         width: 500,
-//        height: 400,
+        //        height: 400,
         height: 495,
         layout: 'form',
         items: [
@@ -288,30 +288,30 @@ var createRegistry = function (button) {
                         //firma
                         signWindow(button, 6)
                         //Enviar registro
-//                        Ext.data.JsonP.request({
-//                            url: serviceUrl + 'registry',
-//                            params: thisForm.getValues(),
-//                            success: function (result) {
-//                                if (result.success) {
-//                                    Ext.Msg.show({
-//                                        title: 'Registro solicitado',
-//                                        message: '¿Desea obtener acuse de registro',
-//                                        buttons: Ext.Msg.YESNO,
-//                                        icon: Ext.Msg.INFO,
-//                                        fn: function (btn) {
-//                                            if (btn == 'yes') {
-//                                                button.idCredencial = result.idCredencial;
-//                                                signWindow(button, 6);
-//                                            } else {
-//                                                button.up('window').close();
-//                                            }
-//                                        }
-//                                    });
-//                                } else {
-//                                    Ext.Msg.alert('Registro', 'No fue posible enviar la solicitud, intente mas tarde.');
-//                                }
-//                            }
-//                        });
+                        //                        Ext.data.JsonP.request({
+                        //                            url: serviceUrl + 'registry',
+                        //                            params: thisForm.getValues(),
+                        //                            success: function (result) {
+                        //                                if (result.success) {
+                        //                                    Ext.Msg.show({
+                        //                                        title: 'Registro solicitado',
+                        //                                        message: '¿Desea obtener acuse de registro',
+                        //                                        buttons: Ext.Msg.YESNO,
+                        //                                        icon: Ext.Msg.INFO,
+                        //                                        fn: function (btn) {
+                        //                                            if (btn == 'yes') {
+                        //                                                button.idCredencial = result.idCredencial;
+                        //                                                signWindow(button, 6);
+                        //                                            } else {
+                        //                                                button.up('window').close();
+                        //                                            }
+                        //                                        }
+                        //                                    });
+                        //                                } else {
+                        //                                    Ext.Msg.alert('Registro', 'No fue posible enviar la solicitud, intente mas tarde.');
+                        //                                }
+                        //                            }
+                        //                        });
                     } else {
                         var field = thisForm.getForm().getFields().items.find(function (item) {
                             if (!Ext.isEmpty(item.activeErrors)) {
@@ -323,7 +323,7 @@ var createRegistry = function (button) {
                         error.setFieldLabel(field.fieldLabel);
                         error.setValue(field.activeErrors[0]);
                         field.focus();
-//                        Ext.Msg.alert('Error en registro', 'Favor de revisar los campos marcados en rojo.');
+                        //                        Ext.Msg.alert('Error en registro', 'Favor de revisar los campos marcados en rojo.');
                     }
                 }
             }
@@ -356,16 +356,16 @@ var createViewport = function () {
                                     buttonAlign: 'left',
                                     listeners: {
                                         beforerender: function (panel, eOpts) {
-//                                            Ext.data.JsonP.request({
-//                                                url: 'http://localhost:3000/form',
-//                                                params: {},
-//                                                success: function (result) {
-//                                                    panel.loadRecord(Ext.create('Ext.data.Model', result));
-//                                                },
-//                                                failure: function (result) {
-//                                                    Ext.Msg.alert('Failed', result.msg);
-//                                                }
-//                                            });
+                                            //                                            Ext.data.JsonP.request({
+                                            //                                                url: 'http://localhost:3000/form',
+                                            //                                                params: {},
+                                            //                                                success: function (result) {
+                                            //                                                    panel.loadRecord(Ext.create('Ext.data.Model', result));
+                                            //                                                },
+                                            //                                                failure: function (result) {
+                                            //                                                    Ext.Msg.alert('Failed', result.msg);
+                                            //                                                }
+                                            //                                            });
                                         }
                                     },
                                     defaults: {
@@ -431,13 +431,57 @@ var createViewport = function () {
                                             ]
                                         },
                                         {
-                                            xtype: 'combobox',
-                                            itemId: 'ID_STATUS',
-                                            name: 'ID_STATUS',
-                                            fieldLabel: 'Estado de Orden',
-                                            valueField: 'ID_STATUS',
-                                            displayField: 'NOMBRE_STATUS',
-                                            margin: '0 0 5 10'
+                                            xtype: 'fieldset',
+                                            defaultType: 'combobox',
+                                            layout: 'hbox',
+                                            border: false,
+                                            defaults: {
+                                                listeners: {
+                                                    change: function (field, newValue, oldValue, eOpts) {
+                                                        field.up('form').down('toolbar').getComponent('filterButton').click();
+                                                    }
+                                                }
+                                            },
+                                            items: [
+                                                {
+                                                    itemId: 'ID_STATUS',
+                                                    name: 'ID_STATUS',
+                                                    fieldLabel: 'Estado de Orden',
+                                                    valueField: 'ID_STATUS',
+                                                    displayField: 'NOMBRE_STATUS',
+                                                    margin: '0 10 0 0',
+                                                },
+                                                {
+                                                    itemId: 'TIPO_ORDEN_SERVICIO',
+                                                    name: 'TIPO_ORDEN_SERVICIO',
+                                                    fieldLabel: 'Tipo de Orden',
+                                                    valueField: 'TIPO_ORDEN_SERVICIO',
+                                                    displayField: 'TIPO_ORDEN_SERVICIO',
+                                                    margin: '0 10 0 0',
+                                                    store: Ext.create('Ext.data.Store', {
+                                                        fields: ['TIPO_ORDEN_SERVICIO'],
+                                                        data: [
+                                                            { TIPO_ORDEN_SERVICIO: "Operativo" },
+                                                            { TIPO_ORDEN_SERVICIO: "Movimiento por almacén" },
+                                                        ]
+                                                    })
+                                                },
+                                                {
+                                                    itemId: 'modcancel',
+                                                    name: 'modcancel',
+                                                    fieldLabel: 'Tipo de Orden',
+                                                    valueField: 'name',
+                                                    displayField: 'name',
+                                                    margin: '0 10 0 0',
+                                                    store: Ext.create('Ext.data.Store', {
+                                                        fields: ['modcancel'],
+                                                        data: [
+                                                            { name: "MODIFICADO" },
+                                                            { name: "CANCELADO" }
+                                                        ]
+                                                    })
+                                                }
+                                            ]
                                         },
                                         {
                                             xtype: 'textfield',
@@ -460,10 +504,16 @@ var createViewport = function () {
                                                     if (!Ext.isEmpty(value)) {
                                                         switch (key) {
                                                             case 'NOMBRE':
-                                                                filters.push({property: key, value: value, operator: '/='});
+                                                                filters.push({ property: key, value: value, operator: '/=' });
+                                                                break;
+                                                            case 'TIPO_ORDEN_SERVICIO':
+                                                                filters.push({ property: key, value: value, operator: '/=' });
                                                                 break;
                                                             case 'ID_STATUS':
-                                                                filters.push({property: key, value: value, operator: '='});
+                                                                filters.push({ property: key, value: value, operator: '=' });
+                                                                break;
+                                                            case 'modcancel':
+                                                                filters.push({ property: value, value: 1, operator: '=' });
                                                                 break;
                                                             default:
                                                                 dateFilter[key] = value;
@@ -472,7 +522,8 @@ var createViewport = function () {
                                                     }
                                                 });
                                                 if (!Ext.isEmpty(dateFilter)) {
-                                                    filters.push({property: 'FECHA_SOLICITUD', filterFn: function (item) {
+                                                    filters.push({
+                                                        property: 'FECHA_SOLICITUD', filterFn: function (item) {
                                                             var dateString = Ext.Date.format(item.data.FECHA_SOLICITUD, 'd/m/Y');
                                                             var isValidDate = true;
                                                             if (isValidDate && dateFilter.hasOwnProperty('filtroFechaFrom')) {
@@ -528,15 +579,15 @@ var createViewport = function () {
                             store: Ext.create('Ext.data.Store', {
                                 autoLoad: true,
                                 fields: [
-                                    {name: 'ID_ORDEN_SERVICIO', type: 'int'},
-                                    {name: 'FECHA_SOLICITUD', type: 'date'},
-                                    {name: 'DOMICILIO', type: 'string'},
-                                    {name: 'NOMBRE', type: 'string'},
-                                    {name: 'CARGO', type: 'string'},
-                                    {name: 'NOMBRE_AUTORIDAD', type: 'string'},
-                                    {name: 'NIVEL', type: 'string'},
-                                    {name: 'SERVICIO', type: 'string'},
-                                    {name: 'NOMBRE_STATUS', type: 'string'}
+                                    { name: 'ID_ORDEN_SERVICIO', type: 'int' },
+                                    { name: 'FECHA_SOLICITUD', type: 'date' },
+                                    { name: 'DOMICILIO', type: 'string' },
+                                    { name: 'NOMBRE', type: 'string' },
+                                    { name: 'CARGO', type: 'string' },
+                                    { name: 'NOMBRE_AUTORIDAD', type: 'string' },
+                                    { name: 'NIVEL', type: 'string' },
+                                    { name: 'SERVICIO', type: 'string' },
+                                    { name: 'NOMBRE_STATUS', type: 'string' }
                                 ],
                                 proxy: {
                                     type: 'jsonp',
@@ -566,7 +617,7 @@ var createViewport = function () {
                                                 data.push(record);
                                             }
                                         });
-                                        Ext.getCmp('serviceOrdersFilter').getComponent('ID_STATUS').setStore(Ext.create('Ext.data.Store', {
+                                        Ext.getCmp('serviceOrdersFilter').queryById('ID_STATUS').setStore(Ext.create('Ext.data.Store', {
                                             fields: ['ID_STATUS', 'NOMBRE_STATUS'],
                                             data: data
                                         }));
@@ -583,37 +634,38 @@ var createViewport = function () {
                                                     //muestra botones
                                                     viewPort.down('toolbar #reportB').setHidden(false);
                                                     viewPort.down('toolbar #leftDaysB').setHidden(false);
-//                                                    viewPort.down('toolbar #reportC').setHidden(false);
+                                                    //                                                    viewPort.down('toolbar #reportC').setHidden(false);
                                                     viewPort.down('toolbar #leftDaysC').setHidden(false);
                                                     //configura botones
                                                     viewPort.down('toolbar #reportB').setDisabled(!avalibleFifteen);
                                                     viewPort.down('toolbar #leftDaysB').setValue(avalibleFifteen ? '<span style="color:gray;">(' + result.leftDayFifteen + ' días restantes)</span>' : '');
-//                                                    viewPort.down('toolbar #reportC').setDisabled(!availableTen);
+                                                    //                                                    viewPort.down('toolbar #reportC').setDisabled(!availableTen);
                                                     viewPort.down('toolbar #leftDaysC').setValue(availableTen ? '<span style="color:gray;">(' + result.leftDayTen + ' días restantes)</span>' : '');
                                                 } else {
                                                     //quita botones
                                                     viewPort.down('toolbar #reportB').setHidden(true);
                                                     viewPort.down('toolbar #leftDaysB').setHidden(true);
-//                                                    viewPort.down('toolbar #reportC').setHidden(true);
+                                                    //                                                    viewPort.down('toolbar #reportC').setHidden(true);
                                                     viewPort.down('toolbar #leftDaysC').setHidden(true);
                                                 }
                                                 viewPort.down('toolbar #reportC').setHidden(!login.privilegios.cons);
                                             }
                                         });
 
-                                    }},
+                                    }
+                                },
                                 sorters: []
                             }),
                             columns: [
-                                {text: 'ID', dataIndex: 'ID_ORDEN_SERVICIO', flex: 1, filter: 'number'},
-                                {text: 'Fecha', dataIndex: 'FECHA_SOLICITUD', xtype: 'datecolumn', flex: 2, format: 'd/m/Y g:i A', filter: 'date'},
-                                {text: 'Domicilio', dataIndex: 'DOMICILIO', flex: 4, filter: 'string'},
-                                {text: 'Nombre', dataIndex: 'NOMBRE', flex: 2, filter: 'string'},
-                                {text: 'Cargo', dataIndex: 'CARGO', flex: 2, filter: 'string'},
-                                {text: 'Autoridad', dataIndex: 'NOMBRE_AUTORIDAD', flex: 2, filter: 'string'},
-                                {text: 'Nivel', dataIndex: 'NIVEL', flex: 1, filter: 'string'},
-                                {text: 'Servicio', dataIndex: 'SERVICIO', flex: 2, filter: 'string'},
-                                {text: 'Estado', dataIndex: 'NOMBRE_STATUS', flex: 2, filter: 'string'},
+                                { text: 'ID', dataIndex: 'ID_ORDEN_SERVICIO', flex: 1, filter: 'number' },
+                                { text: 'Fecha', dataIndex: 'FECHA_SOLICITUD', xtype: 'datecolumn', flex: 2, format: 'd/m/Y g:i A', filter: 'date' },
+                                { text: 'Domicilio', dataIndex: 'DOMICILIO', flex: 4, filter: 'string' },
+                                { text: 'Nombre', dataIndex: 'NOMBRE', flex: 2, filter: 'string' },
+                                { text: 'Cargo', dataIndex: 'CARGO', flex: 2, filter: 'string' },
+                                { text: 'Autoridad', dataIndex: 'NOMBRE_AUTORIDAD', flex: 2, filter: 'string' },
+                                { text: 'Nivel', dataIndex: 'NIVEL', flex: 1, filter: 'string' },
+                                { text: 'Servicio', dataIndex: 'SERVICIO', flex: 2, filter: 'string' },
+                                { text: 'Estado', dataIndex: 'NOMBRE_STATUS', flex: 2, filter: 'string' },
                                 {
                                     xtype: 'actioncolumn',
                                     width: 50,
@@ -650,7 +702,7 @@ var createViewport = function () {
                                         {
                                             text: 'Generar Reporte',
                                             itemId: 'reportA',
-//                                            disabled: true,
+                                            //                                            disabled: true,
                                             glyph: 'xf15b@FontAwesome',
                                             handler: function (button) {
                                                 signWindow(button, 3);
@@ -864,7 +916,9 @@ var signWindow = function (button, report) {
 };
 
 var orderWindow = function (recordBase) {
+    console.log(recordBase);
     var thisWin = Ext.create('Ext.window.Window', {
+        recordBase: recordBase,
         title: 'Orden de Servicio',
         height: 700,
         width: 830,
@@ -907,12 +961,36 @@ var orderWindow = function (recordBase) {
                         for (var i = 1; i < parseInt(recordBase.data.ID_STATUS); i++) {
                             thisWin.getComponent('e' + (i + 1)).setVisible(true);
                         }
-                        //llena formulario
+
                         thisWin.ordenServicio = recordBase.data;
-                        panel.getComponent('e1f1').getComponent('fechaSolicitud').setValue(recordBase.data.FECHA_SOLICITUD);
-                        panel.getComponent('e1f1').getComponent('horaSolicitud').setValue(recordBase.data.FECHA_SOLICITUD);
-                        panel.getComponent('e1f1').getComponent('domicilio').setValue(recordBase.data.DOMICILIO);
-                        panel.getComponent('e1f1').getComponent('justificacion').setValue(recordBase.data.JUSTIFICACION);
+                        var fechaSolicitud = panel.getComponent('e1f1').getComponent('fechaSolicitud');
+                        var horaSolicitud = panel.getComponent('e1f1').getComponent('horaSolicitud');
+                        var domicilio = panel.getComponent('e1f1').getComponent('domicilio');
+                        var justificacion = panel.getComponent('e1f1').getComponent('justificacion');
+                        var tipoOrdenServicio = panel.getComponent('e1f1').getComponent('tipoOrdenServicio');
+
+                        //llena formulario
+                        fechaSolicitud.setValue(recordBase.data.FECHA_SOLICITUD);
+                        horaSolicitud.setValue(recordBase.data.FECHA_SOLICITUD);
+                        domicilio.setValue(recordBase.data.DOMICILIO);
+                        justificacion.setValue(recordBase.data.JUSTIFICACION);
+                        tipoOrdenServicio.setValue(recordBase.data.TIPO_ORDEN_SERVICIO);
+
+                        //Permisos para modificar fecha
+                        if ((recordBase.data.ID_ROL === 2 || recordBase.data.ID_ROL === 3) && recordBase.data.CHECK24 < 24) {
+                            fechaSolicitud.enable();
+                            horaSolicitud.disable();
+                            domicilio.disable();
+                            justificacion.disable();
+                            tipoOrdenServicio.disable();
+                        } else {
+                            fechaSolicitud.disable();
+                            horaSolicitud.disable();
+                            domicilio.disable();
+                            justificacion.disable();
+                            tipoOrdenServicio.disable();
+                        }
+
                         if (haveAccess) {
                             if (isAgree) {
                                 panel.down('toolbar #nextButton').setText('Siguiente');
@@ -945,16 +1023,16 @@ var orderWindow = function (recordBase) {
                         bodyPadding: 15,
                         listeners: {
                             beforerender: function (panel, eOpts) {
-//                                Ext.data.JsonP.request({
-//                                    url: 'http://localhost:3000/form',
-//                                    params: {},
-//                                    success: function (result) {
-//                                        panel.loadRecord(Ext.create('Ext.data.Model', result));
-//                                    },
-//                                    failure: function (result) {
-//                                        Ext.Msg.alert('Failed', result.msg);
-//                                    }
-//                                });
+                                //                                Ext.data.JsonP.request({
+                                //                                    url: 'http://localhost:3000/form',
+                                //                                    params: {},
+                                //                                    success: function (result) {
+                                //                                        panel.loadRecord(Ext.create('Ext.data.Model', result));
+                                //                                    },
+                                //                                    failure: function (result) {
+                                //                                        Ext.Msg.alert('Failed', result.msg);
+                                //                                    }
+                                //                                });
                             }
                         },
                         items: [
@@ -972,15 +1050,32 @@ var orderWindow = function (recordBase) {
                             },
                             {
                                 xtype: 'combo',
+                                fieldLabel: 'Tipo de Orden',
+                                itemId: 'tipoOrdenServicio',
+                                name: 'tipoOrdenServicio',
+                                width: '100%',
+                                displayField: 'name',
+                                valueField: 'name',
+                                value: 'Operativo',
+                                store: Ext.create('Ext.data.Store', {
+                                    fields: ['name'],
+                                    data: [
+                                        { name: "Operativo" },
+                                        { name: "Movimiento por almacén" },
+                                    ]
+                                })
+                            },
+                            {
+                                xtype: 'combo',
                                 fieldLabel: 'Domicilio',
                                 itemId: 'domicilio',
                                 name: 'domicilio',
                                 width: '100%',
                                 queryMode: 'local',
                                 minChars: 0,
-                                displayField: 'NOMBRE_ROL',
-                                valueField: 'NOMBRE_ROL',
-                                publishes: 'NOMBRE_ROL',
+                                displayField: 'DIRECCION',
+                                valueField: 'DIRECCION',
+                                publishes: 'DIRECCION',
                                 anyMatch: true,
                                 emptyText: 'Cargando...',
                                 store: Ext.create('Ext.data.Store', {
@@ -990,10 +1085,10 @@ var orderWindow = function (recordBase) {
                                         url: serviceUrl + 'getAddress',
                                         reader: {
                                             type: 'json',
-                                            rootProperty: 'address',
-//                                            totalProperty: 'total',
+                                            rootProperty: 'direcciones',
+                                            //                                            totalProperty: 'total',
                                             successProperty: 'success'
-//                                            messageProperty: 'message'
+                                            //                                            messageProperty: 'message'
                                         }
                                     },
                                     listeners: {
@@ -1018,6 +1113,39 @@ var orderWindow = function (recordBase) {
                 ],
                 buttons: [
                     {
+                        text: 'Cancelar',
+                        itemId: 'cancelButton',
+                        glyph: 'xf05e@FontAwesome',
+                        hidden: true,
+                        handler: function (thisbutton) {
+                            var values = {
+                                idOrdenServicio: thisbutton.up('window').recordBase.data.ID_ORDEN_SERVICIO
+                            };
+                            Ext.data.JsonP.request({
+                                url: serviceUrl + 'updateOrdenServicioCancelado',
+                                params: values,
+                                success: function (result) {
+                                    if (result.success) {
+                                        thisbutton.next();
+                                    } else {
+                                        Ext.Msg.alert('Error', 'No se pudo actualizar orden de servicio.');
+                                    }
+                                },
+                                failure: function (result) {
+                                    Ext.Msg.alert('Error', result.msg);
+                                }
+                            });
+                        },
+                        listeners: {
+                            beforerender: function (thisbutton) {
+                                var recordBase = thisbutton.up('window').recordBase;
+                                if (!Ext.isEmpty(recordBase) && recordBase.data.CANCELADO === 0) {
+                                    thisbutton.setHidden(!((recordBase.data.ID_ROL === 2 || recordBase.data.ID_ROL === 3) && recordBase.data.CHECK24 < 24));
+                                }
+                            }
+                        }
+                    },
+                    {
                         text: 'Aceptar',
                         itemId: 'nextButton',
                         glyph: 'xf058@FontAwesome',
@@ -1025,8 +1153,33 @@ var orderWindow = function (recordBase) {
                             thisWin.getComponent('e2').setVisible(true);
                             thisWin.getComponent('e2').expand();
                         },
+                        listeners: {
+                            beforerender: function (thisbutton) {
+                                var recordBase = thisbutton.up('window').recordBase;
+                                thisbutton.setHidden(!Ext.isEmpty(recordBase) && recordBase.data.CANCELADO === 1);
+                            }
+                        },
                         handler: function (button) {
                             if (button.getText() === 'Siguiente') {
+
+                                var values = button.up('panel').getComponent('e1f1').getValues();
+                                if (values.hasOwnProperty('fechaSolicitud') && Ext.Date.format(thisWin.recordBase.data.FECHA_SOLICITUD, 'd/m/Y') !== values.fechaSolicitud) {
+                                    values.idOrdenServicio = thisWin.recordBase.data.ID_ORDEN_SERVICIO;
+                                    Ext.data.JsonP.request({
+                                        url: serviceUrl + 'updateOrdenServicioDate',
+                                        params: values,
+                                        success: function (result) {
+                                            if (result.success) {
+                                                button.next();
+                                            } else {
+                                                Ext.Msg.alert('Error', 'No se pudo actualizar orden de servicio.');
+                                            }
+                                        },
+                                        failure: function (result) {
+                                            Ext.Msg.alert('Error', result.msg);
+                                        }
+                                    });
+                                }
                                 button.next();
                             } else {
                                 var values = button.up('panel').getComponent('e1f1').getValues();
@@ -1476,12 +1629,12 @@ var orderWindow = function (recordBase) {
                             }
                         }),
                         columns: [
-                            {text: 'Cotización', dataIndex: 'ID_SERVICIO_COTIZACION', flex: 1},
-                            {text: 'Servicio', dataIndex: 'NOMBRE_SERVICIO', flex: 2},
-                            {text: 'Prestador', dataIndex: 'NOMBRE', flex: 1},
-                            {text: 'ZONA', dataIndex: 'ZONA', flex: 1},
-                            {text: 'SubZona', dataIndex: 'SUBZONA', flex: 2},
-                            {text: 'Cotización', dataIndex: 'COTIZACION', flex: 1, renderer: Ext.util.Format.usMoney}
+                            { text: 'Cotización', dataIndex: 'ID_SERVICIO_COTIZACION', flex: 1 },
+                            { text: 'Servicio', dataIndex: 'NOMBRE_SERVICIO', flex: 2 },
+                            { text: 'Prestador', dataIndex: 'NOMBRE', flex: 1 },
+                            { text: 'ZONA', dataIndex: 'ZONA', flex: 1 },
+                            { text: 'SubZona', dataIndex: 'SUBZONA', flex: 2 },
+                            { text: 'Cotización', dataIndex: 'COTIZACION', flex: 1, renderer: Ext.util.Format.usMoney }
                         ],
                         listeners: {
                             itemclick: function (grid, record, item, index, e, eOpts) {
@@ -1545,12 +1698,51 @@ var orderWindow = function (recordBase) {
                 ],
                 buttons: [
                     {
+                        text: 'Cancelar',
+                        itemId: 'cancelButton',
+                        glyph: 'xf05e@FontAwesome',
+                        hidden: true,
+                        handler: function (thisbutton) {
+                            var values = {
+                                idOrdenServicio: thisbutton.up('window').recordBase.data.ID_ORDEN_SERVICIO
+                            };
+                            Ext.data.JsonP.request({
+                                url: serviceUrl + 'updateOrdenServicioCancelado',
+                                params: values,
+                                success: function (result) {
+                                    if (result.success) {
+                                        thisbutton.next();
+                                    } else {
+                                        Ext.Msg.alert('Error', 'No se pudo actualizar orden de servicio.');
+                                    }
+                                },
+                                failure: function (result) {
+                                    Ext.Msg.alert('Error', result.msg);
+                                }
+                            });
+                        },
+                        listeners: {
+                            beforerender: function (thisbutton) {
+                                var recordBase = thisbutton.up('window').recordBase;
+                                if (!Ext.isEmpty(recordBase) && recordBase.data.CANCELADO === 0) {
+                                    thisbutton.setHidden(!((recordBase.data.ID_ROL === 2 || recordBase.data.ID_ROL === 3) && recordBase.data.CHECK24 < 24));
+                                }
+                            }
+                        }
+                    },
+                    {
                         text: 'Aceptar',
                         itemId: 'nextButton',
                         glyph: 'xf058@FontAwesome',
                         next: function () {
                             thisWin.getComponent('e3').setVisible(true);
                             thisWin.getComponent('e3').expand();
+                        },
+                        listeners: {
+                            beforerender: function (thisbutton) {
+                                var recordBase = thisbutton.up('window').recordBase;
+                                thisbutton.setHidden(!Ext.isEmpty(recordBase) && recordBase.data.CANCELADO === 1);
+                            }
                         },
                         handler: function (button) {
                             if (button.getText() === 'Siguiente') {
@@ -1682,7 +1874,7 @@ var orderWindow = function (recordBase) {
                                 load: function (store, records, successful, operation, eOpts) {
                                     //configura privilegios
                                     if (!Ext.isEmpty(records) && !Ext.isEmpty(records[0].data.FIRMA1_USERNAME1)) {
-//                                        Ext.ComponentQuery.query('toolbar #signButtonConfirmaciones', thisWin.getComponent('e3').getComponent('e3f1'))[0].setDisabled(true);
+                                        //                                        Ext.ComponentQuery.query('toolbar #signButtonConfirmaciones', thisWin.getComponent('e3').getComponent('e3f1'))[0].setDisabled(true);
                                         thisWin.getComponent('e3').getComponent('e3f1').setVisible(false);
                                         thisWin.getComponent('e3').down('toolbar #nextButton').setVisible(true);
                                     } else {
@@ -1696,11 +1888,44 @@ var orderWindow = function (recordBase) {
                             }
                         }),
                         columns: [
-                            {text: 'Firma', dataIndex: 'FIRMA1_USERNAME1', flex: 1}
+                            { text: 'Firma', dataIndex: 'FIRMA1_USERNAME1', flex: 1 }
                         ]
                     }
                 ],
                 buttons: [
+                    {
+                        text: 'Cancelar',
+                        itemId: 'cancelButton',
+                        glyph: 'xf05e@FontAwesome',
+                        hidden: true,
+                        handler: function (thisbutton) {
+                            var values = {
+                                idOrdenServicio: thisbutton.up('window').recordBase.data.ID_ORDEN_SERVICIO
+                            };
+                            Ext.data.JsonP.request({
+                                url: serviceUrl + 'updateOrdenServicioCancelado',
+                                params: values,
+                                success: function (result) {
+                                    if (result.success) {
+                                        thisbutton.next();
+                                    } else {
+                                        Ext.Msg.alert('Error', 'No se pudo actualizar orden de servicio.');
+                                    }
+                                },
+                                failure: function (result) {
+                                    Ext.Msg.alert('Error', result.msg);
+                                }
+                            });
+                        },
+                        listeners: {
+                            beforerender: function (thisbutton) {
+                                var recordBase = thisbutton.up('window').recordBase;
+                                if (!Ext.isEmpty(recordBase) && recordBase.data.CANCELADO === 0) {
+                                    thisbutton.setHidden(!((recordBase.data.ID_ROL === 2 || recordBase.data.ID_ROL === 3) && recordBase.data.CHECK24 < 24));
+                                }
+                            }
+                        }
+                    },
                     {
                         text: 'Aceptar',
                         glyph: 'xf058@FontAwesome',
@@ -1709,6 +1934,12 @@ var orderWindow = function (recordBase) {
                         next: function () {
                             thisWin.getComponent('e4').setVisible(true);
                             thisWin.getComponent('e4').expand();
+                        },
+                        listeners: {
+                            beforerender: function (thisbutton) {
+                                var recordBase = thisbutton.up('window').recordBase;
+                                thisbutton.setHidden(!Ext.isEmpty(recordBase) && recordBase.data.CANCELADO === 1);
+                            }
                         },
                         handler: function (button) {
                             if (button.getText() === 'Siguiente') {
@@ -1780,24 +2011,65 @@ var orderWindow = function (recordBase) {
                             }
                         }),
                         columns: [
-                            {text: 'Cotización', dataIndex: 'ID_SERVICIO_COTIZACION', flex: 1},
-                            {text: 'Servicio', dataIndex: 'NOMBRE_SERVICIO', flex: 3},
-                            {text: 'Prestador', dataIndex: 'NOMBRE', flex: 1},
-                            {text: 'Cotización', dataIndex: 'COTIZACION', flex: 1, renderer: Ext.util.Format.usMoney},
-                            {text: 'Disponibilidad', dataIndex: 'VALIDA_DISPONIBILIDAD', renderer: function (value, metaData, record, rowIndex, colIndex, store, view) {
+                            { text: 'Cotización', dataIndex: 'ID_SERVICIO_COTIZACION', flex: 1 },
+                            { text: 'Servicio', dataIndex: 'NOMBRE_SERVICIO', flex: 3 },
+                            { text: 'Prestador', dataIndex: 'NOMBRE', flex: 1 },
+                            { text: 'Cotización', dataIndex: 'COTIZACION', flex: 1, renderer: Ext.util.Format.usMoney },
+                            {
+                                text: 'Disponibilidad', dataIndex: 'VALIDA_DISPONIBILIDAD', renderer: function (value, metaData, record, rowIndex, colIndex, store, view) {
                                     if (value === 0) {
                                         return "NO";
                                     } else {
                                         return "SI";
                                     }
-                                }}
+                                }
+                            }
                         ]
                     }
                 ],
                 buttons: [
                     {
+                        text: 'Cancelar',
+                        itemId: 'cancelButton',
+                        glyph: 'xf05e@FontAwesome',
+                        hidden: true,
+                        handler: function (thisbutton) {
+                            var values = {
+                                idOrdenServicio: thisbutton.up('window').recordBase.data.ID_ORDEN_SERVICIO
+                            };
+                            Ext.data.JsonP.request({
+                                url: serviceUrl + 'updateOrdenServicioCancelado',
+                                params: values,
+                                success: function (result) {
+                                    if (result.success) {
+                                        thisbutton.next();
+                                    } else {
+                                        Ext.Msg.alert('Error', 'No se pudo actualizar orden de servicio.');
+                                    }
+                                },
+                                failure: function (result) {
+                                    Ext.Msg.alert('Error', result.msg);
+                                }
+                            });
+                        },
+                        listeners: {
+                            beforerender: function (thisbutton) {
+                                var recordBase = thisbutton.up('window').recordBase;
+                                if (!Ext.isEmpty(recordBase) && recordBase.data.CANCELADO === 0) {
+                                    thisbutton.setHidden(!((recordBase.data.ID_ROL === 2 || recordBase.data.ID_ROL === 3) && recordBase.data.CHECK24 < 24));
+                                }
+                            }
+                        }
+                    },
+                    {
                         text: 'Generar Reporte',
                         glyph: 'xf15b@FontAwesome',
+                        listeners: {
+                            beforerender: function (thisbutton) {
+                                var recordBase = thisbutton.up('window').recordBase;
+                                thisbutton.setHidden(!Ext.isEmpty(recordBase) && recordBase.data.CANCELADO === 1);
+                            }
+                        },
                         handler: function (button) {
                             window.open(serviceUrl + 'getReport?idAutoridad=' + login.credential.ID_AUTORIDAD + '&idOrden=' + thisWin.ordenServicio.ID_ORDEN_SERVICIO + '&userName=' + login.credential.USUARIO_NOMBRE + '|' + login.credential.CARGO + '&eFirma=' + '&mensual=');
                         }
@@ -1809,7 +2081,13 @@ var orderWindow = function (recordBase) {
                         next: function () {
                             thisWin.getComponent('e5').setVisible(true);
                             thisWin.getComponent('e5').expand();
-//                                    thisWin.getComponent('e5').getComponent('deduccionesGrid').getStore().reload();
+                            //                                    thisWin.getComponent('e5').getComponent('deduccionesGrid').getStore().reload();
+                        },
+                        listeners: {
+                            beforerender: function (thisbutton) {
+                                var recordBase = thisbutton.up('window').recordBase;
+                                thisbutton.setHidden(!Ext.isEmpty(recordBase) && recordBase.data.CANCELADO === 1);
+                            }
                         },
                         handler: function (button) {
                             if (button.getText() === 'Siguiente') {
@@ -1827,8 +2105,8 @@ var orderWindow = function (recordBase) {
                                                 idOrdenServicio: thisWin.ordenServicio.ID_ORDEN_SERVICIO
                                             });
                                             setStatusServiceOrder(thisWin.ordenServicio.ID_ORDEN_SERVICIO, 4, button.next);
-//                                                button.up('panel');
-//                                                panel.loadRecord(Ext.create('Ext.data.Model', result));
+                                            //                                                button.up('panel');
+                                            //                                                panel.loadRecord(Ext.create('Ext.data.Model', result));
                                         } else {
                                             Ext.Msg.alert('Error', 'No se envió el correo');
                                         }
@@ -2135,12 +2413,12 @@ var orderWindow = function (recordBase) {
                             }
                         }),
                         columns: [
-                            {text: 'Cotización', dataIndex: 'ID_SERVICIO_COTIZACION', flex: 1},
-                            {text: 'Servicio', dataIndex: 'NOMBRE_SERVICIO', flex: 3},
-                            {text: 'Prestador', dataIndex: 'NOMBRE', flex: 1},
-                            {text: 'Cotización', dataIndex: 'COTIZACION', flex: 1, renderer: Ext.util.Format.usMoney},
-                            {text: 'Deducción', dataIndex: 'DEDUCCION', flex: 1, renderer: Ext.util.Format.usMoney},
-                            {text: 'Precio Final', dataIndex: 'PRECIO_SERVICIO_FINAL', flex: 1, renderer: Ext.util.Format.usMoney}
+                            { text: 'Cotización', dataIndex: 'ID_SERVICIO_COTIZACION', flex: 1 },
+                            { text: 'Servicio', dataIndex: 'NOMBRE_SERVICIO', flex: 3 },
+                            { text: 'Prestador', dataIndex: 'NOMBRE', flex: 1 },
+                            { text: 'Cotización', dataIndex: 'COTIZACION', flex: 1, renderer: Ext.util.Format.usMoney },
+                            { text: 'Deducción', dataIndex: 'DEDUCCION', flex: 1, renderer: Ext.util.Format.usMoney },
+                            { text: 'Precio Final', dataIndex: 'PRECIO_SERVICIO_FINAL', flex: 1, renderer: Ext.util.Format.usMoney }
                         ],
                         listeners: {
                             itemclick: function (grid, record, item, index, e, eOpts) {
@@ -2163,12 +2441,51 @@ var orderWindow = function (recordBase) {
                 ],
                 buttons: [
                     {
+                        text: 'Cancelar',
+                        itemId: 'cancelButton',
+                        glyph: 'xf05e@FontAwesome',
+                        hidden: true,
+                        handler: function (thisbutton) {
+                            var values = {
+                                idOrdenServicio: thisbutton.up('window').recordBase.data.ID_ORDEN_SERVICIO
+                            };
+                            Ext.data.JsonP.request({
+                                url: serviceUrl + 'updateOrdenServicioCancelado',
+                                params: values,
+                                success: function (result) {
+                                    if (result.success) {
+                                        thisbutton.next();
+                                    } else {
+                                        Ext.Msg.alert('Error', 'No se pudo actualizar orden de servicio.');
+                                    }
+                                },
+                                failure: function (result) {
+                                    Ext.Msg.alert('Error', result.msg);
+                                }
+                            });
+                        },
+                        listeners: {
+                            beforerender: function (thisbutton) {
+                                var recordBase = thisbutton.up('window').recordBase;
+                                if (!Ext.isEmpty(recordBase) && recordBase.data.CANCELADO === 0) {
+                                    thisbutton.setHidden(!((recordBase.data.ID_ROL === 2 || recordBase.data.ID_ROL === 3) && recordBase.data.CHECK24 < 24));
+                                }
+                            }
+                        }
+                    },
+                    {
                         text: 'Aceptar',
                         itemId: 'nextButton',
                         glyph: 'xf058@FontAwesome',
                         next: function () {
                             thisWin.getComponent('e6').setVisible(true);
                             thisWin.getComponent('e6').expand();
+                        },
+                        listeners: {
+                            beforerender: function (thisbutton) {
+                                var recordBase = thisbutton.up('window').recordBase;
+                                thisbutton.setHidden(!Ext.isEmpty(recordBase) && recordBase.data.CANCELADO === 1);
+                            }
                         },
                         handler: function (button) {
                             if (button.getText() === 'Siguiente') {
@@ -2300,13 +2617,13 @@ var orderWindow = function (recordBase) {
                                 load: function (store, records, successful, operation, eOpts) {
                                     //configura privilegios
                                     if (!Ext.isEmpty(records) && !Ext.isEmpty(records[0].data.FIRMA2_USERNAME1) && !Ext.isEmpty(records[0].data.FIRMA2_USERNAME2)) {
-//                                        Ext.ComponentQuery.query('toolbar #signButtonPrefacturacion', thisWin.getComponent('e6').getComponent('e6f1'))[0].setDisabled(true);
+                                        //                                        Ext.ComponentQuery.query('toolbar #signButtonPrefacturacion', thisWin.getComponent('e6').getComponent('e6f1'))[0].setDisabled(true);
                                         thisWin.getComponent('e6').getComponent('e6f1').setVisible(false);
                                         thisWin.getComponent('e6').down('toolbar #nextButton').setVisible(true);
                                     } else {
                                         var visible = false;
                                         if (Ext.isEmpty(records) || (login.privilegios.f6.gen && Ext.isEmpty(records[0].data.FIRMA2_USERNAME1) ||
-                                                login.privilegios.f6.rev && Ext.isEmpty(records[0].data.FIRMA2_USERNAME2))) {
+                                            login.privilegios.f6.rev && Ext.isEmpty(records[0].data.FIRMA2_USERNAME2))) {
                                             visible = true;
                                         }
                                         thisWin.getComponent('e6').getComponent('e6f1').setVisible(visible);
@@ -2315,12 +2632,45 @@ var orderWindow = function (recordBase) {
                             }
                         }),
                         columns: [
-                            {text: 'Firma1', dataIndex: 'FIRMA2_USERNAME1', flex: 1},
-                            {text: 'Firma2', dataIndex: 'FIRMA2_USERNAME2', flex: 1}
+                            { text: 'Firma1', dataIndex: 'FIRMA2_USERNAME1', flex: 1 },
+                            { text: 'Firma2', dataIndex: 'FIRMA2_USERNAME2', flex: 1 }
                         ]
                     }
                 ],
                 buttons: [
+                    {
+                        text: 'Cancelar',
+                        itemId: 'cancelButton',
+                        glyph: 'xf05e@FontAwesome',
+                        hidden: true,
+                        handler: function (thisbutton) {
+                            var values = {
+                                idOrdenServicio: thisbutton.up('window').recordBase.data.ID_ORDEN_SERVICIO
+                            };
+                            Ext.data.JsonP.request({
+                                url: serviceUrl + 'updateOrdenServicioCancelado',
+                                params: values,
+                                success: function (result) {
+                                    if (result.success) {
+                                        thisbutton.next();
+                                    } else {
+                                        Ext.Msg.alert('Error', 'No se pudo actualizar orden de servicio.');
+                                    }
+                                },
+                                failure: function (result) {
+                                    Ext.Msg.alert('Error', result.msg);
+                                }
+                            });
+                        },
+                        listeners: {
+                            beforerender: function (thisbutton) {
+                                var recordBase = thisbutton.up('window').recordBase;
+                                if (!Ext.isEmpty(recordBase) && recordBase.data.CANCELADO === 0) {
+                                    thisbutton.setHidden(!((recordBase.data.ID_ROL === 2 || recordBase.data.ID_ROL === 3) && recordBase.data.CHECK24 < 24));
+                                }
+                            }
+                        }
+                    },
                     {
                         text: 'Aceptar',
                         itemId: 'nextButton',
@@ -2329,6 +2679,12 @@ var orderWindow = function (recordBase) {
                         next: function () {
                             thisWin.getComponent('e7').setVisible(true);
                             thisWin.getComponent('e7').expand();
+                        },
+                        listeners: {
+                            beforerender: function (thisbutton) {
+                                var recordBase = thisbutton.up('window').recordBase;
+                                thisbutton.setHidden(!Ext.isEmpty(recordBase) && recordBase.data.CANCELADO === 1);
+                            }
                         },
                         handler: function (button) {
                             if (button.getText() === 'Siguiente') {
@@ -2385,6 +2741,39 @@ var orderWindow = function (recordBase) {
                 },
                 items: [
                     {
+                        text: 'Cancelar',
+                        itemId: 'cancelButton',
+                        glyph: 'xf05e@FontAwesome',
+                        hidden: true,
+                        handler: function (thisbutton) {
+                            var values = {
+                                idOrdenServicio: thisbutton.up('window').recordBase.data.ID_ORDEN_SERVICIO
+                            };
+                            Ext.data.JsonP.request({
+                                url: serviceUrl + 'updateOrdenServicioCancelado',
+                                params: values,
+                                success: function (result) {
+                                    if (result.success) {
+                                        thisbutton.next();
+                                    } else {
+                                        Ext.Msg.alert('Error', 'No se pudo actualizar orden de servicio.');
+                                    }
+                                },
+                                failure: function (result) {
+                                    Ext.Msg.alert('Error', result.msg);
+                                }
+                            });
+                        },
+                        listeners: {
+                            beforerender: function (thisbutton) {
+                                var recordBase = thisbutton.up('window').recordBase;
+                                if (!Ext.isEmpty(recordBase) && recordBase.data.CANCELADO === 0) {
+                                    thisbutton.setHidden(!((recordBase.data.ID_ROL === 2 || recordBase.data.ID_ROL === 3) && recordBase.data.CHECK24 < 24));
+                                }
+                            }
+                        }
+                    },
+                    {
                         xtype: 'button',
                         itemId: 'nextButton',
                         text: 'Cerrar',
@@ -2395,6 +2784,12 @@ var orderWindow = function (recordBase) {
                                 window.open(serviceUrl + 'getReport?idAutoridad=' + login.credential.ID_AUTORIDAD + '&idOrden=' + thisWin.ordenServicio.ID_ORDEN_SERVICIO + '&userName=' + login.credential.USUARIO_NOMBRE + '|' + login.credential.CARGO + '&eFirma=' + '&mensual=');
                             }
                             thisWin.close();
+                        },
+                        listeners: {
+                            beforerender: function (thisbutton) {
+                                var recordBase = thisbutton.up('window').recordBase;
+                                thisbutton.setHidden(!Ext.isEmpty(recordBase) && recordBase.data.CANCELADO === 1);
+                            }
                         },
                         handler: function (button) {
                             if (button.getText() === 'Siguiente' || button.getText() === 'Cerrar') {
