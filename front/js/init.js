@@ -1,5 +1,4 @@
-//var serviceUrl = 'http://localhost:3000/'
-var serviceUrl = 'http://10.15.17.69:3000/'
+var serviceUrl = 'http://localhost:3000/'
 
 var login = Ext.create('Ext.window.Window', {
     title: 'Ingreso',
@@ -469,7 +468,7 @@ var createViewport = function () {
                                                 {
                                                     itemId: 'modcancel',
                                                     name: 'modcancel',
-                                                    fieldLabel: 'Tipo de Orden',
+                                                    fieldLabel: 'Orden',
                                                     valueField: 'name',
                                                     displayField: 'name',
                                                     margin: '0 10 0 0',
@@ -480,6 +479,27 @@ var createViewport = function () {
                                                             { name: "CANCELADO" }
                                                         ]
                                                     })
+                                                },
+                                                {
+                                                    xtype: 'button',
+                                                    text: 'Generar Informe Total de Servicios',
+                                                    hidden: true,
+                                                    listeners: {
+                                                        beforerender: function (thisbutton) {
+                                                            thisbutton.setVisible(login.privilegios.repoXLSX);
+                                                        }
+                                                    },
+                                                    handler: function (thisbutton) {
+                                                        Ext.data.JsonP.request({
+                                                            url: serviceUrl + 'getInformeServicios',
+                                                            success: function (result) {
+                                                                console.log('Listo');
+                                                            },
+                                                            extraParams: {
+                                                                tipoOrdenServicio: thisbutton.up('fieldset').items.getByKey('TIPO_ORDEN_SERVICIO').getValue()
+                                                            }
+                                                        });
+                                                    }
                                                 }
                                             ]
                                         },
@@ -916,7 +936,6 @@ var signWindow = function (button, report) {
 };
 
 var orderWindow = function (recordBase) {
-    console.log(recordBase);
     var thisWin = Ext.create('Ext.window.Window', {
         recordBase: recordBase,
         title: 'Orden de Servicio',
@@ -1057,12 +1076,64 @@ var orderWindow = function (recordBase) {
                                 displayField: 'name',
                                 valueField: 'name',
                                 value: 'Operativo',
+                                listeners: {
+                                    change: function (field, newValue, oldValue, eOpts) {
+                                        const almacen = field.up('form').items.getByKey('almacen');
+                                        if (newValue === 'Movimiento por almacén') {
+                                            almacen.show();
+                                            almacen.getStore().load();
+                                        } else {
+                                            almacen.hide();
+                                        }
+                                    }
+                                },
                                 store: Ext.create('Ext.data.Store', {
                                     fields: ['name'],
                                     data: [
                                         { name: "Operativo" },
                                         { name: "Movimiento por almacén" },
                                     ]
+                                })
+                            },
+                            {
+                                xtype: 'combo',
+                                fieldLabel: 'Almacén',
+                                itemId: 'almacen',
+                                name: 'claveAlmacen',
+                                width: '100%',
+                                queryMode: 'local',
+                                minChars: 0,
+                                displayField: 'ETIQUETA',
+                                valueField: 'CLAVE_ALMACEN',
+                                publishes: 'CLAVE_ALMACEN',
+                                anyMatch: true,
+                                emptyText: 'Cargando...',
+                                hidden: true,
+                                store: Ext.create('Ext.data.Store', {
+                                    fields: ['area', 'idArea', 'idProyecto', 'proyecto'],
+                                    proxy: {
+                                        type: 'jsonp',
+                                        url: serviceUrl + 'getAllAlmacen',
+                                        reader: {
+                                            type: 'json',
+                                            rootProperty: 'subzona',
+                                            //                                            totalProperty: 'total',
+                                            successProperty: 'success'
+                                            //                                            messageProperty: 'message'
+                                        },
+                                        extraParams: {
+                                            idZona: login.credential.ID_ZONA,
+                                            query: ''
+                                        }
+                                    },
+                                    listeners: {
+                                        load: function (thisStore, records, successful, operation, eOpts) {
+                                            if (successful) {
+                                                thisWin.down("#domicilio").setEmptyText('Seleccionar...');
+                                            }
+                                        }
+                                    },
+                                    autoLoad: false
                                 })
                             },
                             {
